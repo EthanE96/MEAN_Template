@@ -4,7 +4,7 @@ import cors from "cors";
 import morgan from "morgan";
 // import passport from "passport";
 // import MongoStore from "../node_modules/connect-mongo/build/main/index";
-import { connectDB } from "./config/dbConfig";
+import { connectDB } from "./config/db.config";
 import routes from "./routes";
 // import { passportConfig } from "./config/passportConfig";
 // import { seedModels } from "./seeder/seedModels";

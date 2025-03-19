@@ -4,6 +4,18 @@ MEAN stack development template to ship faster
 
 # Technology Stack
 
-Mongo (mongoose), Express, Angular (tailwind css), Node (express, typescript)
+## Backend
+
+- Node
+- Typescript
+- Express
+- Mongo
+- Mongoose
+
+## Frontend
+
+- Angular
+- Tailwind
+- DaisyUi
 
 Utilizing Azure deployments and IaC through ARM Templates
