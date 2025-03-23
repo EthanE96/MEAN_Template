@@ -8,9 +8,7 @@ MEAN stack development template to ship faster
 
 ## Backend
 
-- Auth / Passport
-- Item CRUDs
-- Seeder
+- Auth / Passport - wip
 - AI Prompting
 
 ## Frontend

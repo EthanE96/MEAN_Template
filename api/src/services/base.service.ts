@@ -32,6 +32,15 @@ export abstract class BaseService<T> {
     }
   }
 
+  public async createMany(data: Partial<T>[]): Promise<T[]> {
+    try {
+      const documents = await this.model.insertMany(data);
+      return documents as T[];
+    } catch (error) {
+      throw new Error("Error creating documents: " + error);
+    }
+  }
+
   public async update(id: string, data: Partial<T>): Promise<T | null> {
     try {
       return await this.model.findByIdAndUpdate(id, data, { new: true });
@@ -45,6 +54,14 @@ export abstract class BaseService<T> {
       return await this.model.findByIdAndDelete(id);
     } catch (error) {
       throw new Error("Error deleting document: " + error);
+    }
+  }
+
+  public async deleteAll(): Promise<void> {
+    try {
+      await this.model.deleteMany({});
+    } catch (error) {
+      throw new Error("Error deleting all documents: " + error);
     }
   }
 }

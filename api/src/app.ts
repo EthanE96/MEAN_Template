@@ -8,6 +8,7 @@ import passport from "passport";
 import { passportConfig } from "./config/passport.config";
 import session from "express-session";
 import routes from "./routes/routes";
+import { seedNotes } from "./config/seed/note.seed";
 
 const app = express();
 
@@ -72,7 +73,7 @@ morgan.token("body", (req: Request) => {
 app.use(morgan(":method :url :status - :response-time ms body:body"));
 
 // Seed data
-// seedModels();
+seedNotes();
 
 // Register Routes
 app.use("/api", routes);

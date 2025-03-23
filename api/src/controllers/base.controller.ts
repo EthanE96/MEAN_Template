@@ -43,6 +43,15 @@ export class BaseController<T> {
     }
   };
 
+  public createMany = async (req: Request, res: Response): Promise<void> => {
+    try {
+      const documents = await this.service.createMany(req.body);
+      res.status(201).json(documents);
+    } catch (error) {
+      res.status(400).json(error);
+    }
+  };
+
   public update = async (req: Request, res: Response): Promise<void> => {
     try {
       const document = await this.service.update(req.params.id, req.body);
@@ -64,6 +73,15 @@ export class BaseController<T> {
         return;
       }
       res.json({ message: "Document deleted" });
+    } catch (error) {
+      res.status(500).json(error);
+    }
+  };
+
+  public deleteAll = async (req: Request, res: Response): Promise<void> => {
+    try {
+      const documents = await this.service.deleteAll();
+      res.json(documents);
     } catch (error) {
       res.status(500).json(error);
     }
