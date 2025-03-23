@@ -1,4 +1,4 @@
-import { User, IUser } from "../models/user.model";
+import { IUser } from "../models/user.model";
 import { UserService } from "../services/user.service";
 import { BaseController } from "./base.controller";
 

@@ -28,6 +28,10 @@ MEAN stack development template to ship faster
   - Database: Azure Cosmos DB
 - Deployment Pipelines (Github)
 
+## Other
+
+- Inline documentation
+
 ---
 
 # Technology Stack

@@ -1,13 +1,13 @@
-import express, { Request } from "express";
+import express, { Request, Response, NextFunction } from "express";
 import cors from "cors";
-// import session from "express-session";
 import morgan from "morgan";
-// import passport from "passport";
-// import MongoStore from "../node_modules/connect-mongo/build/main/index";
 import { connectDB } from "./config/db.config";
-import routes from "./routes";
-// import { passportConfig } from "./config/passportConfig";
-// import { seedModels } from "./seeder/seedModels";
+import cookieParser from "cookie-parser";
+import MongoStore from "connect-mongo";
+import passport from "passport";
+import { passportConfig } from "./config/passport.config";
+import session from "express-session";
+import routes from "./routes/routes";
 
 const app = express();
 
@@ -16,15 +16,17 @@ const mongoURI = process.env.MONGODB_URI as string;
 connectDB(mongoURI);
 
 // Trust proxy, before middleware
-app.set("trust proxy", 1);
+// app.set("trust proxy", 1);
 
 // Middleware to parse JSON
 app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+app.use(cookieParser());
 
 // Allowed Origins
 const allowedOrigins = [process.env.UI_URL];
 
-// Allows UI to make requests api from dif domains
+// Allows UI to make requests api from different domains
 app.use(
   cors({
     origin: (origin, callback) => {
@@ -42,26 +44,26 @@ app.use(
   })
 );
 
-// // Session Management
-// app.use(
-//   session({
-//     secret: process.env.SESSION_SECRET || "your_secret_key",
-//     resave: false,
-//     saveUninitialized: false,
-//     store: MongoStore.create({ mongoUrl: mongoURI }),
-//     cookie: {
-//       httpOnly: true,
-//       secure: true,
-//       sameSite: "none",
-//       maxAge: 24 * 60 * 60 * 1000, // 24 hours,
-//     },
-//   })
-// );
+// Session Management
+app.use(
+  session({
+    secret: process.env.SESSION_SECRET || "your_secret_key",
+    resave: false,
+    saveUninitialized: false,
+    store: MongoStore.create({ mongoUrl: mongoURI }),
+    cookie: {
+      httpOnly: true,
+      secure: process.env.NODE_ENV === "production", // Use secure cookies in production
+      sameSite: process.env.NODE_ENV === "production" ? "none" : "lax",
+      maxAge: 24 * 60 * 60 * 1000, // 24 hours
+    },
+  })
+);
 
-// // Initialize Passport and use it with the session
-// passportConfig();
-// app.use(passport.initialize());
-// app.use(passport.session());
+// Initialize Passport and use it with the session
+app.use(passport.initialize());
+app.use(passport.session());
+passportConfig();
 
 // Morgan Logger
 morgan.token("body", (req: Request) => {
@@ -69,10 +71,20 @@ morgan.token("body", (req: Request) => {
 });
 app.use(morgan(":method :url :status - :response-time ms body:body"));
 
-// // Seed data
+// Seed data
 // seedModels();
 
-// Routes
+// Register Routes
 app.use("/api", routes);
+
+// Error-handling middleware
+app.use((err: Error, req: Request, res: Response, next: NextFunction) => {
+  console.error(err.stack); // Log the error for debugging
+  res.status(500).json({
+    success: false,
+    message: "An internal server error occurred",
+    error: process.env.NODE_ENV === "development" ? err.message : undefined, // Show error details only in dev
+  });
+});
 
 export default app;
