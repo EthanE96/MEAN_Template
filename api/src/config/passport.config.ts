@@ -63,7 +63,7 @@ export const passportConfig = (): void => {
       {
         clientID: process.env.GOOGLE_CLIENT_ID || "",
         clientSecret: process.env.GOOGLE_CLIENT_SECRET || "",
-        callbackURL: "/auth/google/callback",
+        callbackURL: `${process.env.API_URL}${process.env.GOOGLE_CALLBACK_ENDPOINT}` || "",
       },
       async (_accessToken, _refreshToken, profile, done) => {
         try {

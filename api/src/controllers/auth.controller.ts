@@ -88,7 +88,6 @@ export const logout = (req: Request, res: Response, next: NextFunction): void =>
 };
 
 export const getCurrentUser = (req: Request, res: Response, _next: NextFunction): void => {
-  // We don't need to check authentication here as it's already checked by the isAuthenticated middleware
   const userResponse = (req.user as IUser).toObject();
   delete userResponse.password;
 
@@ -97,4 +96,3 @@ export const getCurrentUser = (req: Request, res: Response, _next: NextFunction)
     user: userResponse,
   });
 };
-
