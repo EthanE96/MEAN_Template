@@ -17,11 +17,13 @@ const noteData: INote[] = [
 ];
 
 export const seedNotes = async () => {
+  console.log("Seeding Notes...");
   const noteService = new NoteService();
   const existingNotes = await noteService.findAll();
 
   if (existingNotes.length === 0) {
-    console.log("Seeding notes");
-    await noteService.createMany(noteData);
+    await noteService.createMany(noteData).then(() => {
+      console.log("Notes seeded successfully.");
+    });
   }
 };
