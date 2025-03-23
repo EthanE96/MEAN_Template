@@ -207,8 +207,8 @@ UserSchema.statics.findOrCreateFromOAuthProfile = async function (
 };
 
 // Add the static method to the interface
-interface UserModel extends mongoose.Model<IUser> {
+interface User extends mongoose.Model<IUser> {
   findOrCreateFromOAuthProfile(profile: any, provider: string): Promise<IUser>;
 }
 
-export default mongoose.model<IUser, UserModel>("User", UserSchema);
+export default mongoose.model<IUser, User>("User", UserSchema);

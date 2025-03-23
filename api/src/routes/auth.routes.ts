@@ -1,6 +1,7 @@
 import { Router } from "express";
 import * as authController from "../controllers/auth.controller";
 import passport from "passport";
+import { isAuthenticated } from "../middleware/auth.middleware";
 
 const router = Router();
 
@@ -14,7 +15,7 @@ router.post("/login", authController.login);
 router.post("/logout", authController.logout);
 
 // Get current user
-router.get("/me", authController.isAuthenticated, authController.getCurrentUser);
+router.get("/me", isAuthenticated, authController.getCurrentUser);
 
 // Google Auth routes
 router.get("/google", passport.authenticate("google", { scope: ["profile", "email"] }));
