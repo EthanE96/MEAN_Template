@@ -1,7 +1,7 @@
 import { Schema, model, Document } from "mongoose";
 
 // Define the interface for the User document
-export interface UserDocument extends Document {
+export interface IUser extends Document {
   firstName: string;
   lastName: string;
   email: string;
@@ -11,7 +11,7 @@ export interface UserDocument extends Document {
 }
 
 // Define the Mongoose schema for the User
-const userSchema = new Schema<UserDocument>(
+const userSchema = new Schema<IUser>(
   {
     firstName: {
       type: String,
@@ -43,4 +43,4 @@ const userSchema = new Schema<UserDocument>(
 );
 
 // Create and export the User model
-export const User = model<UserDocument>("User", userSchema);
+export const User = model<IUser>("User", userSchema);

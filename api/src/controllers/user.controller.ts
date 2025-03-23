@@ -1,9 +1,10 @@
-import { User, UserDocument } from "../models/user.model";
+import { User, IUser } from "../models/user.model";
+import { UserService } from "../services/user.service";
 import { BaseController } from "./base.controller";
 
-class UserController extends BaseController<UserDocument> {
+class UserController extends BaseController<IUser> {
   constructor() {
-    super(User);
+    super(new UserService());
   }
 }
 
