@@ -36,17 +36,13 @@ export class BaseController<T> {
 
   public create = async (req: Request, res: Response): Promise<void> => {
     try {
-      const document = await this.service.create(req.body);
-      res.status(201).json(document);
-    } catch (error) {
-      res.status(400).json(error);
-    }
-  };
-
-  public createMany = async (req: Request, res: Response): Promise<void> => {
-    try {
-      const documents = await this.service.createMany(req.body);
-      res.status(201).json(documents);
+      if (Array.isArray(req.body)) {
+        const documents = await this.service.createMany(req.body);
+        res.status(201).json(documents);
+      } else {
+        const document = await this.service.create(req.body);
+        res.status(201).json(document);
+      }
     } catch (error) {
       res.status(400).json(error);
     }

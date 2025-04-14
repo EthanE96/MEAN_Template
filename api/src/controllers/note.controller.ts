@@ -11,6 +11,13 @@ export class NoteController extends BaseController<INote> {
   async summarizeNotes(req: Request, res: Response): Promise<void> {
     try {
       const notes = await this.noteService.findAll();
+
+      // Check if notes are empty
+      if (notes.length === 0) {
+        res.status(404).json({ message: "No notes found" });
+        return;
+      }
+
       const summary = await this.noteService.summarizeNotes(notes);
 
       res.json(summary);

@@ -36,13 +36,14 @@
     "@types/express-session": "^1.18.1",
     "@types/mongoose": "^5.11.96",
     "@types/morgan": "^1.9.9",
-    "@types/node": "^22.13.10",
+    "@types/node": "^22.14.1",
     "@types/passport": "^1.0.17",
     "@types/passport-google-oauth20": "^2.0.16",
     "@types/passport-local": "^1.0.38",
     "morgan": "^1.10.0",
     "nodemon": "^3.1.9",
     "ts-node-dev": "^2.0.0",
+    "tslib": "^2.8.1",
     "typescript": "^5.8.3"
   }
 }

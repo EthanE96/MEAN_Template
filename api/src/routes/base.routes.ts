@@ -6,7 +6,6 @@ interface RouteConfig {
   getAll?: boolean;
   getById?: boolean;
   create?: boolean;
-  createMany?: boolean;
   update?: boolean;
   delete?: boolean;
   deleteAll?: boolean;
@@ -31,7 +30,6 @@ export class BaseRouter<T> {
       getAll: config.getAll ?? true,
       getById: config.getById ?? true,
       create: config.create ?? true,
-      createMany: config.createMany ?? true,
       update: config.update ?? true,
       delete: config.delete ?? true,
       deleteAll: config.deleteAll ?? true,
@@ -54,10 +52,6 @@ export class BaseRouter<T> {
 
     if (this.routeConfig.create) {
       this.router.post("/", this.controller.create);
-    }
-
-    if (this.routeConfig.createMany) {
-      this.router.post("/many", this.controller.createMany);
     }
 
     if (this.routeConfig.update) {

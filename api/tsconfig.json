@@ -8,6 +8,7 @@
     /* Modules */
     "module": "nodenext" /* Specify what module code is generated. */,
     "moduleResolution": "nodenext",
+    "sourceMap": true /* Create source maps for emitted files. */,
 
     /* Emit */
     "outDir": "./dist" /* Specify an output folder for all emitted files. */,
