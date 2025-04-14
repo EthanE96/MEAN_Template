@@ -126,11 +126,6 @@ const UserSchema = new Schema<IUser>(
   }
 );
 
-// Create indexes for faster lookups
-UserSchema.index({ email: 1 });
-UserSchema.index({ username: 1 });
-UserSchema.index({ googleId: 1 }, { sparse: true });
-
 // Hash password before saving
 UserSchema.pre("save", async function (next) {
   const user = this;
