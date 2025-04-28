@@ -4,34 +4,6 @@ MEAN stack development template to ship faster
 
 ---
 
-# TODO
-
-## Backend
-
-- Auth / Passport - wip
-- AI Prompting
-
-## Frontend
-
-- Items CRUDs
-- Homepage
-- Signin
-- Error Pages
-
-## Infra
-
-- IaC Deployments
-  - Frontend: Azure Static Web App
-  - Backend: Azure App Service
-  - Database: Azure Cosmos DB
-- Deployment Pipelines (Github)
-
-## Other
-
-- Inline documentation
-
----
-
 # Technology Stack
 
 ## Backend

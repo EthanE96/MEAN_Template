@@ -14,20 +14,30 @@ export class NoteService extends BaseService<INote> {
    * @returns A response from the AI model summarizing the notes
    * @throws Error if there are no notes to summarize or if there is an error calling the AI model
    */
+
   async summarizeNotes(notes: INote[]) {
     const llmService = new LLMService("llama-3.3-70b-versatile", 0.7, 1024);
 
+    // Check if notes are empty
+    if (notes.length <= 0) {
+      throw new Error("Zero notes found for summarization");
+    }
+
     try {
-      if (notes.length <= 0) {
-        throw new Error("No notes found");
+      // Prepare the notes for summarization
+      const notesContent = notes
+        .map((note) => note.content)
+        .filter(Boolean)
+        .join("\n\n");
+
+      if (!notesContent) {
+        throw new Error("No valid note content found");
       }
 
-      const response = await llmService.sendMessageToModel(
-        "You are a helpful assistant that summarizes notes.",
-        notes.map((note) => note.content).join("\n")
-      );
+      const systemPrompt =
+        "You are a helpful assistant that summarizes notes. Create a concise summary of the following notes:";
 
-      return response;
+      return await llmService.sendMessageToModel(systemPrompt, notesContent);
     } catch (error) {
       throw new Error(`Error summarizing notes: ${error}`);
     }

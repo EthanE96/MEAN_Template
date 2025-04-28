@@ -35,7 +35,7 @@ export class LLMService {
 
       const response = await this.model.invoke(messages);
 
-      return response.content[1].toString();
+      return response.content.toString();
     } catch (error) {
       throw new Error(`Failed to invoke AI model: ${error}`);
     }
