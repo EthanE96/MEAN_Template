@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 import dotenv from "dotenv";
 dotenv.config();
 
-export const connectDB = async (mongoURI: string) => {
+export const connectDB = async (mongoURI: string | undefined) => {
   if (!mongoURI) {
     throw new Error("MONGODB_URI is not defined");
   }

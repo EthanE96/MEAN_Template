@@ -13,7 +13,7 @@ import { seedNotes } from "./config/seed/note.seed";
 const app = express();
 
 // Connect to MongoDB
-const mongoURI = process.env.MONGODB_URI as string;
+const mongoURI = process.env.MONGODB_URI;
 connectDB(mongoURI);
 
 // Trust proxy, before middleware
