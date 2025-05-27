@@ -2,6 +2,7 @@ import { Router, Request, Response } from "express";
 import { isAuthenticated } from "../middleware/auth.middleware";
 import authRoutes from "./auth.routes";
 import noteRoutes from "./note.routes";
+import swaggerRoutes from "./swagger.routes";
 
 const router = Router();
 
@@ -18,8 +19,9 @@ router.get("/health", (_req: Request, res: Response) => {
 //^ Private Routes
 // /api/auth (uses some public routes)
 router.use("/auth", authRoutes);
-
 // /api/notes
 router.use("/notes", isAuthenticated, noteRoutes);
+// /api/api-docs
+router.use("/", isAuthenticated, swaggerRoutes);
 
 export default router;

@@ -10,6 +10,9 @@
     "moduleResolution": "nodenext",
     "sourceMap": true /* Create source maps for emitted files. */,
 
+    /* JavaScript Support */
+    "resolveJsonModule": true /* Include modules imported with .json extension. */,
+
     /* Emit */
     "outDir": "./dist" /* Specify an output folder for all emitted files. */,
 
