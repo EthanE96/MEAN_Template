@@ -35,7 +35,7 @@ export class NoteService extends BaseService<INote> {
       }
 
       const systemPrompt =
-        "You are a helpful assistant that summarizes notes. Create a concise summary of the following notes:";
+        "You are a helpful assistant that summarizes notes. Return your response in markdown only. Create a concise summary of the following notes:";
 
       return await llmService.sendMessageToModel(systemPrompt, notesContent);
     } catch (error) {

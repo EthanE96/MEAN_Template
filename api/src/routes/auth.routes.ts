@@ -1,32 +1,39 @@
 import { Router } from "express";
-import * as authController from "../controllers/auth.controller";
 import passport from "passport";
+import { AuthController } from "../controllers/auth.controller";
+import { AuthService } from "../services/auth.service";
 import { isAuthenticated } from "../middleware/auth.middleware";
 
 const router = Router();
+const authService = new AuthService();
+const authController = new AuthController(authService);
 
-// Registration
-router.post("/register", authController.register);
-
-// Login
-router.post("/login", authController.login);
-
+//^ Common Auth routes
 // Logout
-router.post("/logout", authController.logout);
+router.post("/logout", isAuthenticated, authController.logout);
 
 // Get current user
 router.get("/me", isAuthenticated, authController.getCurrentUser);
 
-// Google Auth routes
+// ^ Local Auth routes
+// Register a new user
+router.post("/register", authController.localRegister);
+// Login
+router.post("/login", authController.localLogin);
+
+//^ Google Auth routes
+// Google OAuth2.0 authentication (login/register)
 router.get("/google", passport.authenticate("google", { scope: ["profile", "email"] }));
 
-// Fix the callback route path to match the one you configured in Google OAuth
+// Google OAuth2.0 callback
 router.get(
-  "/google/callback",
+  "/callback/google",
   passport.authenticate("google", {
-    failureRedirect: "/login",
+    // If authentication fails, redirect to login page with failure message
+    failureRedirect: "http://localhost:4200/login",
     failureMessage: true,
-    successRedirect: process.env.UI_REDIRECT_URL || "http://localhost:4200",
+    // If authentication succeeds, redirect to the UI application
+    successRedirect: process.env.UI_AUTH_REDIRECT_URL || "http://localhost:4200",
   })
 );
 

@@ -1,7 +1,7 @@
 import passport from "passport";
 import { Strategy as LocalStrategy } from "passport-local";
-import { Strategy as GoogleStrategy, Profile } from "passport-google-oauth20";
-import User from "../models/user.model";
+import { Strategy as GoogleStrategy } from "passport-google-oauth20";
+import User, { IUser } from "../models/user.model";
 
 export const passportConfig = (): void => {
   // Serialize and deserialize the user for session management
@@ -11,13 +11,21 @@ export const passportConfig = (): void => {
 
   passport.deserializeUser(async (id: string, done) => {
     try {
-      const user = await User.findById(id);
+      // Use MongoDB's _id to find the user
+      const user: IUser | null = await User.findById(id).lean();
+
       if (!user) {
+        console.error("No user found during deserialization");
         return done(null, false);
       }
+
+      // Remove sensitive information
+      delete (user as Partial<IUser>).password;
+
       done(null, user);
     } catch (error) {
-      done(error, null);
+      console.error("Error during deserialization:", id, error);
+      done(error);
     }
   });
 
@@ -63,7 +71,7 @@ export const passportConfig = (): void => {
       {
         clientID: process.env.GOOGLE_CLIENT_ID || "",
         clientSecret: process.env.GOOGLE_CLIENT_SECRET || "",
-        callbackURL: `${process.env.API_URL}${process.env.GOOGLE_CALLBACK_ENDPOINT}` || "",
+        callbackURL: process.env.GOOGLE_CALLBACK_ENDPOINT || "",
       },
       async (_accessToken, _refreshToken, profile, done) => {
         try {
