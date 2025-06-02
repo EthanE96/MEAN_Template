@@ -18,6 +18,7 @@ router.get("/me", isAuthenticated, authController.getCurrentUser);
 // ^ Local Auth routes
 // Register a new user
 router.post("/register", authController.localRegister);
+
 // Login
 router.post("/login", authController.localLogin);
 

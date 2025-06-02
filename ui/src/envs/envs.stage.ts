@@ -1,5 +1,5 @@
 export const environment = {
-  // mimic production env
+  // Staging ENV
   production: true,
   apiUrl: '',
 };

@@ -1,11 +1,11 @@
 import { Component } from '@angular/core';
+import { RouterOutlet } from '@angular/router';
+import { ThemeComponent } from './shared/theme/theme.component';
 
 @Component({
   selector: 'app-root',
-  imports: [],
+  imports: [RouterOutlet, ThemeComponent],
   templateUrl: './app.component.html',
   styleUrl: './app.component.css',
 })
-export class AppComponent {
-  title = 'ui';
-}
+export class AppComponent {}
