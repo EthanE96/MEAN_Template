@@ -1,19 +1,27 @@
 <!-- Window -->
-<div class="flex flex-col overflow-hidden h-screen">
-  <!-- Header -->
-  <app-header
-    class="flex-none"
-    [isHomeMode]="false"
-    (currentThemeChange)="currentTheme = $event"
-  ></app-header>
+<div class="flex h-full w-full overflow-hidden">
+  <!-- Left Sidebar -->
+  <app-drawer
+    *ngIf="isDrawerOpen"
+    [(isDrawerOpen)]="isDrawerOpen"
+    class="flex flex-shrink-0 overflow-x-hidden max-md:!w-0 w-72"
+  ></app-drawer>
 
-  <!-- Main Content -->
-  <div class="flex-1">
-    <div class="container mx-auto text-center mt-10">
-      <h1 class="text-5xl font-bold">Welcome to the App</h1>
+  <!-- Right Sidebar -->
+  <div class="flex-1 flex flex-col h-screen w-full">
+    <!-- Header -->
+    <app-header
+      [isHomeMode]="true"
+      [(isDrawerOpen)]="isDrawerOpen"
+    ></app-header>
+
+    <!-- Main Content -->
+    <div class="grow flex flex-col items-center justify-center mx-auto">
+      <h1 class="text-5xl font-bold mb-10">Welcome to the App!</h1>
+      <p class="text-2xl">This is the main content area.</p>
     </div>
-  </div>
 
-  <!-- Footer -->
-  <app-footer class="flex-none"></app-footer>
+    <!-- Footer -->
+    <app-footer></app-footer>
+  </div>
 </div>

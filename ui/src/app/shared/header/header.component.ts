@@ -19,14 +19,14 @@ import { ThemeComponent } from '../theme/theme.component';
 export class HeaderComponent {
   readonly PanelLeftOpen = PanelLeftOpen;
   readonly Settings = Settings;
+  readonly LogIn = LogIn;
   readonly Sun = Sun;
   readonly Moon = Moon;
-  readonly LogIn = LogIn;
 
-  @Input() isDrawerOpen: boolean = true;
-  @Input() isHomeMode: boolean = false;
-  @Input() isThemeDisabled: boolean = false;
+  @Input() isDrawerOpen: boolean = false;
+  @Input() isHomeMode: boolean = true;
   @Output() isDrawerOpenChange = new EventEmitter();
+  @Input() isThemeDisabled: boolean = false;
   @Output() currentThemeChange = new EventEmitter();
 
   currentTheme: string;

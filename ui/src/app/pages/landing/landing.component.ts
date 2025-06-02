@@ -10,7 +10,6 @@ import { HeaderComponent } from '../../shared/header/header.component';
   selector: 'app-landing',
   imports: [NgClass, LucideAngularModule, FooterComponent, HeaderComponent],
   templateUrl: './landing.component.html',
-  styleUrl: './landing.component.css',
 })
 export class LandingComponent {
   readonly ArrowRight = ArrowRight;
