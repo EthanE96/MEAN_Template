@@ -19,42 +19,25 @@ import { ThemeComponent } from '../theme/theme.component';
 export class HeaderComponent {
   readonly PanelLeftOpen = PanelLeftOpen;
   readonly Settings = Settings;
-  readonly LogIn = LogIn;
-  readonly Sun = Sun;
-  readonly Moon = Moon;
 
   @Input() isDrawerOpen: boolean = false;
   @Output() isDrawerOpenChange = new EventEmitter();
   @Output() currentThemeChange = new EventEmitter();
 
   currentTheme: string;
-  imgTheme: any;
-  logo: string;
 
   constructor(private router: Router, private themeComponent: ThemeComponent) {
     this.currentTheme = this.themeComponent.currentTheme;
-    this.imgTheme = this.currentTheme === 'dark' ? Sun : Moon;
-    this.logo = this.themeComponent.logo;
   }
 
   onDrawerChange() {
     this.isDrawerOpen = !this.isDrawerOpen;
     this.isDrawerOpenChange.emit(this.isDrawerOpen);
   }
-
+  // Might move to settings component
   onThemeToggle() {
     this.currentTheme = this.themeComponent.toggleTheme();
-    this.logo = this.themeComponent.logo;
-    this.imgTheme = this.currentTheme === 'dark' ? Sun : Moon;
     this.currentThemeChange.emit(this.currentTheme);
-  }
-
-  onLogin() {
-    this.router.navigate(['/login']);
-  }
-
-  onSignup() {
-    this.router.navigate(['/signup']);
   }
 
   onLogout() {
@@ -63,9 +46,5 @@ export class HeaderComponent {
 
   onApp() {
     this.router.navigate(['/app']);
-  }
-
-  onHome() {
-    this.router.navigate(['/']);
   }
 }

@@ -17,8 +17,6 @@ import { NgIf } from '@angular/common';
   templateUrl: './landing-header.component.html',
 })
 export class LandingHeaderComponent {
-  readonly PanelLeftOpen = PanelLeftOpen;
-  readonly Settings = Settings;
   readonly LogIn = LogIn;
   readonly Sun = Sun;
   readonly Moon = Moon;
