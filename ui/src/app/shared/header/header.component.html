@@ -1,13 +1,15 @@
 <ng-container>
-  <div class="navbar bg-base-100 px-4 shadow-sm">
+  <div class="navbar bg-base-100 px-4">
     <!-- Left section -->
     <div class="flex-1 gap-4">
+      <!-- Drawer Icon -->
       <ng-container *ngIf="!isDrawerOpen">
         <button class="btn btn-square btn-ghost" (click)="onDrawerChange()">
           <i-lucide [img]="PanelLeftOpen" class="w-5 h-5"></i-lucide>
         </button>
       </ng-container>
 
+      <!-- App Title -->
       <div class="btn btn-ghost px-2" (click)="onApp()">
         <h1 class="text-xl font-bold normal-case">Mean Template</h1>
       </div>
