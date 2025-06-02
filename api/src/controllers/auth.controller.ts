@@ -12,7 +12,6 @@ export class AuthController {
         return next(err);
       }
       res.status(200).json({
-        success: true,
         message: "Logout successful",
       });
     });
@@ -22,7 +21,7 @@ export class AuthController {
     const userInfo = this.authService.getCurrentUser(req.user as IUser);
 
     res.status(200).json({
-      success: true,
+      authenticated: true,
       user: userInfo,
     });
   };
@@ -37,7 +36,7 @@ export class AuthController {
 
       if (existingUser) {
         res.status(409).json({
-          success: false,
+          authenticated: false,
           message: "Email or username already exists",
         });
         return;
@@ -61,7 +60,7 @@ export class AuthController {
         const userResponse = { ...newUser.toObject(), password: undefined };
 
         return res.status(201).json({
-          success: true,
+          authenticated: true,
           message: "Registration successful",
           user: this.authService.getCurrentUser(userResponse),
         });
@@ -80,7 +79,7 @@ export class AuthController {
         }
         if (!user) {
           return res.status(401).json({
-            success: false,
+            authenticated: false,
             message: info?.message || "Authentication failed",
           });
         }
@@ -95,7 +94,7 @@ export class AuthController {
           delete userResponse.password;
 
           return res.status(200).json({
-            success: true,
+            authenticated: true,
             message: "Login successful",
             user: this.authService.getCurrentUser(userResponse),
           });

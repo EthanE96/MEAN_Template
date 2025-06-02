@@ -34,7 +34,7 @@ router.get(
     failureRedirect: "http://localhost:4200/login",
     failureMessage: true,
     // If authentication succeeds, redirect to the UI application
-    successRedirect: process.env.UI_AUTH_REDIRECT_URL || "http://localhost:4200",
+    successRedirect: process.env.UI_AUTH_REDIRECT_URL || "http://localhost:4200/app",
   })
 );
 

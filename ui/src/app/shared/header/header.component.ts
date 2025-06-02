@@ -24,7 +24,7 @@ export class HeaderComponent {
   readonly LogIn = LogIn;
 
   @Input() isDrawerOpen: boolean = true;
-  @Input() isInfoMode: boolean = false;
+  @Input() isHomeMode: boolean = false;
   @Input() isThemeDisabled: boolean = false;
   @Output() isDrawerOpenChange = new EventEmitter();
   @Output() currentThemeChange = new EventEmitter();

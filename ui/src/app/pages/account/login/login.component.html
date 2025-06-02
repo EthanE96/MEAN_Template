@@ -1,0 +1,53 @@
+<div class="flex flex-col h-screen w-full">
+  <!-- Header -->
+  <app-header [isHomeMode]="true"></app-header>
+
+  <!-- Main Content -->
+  <div class="flex flex-grow justify-center items-center mx-auto mb-20">
+    <div class="card bg-base-200 w-96 shadow-xl">
+      <div class="card-body">
+        <h2 class="card-title text-2xl">Welcome Back</h2>
+
+        <!-- Sign Up  -->
+        <div class="justify-end">
+          <p>
+            Don't have an account yet?
+            <span class="link link-primary" routerLink="/signup">Sign up</span>
+          </p>
+        </div>
+        <div class="divider m-0 p-0"></div>
+
+        <div class="flex flex-col gap-4 py-1">
+          <!-- Login with Local -->
+          <form>
+            <div class="form-control">
+              <input type="email" class="input py-1" placeholder="Email" />
+              <input
+                type="password"
+                class="input py-1"
+                placeholder="Password"
+              />
+              <button type="submit" class="btn btn-primary mt-4">Login</button>
+            </div>
+          </form>
+
+          <!-- Login with Google -->
+          <div class="divider m-0 p-0">Or continue with</div>
+          <button class="btn btn-neutral" (click)="loginWithGoogle()">
+            <img
+              class="w-5 h-5"
+              src="/auth-logos/google_logo.png"
+              alt="Google Logo"
+            />
+            Google
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Footer -->
+    <div class="w-full bottom-0 fixed">
+      <app-footer></app-footer>
+    </div>
+  </div>
+</div>

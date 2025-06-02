@@ -15,7 +15,7 @@ export class AuthService {
 
   constructor(private http: HttpClient, private router: Router) {}
 
-  //  Updates the currentUserSubject and redirects to the home page
+  // Updates the currentUserSubject and redirects to the home page
   checkAuth(): Promise<void> {
     return new Promise<void>((resolve) => {
       this.http
@@ -28,11 +28,6 @@ export class AuthService {
             if (response.authenticated) {
               // Update the currentUserSubject with API response
               this.currentUserSubject.next(response.user);
-
-              // Redirect to the home page if not already (should already)
-              if (this.router.url === '/login') {
-                this.router.navigate(['/app']);
-              }
               resolve();
             } else {
               this.handleUnauthenticated();
@@ -68,6 +63,8 @@ export class AuthService {
 
   // Updates the currentUserSubject and redirects to the login page
   handleUnauthenticated() {
+    console.warn('The user is not authenticated');
+
     // Update the currentUserSubject
     this.currentUserSubject.next(null);
 

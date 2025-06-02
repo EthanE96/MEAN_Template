@@ -1,0 +1,19 @@
+<!-- Window -->
+<div class="flex flex-col overflow-hidden h-screen">
+  <!-- Header -->
+  <app-header
+    class="flex-none"
+    [isHomeMode]="false"
+    (currentThemeChange)="currentTheme = $event"
+  ></app-header>
+
+  <!-- Main Content -->
+  <div class="flex-1">
+    <div class="container mx-auto text-center mt-10">
+      <h1 class="text-5xl font-bold">Welcome to the App</h1>
+    </div>
+  </div>
+
+  <!-- Footer -->
+  <app-footer class="flex-none"></app-footer>
+</div>
