@@ -14,11 +14,10 @@
   />
 
   <div class="absolute inset-0 z-10 flex flex-col w-full">
-    <app-header
+    <app-landing-header
       class="text-neutral-content"
-      [isHomeMode]="false"
       (currentThemeChange)="currentTheme = $event"
-    ></app-header>
+    ></app-landing-header>
 
     <div class="grow flex justify-center items-center">
       <div class="container mx-auto mb-14 px-4 text-center">
@@ -45,7 +44,7 @@
     </div>
 
     <div class="w-full">
-      <app-footer class="text-neutral-content"></app-footer>
+      <app-landing-footer class="text-neutral-content"></app-landing-footer>
     </div>
   </div>
 </div>

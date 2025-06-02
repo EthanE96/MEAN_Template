@@ -3,12 +3,17 @@ import { Router } from '@angular/router';
 import { NgClass } from '@angular/common';
 import { ArrowRight, LucideAngularModule } from 'lucide-angular';
 import { ThemeComponent } from '../../shared/theme/theme.component';
-import { FooterComponent } from '../../shared/footer/footer.component';
-import { HeaderComponent } from '../../shared/header/header.component';
+import { LandingFooterComponent } from './landing-footer/landing-footer.component';
+import { LandingHeaderComponent } from './landing-header/landing-header.component';
 
 @Component({
   selector: 'app-landing',
-  imports: [NgClass, LucideAngularModule, FooterComponent, HeaderComponent],
+  imports: [
+    NgClass,
+    LucideAngularModule,
+    LandingHeaderComponent,
+    LandingFooterComponent,
+  ],
   templateUrl: './landing.component.html',
 })
 export class LandingComponent {

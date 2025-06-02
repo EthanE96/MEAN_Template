@@ -1,30 +1,30 @@
-import { NgIf } from '@angular/common';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { Router } from '@angular/router';
 import {
   LucideAngularModule,
   PanelLeftOpen,
   Settings,
+  LogIn,
   Sun,
   Moon,
-  LogIn,
 } from 'lucide-angular';
-import { ThemeComponent } from '../theme/theme.component';
+import { ThemeComponent } from '../../../shared/theme/theme.component';
+import { NgIf } from '@angular/common';
 
 @Component({
-  selector: 'app-header',
-  imports: [LucideAngularModule, NgIf],
-  templateUrl: './header.component.html',
+  selector: 'app-landing-header',
+  imports: [NgIf, LucideAngularModule],
+  templateUrl: './landing-header.component.html',
 })
-export class HeaderComponent {
+export class LandingHeaderComponent {
   readonly PanelLeftOpen = PanelLeftOpen;
   readonly Settings = Settings;
   readonly LogIn = LogIn;
   readonly Sun = Sun;
   readonly Moon = Moon;
 
-  @Input() isDrawerOpen: boolean = false;
-  @Output() isDrawerOpenChange = new EventEmitter();
+  @Input() isHomeMode: boolean = true;
+  @Input() isThemeDisabled: boolean = false;
   @Output() currentThemeChange = new EventEmitter();
 
   currentTheme: string;
@@ -35,11 +35,6 @@ export class HeaderComponent {
     this.currentTheme = this.themeComponent.currentTheme;
     this.imgTheme = this.currentTheme === 'dark' ? Sun : Moon;
     this.logo = this.themeComponent.logo;
-  }
-
-  onDrawerChange() {
-    this.isDrawerOpen = !this.isDrawerOpen;
-    this.isDrawerOpenChange.emit(this.isDrawerOpen);
   }
 
   onThemeToggle() {
