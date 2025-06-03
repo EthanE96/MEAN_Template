@@ -4,7 +4,7 @@
 
   <!-- Main Content -->
   <div class="flex flex-grow justify-center items-center mx-auto mb-20">
-    <div class="card bg-base-200 w-100 shadow-xl">
+    <div class="card bg-base-300 w-100 shadow-xl">
       <div class="card-body">
         <h2 class="card-title text-4xl py-2">Welcome Back</h2>
 
@@ -20,19 +20,29 @@
           <!-- Login with Local -->
           <form>
             <div class="flex flex-col gap-4">
-              <!-- Username -->
+              <!-- Email -->
               <div>
                 <label class="label text-base py-1 text-neutral-content"
                   >Email</label
                 >
-                <input type="email" class="input w-full" />
+                <input
+                  type="email"
+                  class="input w-full"
+                  [(ngModel)]="email"
+                  name="email"
+                />
               </div>
               <!-- Password -->
               <div>
                 <label class="label text-base py-1 text-neutral-content"
                   >Password</label
                 >
-                <input type="password" class="input w-full" />
+                <input
+                  type="password"
+                  class="input w-full"
+                  [(ngModel)]="password"
+                  name="password"
+                />
               </div>
 
               <!-- Settings -->
@@ -43,6 +53,8 @@
                     type="checkbox"
                     class="checkbox checkbox-primary checkbox-sm"
                     id="rememberMe"
+                    [(ngModel)]="rememberMe"
+                    name="rememberMe"
                   />
                   <label for="rememberMe" class="text-sm text-neutral-content"
                     >Remember me</label
@@ -57,22 +69,45 @@
                 >
               </div>
 
-              <button type="submit" class="btn btn-primary my-2 mb-2">
+              <button
+                (click)="loginWithLocal()"
+                type="submit"
+                class="btn btn-primary my-2 mb-2"
+              >
                 Login
               </button>
             </div>
           </form>
 
-          <!-- Login with Google -->
           <div class="divider m-0 p-0">Or continue with</div>
-          <button class="btn btn-neutral mt-2" (click)="loginWithGoogle()">
-            <img
-              class="w-5 h-5"
-              src="/auth-logos/google_logo.png"
-              alt="Google Logo"
-            />
-            Google
-          </button>
+
+          <div class="flex flex-row gap-2 items-center justify-center">
+            <!-- Google Login -->
+            <button
+              class="flex-grow btn btn-neutral mt-2"
+              (click)="loginWithGoogle()"
+            >
+              <img
+                class="w-5 h-5"
+                src="/auth-logos/google.png"
+                alt="Google Logo"
+              />
+              Google
+            </button>
+
+            <!-- Github Login -->
+            <button
+              class="flex-grow btn btn-neutral mt-2"
+              (click)="loginWithGithub()"
+            >
+              <img
+                class="w-5 h-5"
+                src="/auth-logos/github-mark-white.png"
+                alt="Github Logo"
+              />
+              Github
+            </button>
+          </div>
         </div>
       </div>
     </div>

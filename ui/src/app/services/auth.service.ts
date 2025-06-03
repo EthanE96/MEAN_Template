@@ -10,48 +10,71 @@ import { IUser } from '../models/user.model';
 })
 export class AuthService {
   private baseURL = environment.apiUrl;
-  private currentUserSubject = new BehaviorSubject<IUser | null>(null);
+  private currentUserSubject = new BehaviorSubject<Partial<IUser> | null>(null);
   currentUser$ = this.currentUserSubject.asObservable();
 
   constructor(private http: HttpClient, private router: Router) {}
 
-  // Updates the currentUserSubject and redirects to the home page
+  // Updates the currentUserSubject
   checkAuth(): Promise<void> {
-    return new Promise<void>((resolve) => {
+    return new Promise<void>((resolve, reject) => {
       this.http
-        .get<{ authenticated: boolean; user: IUser }>(
+        .get<{ authenticated: boolean; user: Partial<IUser> }>(
           `${this.baseURL}/auth/me`,
           { withCredentials: true }
         )
         .subscribe({
           next: (response) => {
             if (response.authenticated) {
-              // Update the currentUserSubject with API response
               this.currentUserSubject.next(response.user);
               resolve();
             } else {
               this.handleUnauthenticated();
-              resolve();
+              reject('User not authenticated');
             }
           },
-          error: () => {
-            this.handleUnauthenticated();
-            resolve();
+          error: (err) => {
+            this.handleUnauthenticated(err);
+            reject(err);
           },
         });
     });
   }
 
-  // Redirects to the google login page
+  // Redirects to the google login page, then to the callback URL
   loginWithGoogle(): void {
     window.location.href = `${this.baseURL}/auth/google`;
   }
 
-  // TODO: Implement local login
-  loginWithLocal() {
-    // auth/login
+  // Implements local login
+  loginWithLocal(email: string, password: string): Promise<void> {
+    return new Promise<void>((resolve, reject) => {
+      this.http
+        .post<{
+          authenticated: boolean;
+          message: string;
+          user: Partial<IUser>;
+        }>(
+          `${this.baseURL}/auth/local/login`,
+          { email, password },
+          { withCredentials: true }
+        )
+        .subscribe({
+          next: (response) => {
+            if (response.authenticated) {
+              this.currentUserSubject.next(response.user);
+              resolve();
+            } else {
+              reject(response.message);
+            }
+          },
+          error: (err) => {
+            this.handleUnauthenticated(err);
+            reject(err);
+          },
+        });
+    });
   }
-
   // Logs the user out
   logout() {
     this.http
@@ -62,8 +85,8 @@ export class AuthService {
   }
 
   // Updates the currentUserSubject and redirects to the login page
-  handleUnauthenticated() {
-    console.warn('The user is not authenticated');
+  handleUnauthenticated(error?: string): void {
+    console.warn('The user is not authenticated', error);
 
     // Update the currentUserSubject
     this.currentUserSubject.next(null);
