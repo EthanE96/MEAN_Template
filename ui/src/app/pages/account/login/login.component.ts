@@ -1,12 +1,12 @@
 import { Component } from '@angular/core';
 import { AuthService } from '../../../services/auth.service';
 import { ThemeComponent } from '../../../shared/theme/theme.component';
-import { HeaderComponent } from '../../../shared/header/header.component';
-import { FooterComponent } from '../../../shared/footer/footer.component';
+import { LandingHeaderComponent } from '../../landing/landing-header/landing-header.component';
+import { LandingFooterComponent } from '../../landing/landing-footer/landing-footer.component';
 
 @Component({
   selector: 'app-login',
-  imports: [HeaderComponent, FooterComponent],
+  imports: [LandingHeaderComponent, LandingFooterComponent],
   templateUrl: './login.component.html',
 })
 export class LoginComponent {

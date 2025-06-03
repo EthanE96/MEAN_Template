@@ -1,39 +1,71 @@
 <div class="flex flex-col h-screen w-full">
   <!-- Header -->
-  <app-header [isHomeMode]="true"></app-header>
+  <app-landing-header></app-landing-header>
 
   <!-- Main Content -->
   <div class="flex flex-grow justify-center items-center mx-auto mb-20">
-    <div class="card bg-base-200 w-96 shadow-xl">
+    <div class="card bg-base-200 w-100 shadow-xl">
       <div class="card-body">
-        <h2 class="card-title text-2xl">Welcome Back</h2>
+        <h2 class="card-title text-4xl py-2">Welcome Back</h2>
 
         <!-- Sign Up  -->
-        <div class="justify-end">
-          <p>
+        <div class="justify-end py-1 pb-4">
+          <p class="text-sm text-gray-500">
             Don't have an account yet?
             <span class="link link-primary" routerLink="/signup">Sign up</span>
           </p>
         </div>
-        <div class="divider m-0 p-0"></div>
 
         <div class="flex flex-col gap-4 py-1">
           <!-- Login with Local -->
           <form>
-            <div class="form-control">
-              <input type="email" class="input py-1" placeholder="Email" />
-              <input
-                type="password"
-                class="input py-1"
-                placeholder="Password"
-              />
-              <button type="submit" class="btn btn-primary mt-4">Login</button>
+            <div class="flex flex-col gap-4">
+              <!-- Username -->
+              <div>
+                <label class="label text-base py-1 text-neutral-content"
+                  >Email</label
+                >
+                <input type="email" class="input w-full" />
+              </div>
+              <!-- Password -->
+              <div>
+                <label class="label text-base py-1 text-neutral-content"
+                  >Password</label
+                >
+                <input type="password" class="input w-full" />
+              </div>
+
+              <!-- Settings -->
+              <div class="flex flex-row justify-between items-center py-2">
+                <!-- Remember Me -->
+                <div class="flex items-center gap-2">
+                  <input
+                    type="checkbox"
+                    class="checkbox checkbox-primary checkbox-sm"
+                    id="rememberMe"
+                  />
+                  <label for="rememberMe" class="text-sm text-neutral-content"
+                    >Remember me</label
+                  >
+                </div>
+
+                <!-- Forgot Password -->
+                <a
+                  class="link link-primary text-sm"
+                  routerLink="/forgot-password"
+                  >Forgot Password?</a
+                >
+              </div>
+
+              <button type="submit" class="btn btn-primary my-2 mb-2">
+                Login
+              </button>
             </div>
           </form>
 
           <!-- Login with Google -->
           <div class="divider m-0 p-0">Or continue with</div>
-          <button class="btn btn-neutral" (click)="loginWithGoogle()">
+          <button class="btn btn-neutral mt-2" (click)="loginWithGoogle()">
             <img
               class="w-5 h-5"
               src="/auth-logos/google_logo.png"
@@ -47,7 +79,7 @@
 
     <!-- Footer -->
     <div class="w-full bottom-0 fixed">
-      <app-footer></app-footer>
+      <app-landing-footer></app-landing-footer>
     </div>
   </div>
 </div>
