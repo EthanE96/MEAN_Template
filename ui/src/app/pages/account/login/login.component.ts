@@ -4,11 +4,17 @@ import { AuthService } from '../../../services/auth.service';
 import { ThemeComponent } from '../../../shared/theme/theme.component';
 import { LandingHeaderComponent } from '../../landing/landing-header/landing-header.component';
 import { LandingFooterComponent } from '../../landing/landing-footer/landing-footer.component';
+import { RouterLink } from '@angular/router';
 
 @Component({
   selector: 'app-login',
   standalone: true,
-  imports: [FormsModule, LandingHeaderComponent, LandingFooterComponent],
+  imports: [
+    FormsModule,
+    RouterLink,
+    LandingHeaderComponent,
+    LandingFooterComponent,
+  ],
   templateUrl: './login.component.html',
 })
 export class LoginComponent {

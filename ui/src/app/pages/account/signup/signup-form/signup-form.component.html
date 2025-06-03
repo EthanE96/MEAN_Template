@@ -1,0 +1,70 @@
+<form (ngSubmit)="onSubmit()">
+  <div class="flex flex-col gap-4">
+    <!-- Email and Password (Step 1) -->
+    <div>
+      <label class="label text-base py-1 text-neutral-content">Email</label>
+      <input
+        type="email"
+        class="input w-full"
+        [(ngModel)]="email"
+        name="email"
+      />
+    </div>
+    <div>
+      <label class="label text-base py-1 text-neutral-content">Password</label>
+      <input
+        type="password"
+        class="input w-full"
+        [(ngModel)]="password"
+        name="password"
+      />
+    </div>
+
+    <!-- Name Fields (Step 2) -->
+    <div *ngIf="step === 2">
+      <div>
+        <label class="label text-base py-1 text-neutral-content"
+          >First Name</label
+        >
+        <input
+          type="text"
+          class="input w-full"
+          [(ngModel)]="firstName"
+          name="firstName"
+        />
+      </div>
+      <div class="mt-4">
+        <label class="label text-base py-1 text-neutral-content"
+          >Last Name</label
+        >
+        <input
+          type="text"
+          class="input w-full"
+          [(ngModel)]="lastName"
+          name="lastName"
+        />
+      </div>
+    </div>
+
+    <div class="flex flex-row-reverse items-center justify-between gap-2">
+      <!-- Submit / Continue Button -->
+      <button
+        type="submit"
+        class="btn btn-primary my-2 mb-2"
+        [ngClass]="{ 'w-full': step === 1, 'w-2/3': step === 2 }"
+      >
+        {{ step === 1 ? "Continue" : "Sign up" }}
+      </button>
+
+      <!-- Back Button -->
+      <button
+        type="button"
+        *ngIf="step === 2"
+        class="btn btn-neutral my-2 mb-2 w-1/3"
+        (click)="onBack()"
+      >
+        Back
+      </button>
+    </div>
+  </div>
+</form>

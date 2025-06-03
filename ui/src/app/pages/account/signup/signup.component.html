@@ -1,52 +1,59 @@
 <div class="flex flex-col h-screen w-full">
   <!-- Header -->
-  <app-header></app-header>
+  <app-landing-header></app-landing-header>
 
   <!-- Main Content -->
   <div class="flex flex-grow justify-center items-center mx-auto mb-20">
-    <div class="card bg-base-200 w-96 shadow-xl">
+    <div class="card bg-base-300 w-100 shadow-xl">
       <div class="card-body">
-        <h2 class="card-title text-2xl">Sign Up</h2>
-        <div class="divider m-0 p-0"></div>
+        <h2 class="card-title text-4xl py-2">Sign Up</h2>
 
+        <!-- Sign Up  -->
         <div class="flex flex-col gap-4 py-1">
-          <!-- Signup with Local -->
-          <form>
-            <div class="form-control">
-              <input type="email" class="input py-1" placeholder="Email" />
-              <input
-                type="password"
-                class="input py-1"
-                placeholder="Password"
-              />
-              <button type="submit" class="btn btn-primary mt-4">Login</button>
+          <!-- Sign Up with Local -->
+          <app-signup-form
+            (stepChange)="handleStepChange($event)"
+          ></app-signup-form>
+
+          <!-- OAuth2.0 -->
+          <ng-container *ngIf="currentStep === 1">
+            <div class="divider m-0 p-0">Or continue with</div>
+
+            <div class="flex flex-row gap-2 items-center justify-center">
+              <!-- Google Login -->
+              <button class="flex-grow btn btn-neutral mt-2">
+                <img
+                  class="w-5 h-5"
+                  src="/auth-logos/google.png"
+                  alt="Google Logo"
+                />
+                Google
+              </button>
+
+              <!-- Github Login -->
+              <button class="flex-grow btn btn-neutral mt-2">
+                <img
+                  class="w-5 h-5"
+                  src="/auth-logos/github-mark-white.png"
+                  alt="Github Logo"
+                />
+                Github
+              </button>
             </div>
-          </form>
+          </ng-container>
 
-          <!-- Login with Google -->
-          <div class="divider m-0 p-0">Or continue with</div>
-          <button class="btn btn-neutral" (click)="signupWithGoogle()">
-            <img
-              class="w-5 h-5"
-              src="/auth-logos/google.png"
-              alt="Google Logo"
-            />
-            Google
-          </button>
-
-          <div class="justify-end pt-2">
-            <p>
-              Already have an account?
-              <span class="link link-primary" routerLink="/login">Sign in</span>
-            </p>
-          </div>
+          <!-- Login -->
+          <p class="text-sm text-gray-500">
+            Already have an account?
+            <span class="link link-primary" routerLink="/login">Login</span>
+          </p>
         </div>
       </div>
     </div>
 
     <!-- Footer -->
     <div class="w-full bottom-0 fixed">
-      <app-footer></app-footer>
+      <app-landing-footer></app-landing-footer>
     </div>
   </div>
 </div>

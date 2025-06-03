@@ -26,6 +26,7 @@ export class AuthController {
     });
   };
 
+  // TODO: remove username
   localRegister = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
       const { email, username, password, firstName, lastName } = req.body;

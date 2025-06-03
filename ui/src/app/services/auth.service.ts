@@ -16,7 +16,7 @@ export class AuthService {
   constructor(private http: HttpClient, private router: Router) {}
 
   // Updates the currentUserSubject
-  checkAuth(): Promise<void> {
+  async checkAuth(): Promise<void> {
     return new Promise<void>((resolve, reject) => {
       this.http
         .get<{ authenticated: boolean; user: Partial<IUser> }>(
@@ -46,8 +46,8 @@ export class AuthService {
     window.location.href = `${this.baseURL}/auth/google`;
   }
 
-  // Implements local login
-  loginWithLocal(email: string, password: string): Promise<void> {
+  // Local login
+  async loginWithLocal(email: string, password: string): Promise<void> {
     return new Promise<void>((resolve, reject) => {
       this.http
         .post<{
@@ -75,8 +75,44 @@ export class AuthService {
         });
     });
   }
+
+  // Local signup
+  async signUpWithLocal(
+    email: string,
+    password: string,
+    firstName: string,
+    lastName: string
+  ): Promise<void> {
+    return new Promise<void>((resolve, reject) => {
+      this.http
+        .post<{
+          authenticated: boolean;
+          message: string;
+          user: Partial<IUser>;
+        }>(
+          `${this.baseURL}/auth/register`,
+          { email, password, firstName, lastName },
+          { withCredentials: true }
+        )
+        .subscribe({
+          next: (response) => {
+            if (response.authenticated) {
+              this.currentUserSubject.next(response.user);
+              resolve();
+            } else {
+              reject(response.message);
+            }
+          },
+          error: (err) => {
+            this.handleUnauthenticated(err);
+            reject(err);
+          },
+        });
+    });
+  }
+
   // Logs the user out
-  logout() {
+  async logout() {
     this.http
       .get(`${this.baseURL}/auth/logout`, { withCredentials: true })
       .subscribe(() => {
