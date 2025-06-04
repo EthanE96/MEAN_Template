@@ -13,7 +13,7 @@ export class AuthService {
   private currentUserSubject = new BehaviorSubject<Partial<IUser> | null>(null);
   currentUser$ = this.currentUserSubject.asObservable();
 
-  constructor(private http: HttpClient, private router: Router) {}
+  constructor(private http: HttpClient) {}
 
   // Updates the currentUserSubject
   async checkAuth(): Promise<void> {
@@ -30,11 +30,11 @@ export class AuthService {
               resolve();
             } else {
               this.handleUnauthenticated();
-              reject('User not authenticated');
+              reject(response);
             }
           },
           error: (err) => {
-            this.handleUnauthenticated(err);
+            this.handleUnauthenticated();
             reject(err);
           },
         });
@@ -65,11 +65,11 @@ export class AuthService {
               this.currentUserSubject.next(response.user);
               resolve();
             } else {
-              reject(response.message);
+              reject(response);
             }
           },
           error: (err) => {
-            this.handleUnauthenticated(err);
+            this.handleUnauthenticated();
             reject(err);
           },
         });
@@ -104,7 +104,7 @@ export class AuthService {
             }
           },
           error: (err) => {
-            this.handleUnauthenticated(err);
+            this.handleUnauthenticated();
             reject(err);
           },
         });
@@ -121,16 +121,9 @@ export class AuthService {
   }
 
   // Updates the currentUserSubject and redirects to the login page
-  handleUnauthenticated(error?: string): void {
-    console.warn('The user is not authenticated', error);
-
+  handleUnauthenticated(): void {
     // Update the currentUserSubject
     this.currentUserSubject.next(null);
-
-    // Redirect to the login page
-    if (this.router.url !== '/login') {
-      this.router.navigate(['/login']);
-    }
   }
 
   // Checks if the user is authenticated

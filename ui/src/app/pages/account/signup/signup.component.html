@@ -2,6 +2,10 @@
   <!-- Header -->
   <app-landing-header></app-landing-header>
 
+  <div class="container mx-auto w-3/4 py-3 inline">
+    <app-message *ngIf="error" [message]="error" type="error"></app-message>
+  </div>
+
   <!-- Main Content -->
   <div class="flex flex-grow justify-center items-center mx-auto mb-20">
     <div class="card bg-base-300 w-100 shadow-xl">
@@ -13,6 +17,7 @@
           <!-- Sign Up with Local -->
           <app-signup-form
             (stepChange)="handleStepChange($event)"
+            (errorChange)="handleErrorChange($event)"
           ></app-signup-form>
 
           <!-- OAuth2.0 -->

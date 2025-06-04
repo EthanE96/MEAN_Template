@@ -2,6 +2,7 @@ import { Request, Response, NextFunction } from "express";
 import passport from "passport";
 import User, { IUser } from "../models/user.model";
 import { AuthService } from "../services/auth.service";
+import { error } from "console";
 
 export class AuthController {
   constructor(private authService: AuthService) {}
@@ -26,14 +27,11 @@ export class AuthController {
     });
   };
 
-  // TODO: remove username
   localRegister = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
     try {
-      const { email, username, password, firstName, lastName } = req.body;
+      const { email, password, firstName, lastName } = req.body;
 
-      const existingUser = await User.findOne({
-        $or: [{ email }, { username }],
-      });
+      const existingUser = await User.findOne({ email });
 
       if (existingUser) {
         res.status(409).json({
@@ -45,7 +43,6 @@ export class AuthController {
 
       const newUser = new User({
         email,
-        username,
         password, // Will be hashed by pre-save hook
         firstName,
         lastName,

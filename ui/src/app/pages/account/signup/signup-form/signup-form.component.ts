@@ -15,8 +15,10 @@ export class SignupFormComponent {
   password: string = '';
   firstName: string = '';
   lastName: string = '';
+  error: string = '';
 
   @Output() stepChange = new EventEmitter<number>();
+  @Output() errorChange = new EventEmitter<string>();
 
   constructor(private authService: AuthService) {}
 
@@ -26,14 +28,16 @@ export class SignupFormComponent {
       this.stepChange.emit(this.step);
     } else {
       try {
+        this.error = ''; // Clear any previous errors
         await this.authService.signUpWithLocal(
           this.email,
           this.password,
           this.firstName,
           this.lastName
         );
-      } catch (error) {
-        // TODO: Handle error (e.g., show a notification)
+      } catch (error: any) {
+        this.error = error.message || 'Failed to create account';
+        this.errorChange.emit(this.error);
       }
     }
   }

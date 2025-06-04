@@ -5,19 +5,31 @@
       <label class="label text-base py-1 text-neutral-content">Email</label>
       <input
         type="email"
-        class="input w-full"
+        required
+        class="input validator w-full"
         [(ngModel)]="email"
         name="email"
       />
+      <div class="validator-hint hidden">Enter valid email address</div>
     </div>
+
     <div>
       <label class="label text-base py-1 text-neutral-content">Password</label>
       <input
         type="password"
-        class="input w-full"
+        required
+        minlength="8"
+        pattern="(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}"
+        title="Must be more than 8 characters, including number, lowercase letter, uppercase letter"
+        class="input validator w-full"
         [(ngModel)]="password"
         name="password"
       />
+      <p class="validator-hint hidden">
+        Must be more than 8 characters, including
+        <br />At least one number <br />At least one lowercase letter <br />At
+        least one uppercase letter
+      </p>
     </div>
 
     <!-- Name Fields (Step 2) -->
