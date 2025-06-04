@@ -36,7 +36,8 @@ export class SignupFormComponent {
           this.lastName
         );
       } catch (error: any) {
-        this.error = error.message || 'Failed to create account';
+        this.error = error.error.error;
+        console.log(this.error);
         this.errorChange.emit(this.error);
       }
     }

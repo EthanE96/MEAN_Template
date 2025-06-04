@@ -79,12 +79,13 @@ seedNotes();
 app.use("/api", routes);
 
 // Error-handling middleware
-app.use((err: Error, _req: Request, res: Response, _next: NextFunction) => {
-  console.error(err.stack); // Log the error for debugging
+app.use((error: Error, _req: Request, res: Response, _next: NextFunction) => {
+  console.error(error.stack); // Log the error for debugging
+
   res.status(500).json({
     success: false,
     message: "An internal server error occurred",
-    error: process.env.NODE_ENV === "development" ? err.message : undefined, // Show error details only in dev
+    error: error.stack,
   });
 });
 

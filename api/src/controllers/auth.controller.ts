@@ -2,7 +2,6 @@ import { Request, Response, NextFunction } from "express";
 import passport from "passport";
 import User, { IUser } from "../models/user.model";
 import { AuthService } from "../services/auth.service";
-import { error } from "console";
 
 export class AuthController {
   constructor(private authService: AuthService) {}

@@ -1,7 +1,6 @@
 import { Injectable } from '@angular/core';
 import { environment } from '../../envs/envs';
 import { HttpClient } from '@angular/common/http';
-import { Router } from '@angular/router';
 import { BehaviorSubject } from 'rxjs';
 import { IUser } from '../models/user.model';
 
@@ -19,7 +18,7 @@ export class AuthService {
   async checkAuth(): Promise<void> {
     return new Promise<void>((resolve, reject) => {
       this.http
-        .get<{ authenticated: boolean; user: Partial<IUser> }>(
+        .get<{ authenticated: boolean; user: Partial<IUser>; error: any }>(
           `${this.baseURL}/auth/me`,
           { withCredentials: true }
         )
@@ -30,12 +29,12 @@ export class AuthService {
               resolve();
             } else {
               this.handleUnauthenticated();
-              reject(response);
+              reject(response.error);
             }
           },
-          error: (err) => {
+          error: (error) => {
             this.handleUnauthenticated();
-            reject(err);
+            reject(error);
           },
         });
     });
@@ -54,6 +53,7 @@ export class AuthService {
           authenticated: boolean;
           message: string;
           user: Partial<IUser>;
+          error?: any;
         }>(
           `${this.baseURL}/auth/local/login`,
           { email, password },
@@ -65,12 +65,12 @@ export class AuthService {
               this.currentUserSubject.next(response.user);
               resolve();
             } else {
-              reject(response);
+              reject(response.error);
             }
           },
-          error: (err) => {
+          error: (error) => {
             this.handleUnauthenticated();
-            reject(err);
+            reject(error);
           },
         });
     });
@@ -89,6 +89,7 @@ export class AuthService {
           authenticated: boolean;
           message: string;
           user: Partial<IUser>;
+          error?: any;
         }>(
           `${this.baseURL}/auth/register`,
           { email, password, firstName, lastName },
@@ -100,12 +101,12 @@ export class AuthService {
               this.currentUserSubject.next(response.user);
               resolve();
             } else {
-              reject(response.message);
+              reject(response.error);
             }
           },
-          error: (err) => {
+          error: (error) => {
             this.handleUnauthenticated();
-            reject(err);
+            reject(error);
           },
         });
     });
