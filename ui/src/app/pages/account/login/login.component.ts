@@ -4,7 +4,7 @@ import { AuthService } from '../../../services/auth.service';
 import { ThemeComponent } from '../../../shared/theme/theme.component';
 import { LandingHeaderComponent } from '../../landing/landing-header/landing-header.component';
 import { LandingFooterComponent } from '../../landing/landing-footer/landing-footer.component';
-import { RouterLink } from '@angular/router';
+import { RouterLink, Router } from '@angular/router';
 import { MessageComponent } from '../../../shared/message/message.component';
 import { NgIf } from '@angular/common';
 import { ValidatorService } from '../../../services/validator.service';
@@ -32,9 +32,16 @@ export class LoginComponent {
   constructor(
     private theme: ThemeComponent,
     private authService: AuthService,
-    private validatorService: ValidatorService
+    private validatorService: ValidatorService,
+    private router: Router
   ) {
     this.logo = this.theme.logo;
+  }
+
+  async ngOnInit() {
+    if (await this.authService.isAuthenticated()) {
+      this.router.navigate(['/app']);
+    }
   }
 
   loginWithGoogle() {

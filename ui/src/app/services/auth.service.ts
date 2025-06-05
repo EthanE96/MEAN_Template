@@ -142,7 +142,16 @@ export class AuthService {
   }
 
   // Checks if the user is authenticated
-  isAuthenticated(): boolean {
-    return !!this.currentUserSubject.value;
+  async isAuthenticated(): Promise<boolean> {
+    // Check if currentUserSubject has a value
+    if (this.currentUserSubject.value) {
+      return true;
+    }
+    try {
+      await this.checkAuth();
+      return true;
+    } catch {
+      return false;
+    }
   }
 }

@@ -7,19 +7,10 @@ export const authGuard: CanActivateFn = async () => {
   const authService = inject(AuthService);
   const router = inject(Router);
 
-  // Check if the user is already authenticated
-  if (authService.isAuthenticated()) {
+  if (await authService.isAuthenticated()) {
     return true;
   }
 
-  // If not authenticated, check API authentication status
-  await authService.checkAuth();
-
-  if (authService.isAuthenticated()) {
-    return true;
-  } else {
-    // If still not authenticated, redirect to login page
-    router.navigate(['/login']);
-    return false;
-  }
+  router.navigate(['/login']);
+  return false;
 };

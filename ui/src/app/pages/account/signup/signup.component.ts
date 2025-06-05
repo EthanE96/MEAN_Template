@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { NgIf } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { RouterLink } from '@angular/router';
+import { Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../../services/auth.service';
 import { ThemeComponent } from '../../../shared/theme/theme.component';
 import { LandingHeaderComponent } from '../../landing/landing-header/landing-header.component';
@@ -27,8 +27,18 @@ export class SignupComponent {
   currentStep: number = 1;
   error: string = '';
 
-  constructor(private authService: AuthService, private theme: ThemeComponent) {
+  constructor(
+    private authService: AuthService,
+    private theme: ThemeComponent,
+    private router: Router
+  ) {
     this.logo = this.theme.logo;
+  }
+
+  async ngOnInit() {
+    if (await this.authService.isAuthenticated()) {
+      this.router.navigate(['/app']);
+    }
   }
 
   signupWithGoogle() {
