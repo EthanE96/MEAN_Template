@@ -127,7 +127,7 @@ export class AuthService {
   // Logs the user out
   async logout() {
     this.http
-      .get(`${this.baseURL}/auth/logout`, { withCredentials: true })
+      .post(`${this.baseURL}/auth/logout`, {}, { withCredentials: true })
       .subscribe(() => {
         this.currentUserSubject.next(null);
       });

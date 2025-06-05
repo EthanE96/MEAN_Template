@@ -5,6 +5,7 @@ import { LucideAngularModule, PanelLeftOpen, Settings } from 'lucide-angular';
 import { ThemeComponent } from '../theme/theme.component';
 import { IUser } from '../../models/user.model';
 import { Observable } from 'rxjs';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-header',
@@ -22,7 +23,11 @@ export class HeaderComponent {
 
   currentTheme: string;
 
-  constructor(private router: Router, private themeComponent: ThemeComponent) {
+  constructor(
+    private router: Router,
+    private themeComponent: ThemeComponent,
+    private authService: AuthService
+  ) {
     this.currentTheme = this.themeComponent.currentTheme;
   }
 
@@ -36,8 +41,13 @@ export class HeaderComponent {
     this.currentThemeChange.emit(this.currentTheme);
   }
 
-  onLogout() {
-    this.router.navigate(['/logout']);
+  async onLogout() {
+    try {
+      this.authService.logout();
+      window.location.href = '/login';
+    } catch (error) {
+      alert('Logout failed. Please try again.');
+    }
   }
 
   onProfile() {
