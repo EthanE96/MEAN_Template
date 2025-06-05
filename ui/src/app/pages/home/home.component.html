@@ -4,18 +4,20 @@
   <app-drawer
     *ngIf="isDrawerOpen"
     [(isDrawerOpen)]="isDrawerOpen"
-    class="flex flex-shrink-0 overflow-x-hidden max-md:!w-0 w-72"
+    class="flex flex-shrink-0 overflow-x-hidden max-lg:!w-0 w-72"
   ></app-drawer>
 
   <!-- Right Sidebar -->
   <div class="flex-1 flex flex-col h-screen w-full">
     <!-- Header -->
-    <app-header [(isDrawerOpen)]="isDrawerOpen"></app-header>
+    <app-header
+      [(isDrawerOpen)]="isDrawerOpen"
+      [currentUser$]="currentUser$"
+    ></app-header>
 
     <!-- Main Content -->
     <div class="grow flex flex-col items-center mx-auto mt-60">
       <h1 class="text-5xl font-bold py-5">Welcome to the App!</h1>
-      <p class="text-2xl">This is the main content area.</p>
     </div>
 
     <!-- Footer -->

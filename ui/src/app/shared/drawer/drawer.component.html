@@ -1,22 +1,41 @@
-<div class="flex flex-col h-full w-full p-4 bg-base-200">
+<div class="flex flex-col h-full w-full p-3 pt-0 bg-base-200">
   <!-- Top -->
   <div class="flex-none flex flex-row">
-    <div>
+    <div class="navbar flex items-center px-0">
       <button class="btn btn-square btn-ghost" (click)="onDrawerChange()">
         <i-lucide [img]="PanelLeftClose" class="w-5 h-5"></i-lucide>
       </button>
+      <h1 class="text-xl pl-1 font-semibold">Navigation</h1>
     </div>
     <div class="grow"></div>
   </div>
 
-  <!-- Middle -->
-  <div class="flex-grow pt-6">
-    <h1 class="text-2xl font-bold">Middle</h1>
-    <p class="text-base">This is the main content area.</p>
+  <!-- Navigation -->
+  <div class="flex-grow max-h-[calc(100vh-82px)] overflow-y-auto">
+    <ul class="menu bg-base-200 pt-0 rounded-box">
+      <li>
+        <a>Solutions</a>
+        <ul>
+          <li><a>Design</a></li>
+          <li><a>Development</a></li>
+          <li><a>Hosting</a></li>
+          <li><a>Domain register</a></li>
+        </ul>
+      </li>
+      <li>
+        <a>Enterprise</a>
+        <ul>
+          <li><a>CRM software</a></li>
+          <li><a>Marketing management</a></li>
+          <li><a>Security</a></li>
+          <li><a>Consulting</a></li>
+        </ul>
+      </li>
+    </ul>
   </div>
 
-  <!-- Bottom -->
+  <!-- Bottom
   <div class="flex-none px-4 py-2">
     <h1>Bottom</h1>
-  </div>
+  </div> -->
 </div>

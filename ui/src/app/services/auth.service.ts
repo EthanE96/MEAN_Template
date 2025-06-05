@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { environment } from '../../envs/envs';
 import { HttpClient } from '@angular/common/http';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { IUser } from '../models/user.model';
 
 @Injectable({
@@ -10,13 +10,14 @@ import { IUser } from '../models/user.model';
 export class AuthService {
   private baseURL = environment.apiUrl;
   private currentUserSubject = new BehaviorSubject<Partial<IUser> | null>(null);
-  currentUser$ = this.currentUserSubject.asObservable();
+  currentUser$: Observable<Partial<IUser> | null> =
+    this.currentUserSubject.asObservable();
 
   constructor(private http: HttpClient) {}
 
   // Updates the currentUserSubject
-  async checkAuth(): Promise<void> {
-    return new Promise<void>((resolve, reject) => {
+  async checkAuth(): Promise<Partial<IUser> | null> {
+    return new Promise<Partial<IUser> | null>((resolve, reject) => {
       this.http
         .get<{ authenticated: boolean; user: Partial<IUser>; error: any }>(
           `${this.baseURL}/auth/me`,
@@ -24,9 +25,9 @@ export class AuthService {
         )
         .subscribe({
           next: (response) => {
-            if (response.authenticated) {
+            if (response.authenticated && response.user) {
               this.currentUserSubject.next(response.user);
-              resolve();
+              resolve(response.user);
             } else {
               this.handleUnauthenticated();
               reject(response.error);
@@ -62,11 +63,7 @@ export class AuthService {
           authenticated: boolean;
           message: string;
           user: Partial<IUser>;
-        }>(
-          `${this.baseURL}/auth/login`,
-          { email, password, rememberMe },
-          { withCredentials: true }
-        )
+        }>(`${this.baseURL}/auth/login`, { email, password, rememberMe })
         .subscribe({
           next: (response) => {
             if (response.authenticated) {
@@ -101,11 +98,12 @@ export class AuthService {
           authenticated: boolean;
           message: string;
           user: Partial<IUser>;
-        }>(
-          `${this.baseURL}/auth/register`,
-          { email, password, firstName, lastName },
-          { withCredentials: true }
-        )
+        }>(`${this.baseURL}/auth/register`, {
+          email,
+          password,
+          firstName,
+          lastName,
+        })
         .subscribe({
           next: (response) => {
             if (response.authenticated) {

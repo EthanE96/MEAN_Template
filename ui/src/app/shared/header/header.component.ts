@@ -1,19 +1,14 @@
-import { NgIf } from '@angular/common';
+import { AsyncPipe, NgIf } from '@angular/common';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { Router } from '@angular/router';
-import {
-  LucideAngularModule,
-  PanelLeftOpen,
-  Settings,
-  Sun,
-  Moon,
-  LogIn,
-} from 'lucide-angular';
+import { LucideAngularModule, PanelLeftOpen, Settings } from 'lucide-angular';
 import { ThemeComponent } from '../theme/theme.component';
+import { IUser } from '../../models/user.model';
+import { Observable } from 'rxjs';
 
 @Component({
   selector: 'app-header',
-  imports: [LucideAngularModule, NgIf],
+  imports: [LucideAngularModule, AsyncPipe, NgIf],
   templateUrl: './header.component.html',
 })
 export class HeaderComponent {
@@ -21,6 +16,7 @@ export class HeaderComponent {
   readonly Settings = Settings;
 
   @Input() isDrawerOpen: boolean = false;
+  @Input() currentUser$ = new Observable<Partial<IUser> | null>();
   @Output() isDrawerOpenChange = new EventEmitter();
   @Output() currentThemeChange = new EventEmitter();
 
@@ -42,6 +38,10 @@ export class HeaderComponent {
 
   onLogout() {
     this.router.navigate(['/logout']);
+  }
+
+  onProfile() {
+    this.router.navigate(['/profile']);
   }
 
   onApp() {
