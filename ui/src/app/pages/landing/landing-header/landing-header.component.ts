@@ -54,10 +54,6 @@ export class LandingHeaderComponent {
     this.router.navigate(['/logout']);
   }
 
-  onApp() {
-    this.router.navigate(['/app']);
-  }
-
   onHome() {
     this.router.navigate(['/']);
   }
