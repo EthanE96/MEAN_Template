@@ -59,7 +59,11 @@ export class LoginComponent {
         throw new Error('Invalid email format.');
       }
 
-      await this.authService.loginWithLocal(this.email, this.password);
+      await this.authService.loginWithLocal(
+        this.email,
+        this.password,
+        this.rememberMe
+      );
     } catch (error) {
       this.handleErrorChange(error as string);
     }

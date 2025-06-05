@@ -51,7 +51,11 @@ export class AuthService {
   }
 
   // Local login
-  async loginWithLocal(email: string, password: string): Promise<void> {
+  async loginWithLocal(
+    email: string,
+    password: string,
+    rememberMe?: boolean
+  ): Promise<void> {
     return new Promise<void>((resolve, reject) => {
       this.http
         .post<{
@@ -60,13 +64,15 @@ export class AuthService {
           user: Partial<IUser>;
         }>(
           `${this.baseURL}/auth/login`,
-          { email, password },
+          { email, password, rememberMe },
           { withCredentials: true }
         )
         .subscribe({
           next: (response) => {
             if (response.authenticated) {
               this.currentUserSubject.next(response.user);
+              // Redirect to the home page after successful login
+              window.location.href = '/app';
               resolve();
             }
             // Handle non auth with 200 status
