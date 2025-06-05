@@ -38,4 +38,20 @@ router.get(
   })
 );
 
+//^ GitHub Auth routes
+// GitHub OAuth2.0 authentication (login/register)
+router.get("/github", passport.authenticate("github", { scope: ["user:email"] }));
+
+// GitHub OAuth2.0 callback
+router.get(
+  "/callback/github",
+  passport.authenticate("github", {
+    // If authentication fails, redirect to login page with failure message
+    failureRedirect: "http://localhost:4200/login",
+    failureMessage: true,
+    // If authentication succeeds, redirect to the UI application
+    successRedirect: process.env.UI_AUTH_REDIRECT_URL || "http://localhost:4200/app",
+  })
+);
+
 export default router;

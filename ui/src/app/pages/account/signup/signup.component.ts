@@ -32,12 +32,11 @@ export class SignupComponent {
   }
 
   signupWithGoogle() {
-    this.authService.loginWithGoogle();
+    this.authService.authWithGoogle();
   }
 
   signupWithGithub() {
-    // TODO: Implement GitHub login
-    // this.authService.loginWithGithub();
+    this.authService.authWithGitHub();
   }
 
   handleStepChange(step: number) {
@@ -49,6 +48,6 @@ export class SignupComponent {
 
     setTimeout(() => {
       this.error = '';
-    }, 3000);
+    }, 5000);
   }
 }

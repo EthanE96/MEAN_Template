@@ -1,14 +1,15 @@
-import mongoose, { Document, Schema } from "mongoose";
+import mongoose, { Document, Schema, Model } from "mongoose";
 import bcrypt from "bcryptjs";
+import { use } from "passport";
 
 export interface IUser extends Document {
   // Basic profile information
   email: string;
-  username: string;
-  password: string;
-  displayName?: string;
   firstName?: string;
   lastName?: string;
+  password: string;
+  username?: string;
+  displayName?: string;
   middleName?: string;
   profilePhoto?: string;
 
@@ -46,7 +47,6 @@ const UserSchema = new Schema<IUser>(
     },
     username: {
       type: String,
-      required: true,
       unique: true,
       trim: true,
     },
@@ -61,10 +61,12 @@ const UserSchema = new Schema<IUser>(
     firstName: {
       type: String,
       trim: true,
+      required: true,
     },
     lastName: {
       type: String,
       trim: true,
+      required: true,
     },
     middleName: {
       type: String,
@@ -112,7 +114,7 @@ const UserSchema = new Schema<IUser>(
     },
     authMethod: {
       type: String,
-      enum: ["local", "google", "facebook", "twitter"],
+      enum: ["local", "google", "github"],
       default: "local",
     },
 
@@ -165,7 +167,10 @@ UserSchema.statics.findOrCreateFromOAuthProfile = async function (
   }
 
   // Try to find by email
-  const email = profile.emails && profile.emails.length > 0 ? profile.emails[0].value : null;
+  const email =
+    (profile.emails && profile.emails.length > 0 && profile.emails[0].value) ||
+    `${provider}_${providerId}@no-email.com`; // fallback if email missing
+
   if (email) {
     user = await this.findOne({ email });
     if (user) {
@@ -179,14 +184,17 @@ UserSchema.statics.findOrCreateFromOAuthProfile = async function (
     }
   }
 
+  const firstName = profile.name?.givenName || profile.displayName?.split(" ")[0] || "";
+  const lastName = profile.name?.familyName || profile.displayName?.split(" ")[1] || "";
+
   // Create a new user
   const newUser = new this({
     email: email,
-    username: `${provider}_${providerId.substring(0, 8)}`,
+    username: profile.username || `${provider}_${providerId.substring(0, 8)}`,
     password: require("crypto").randomBytes(32).toString("hex"),
     displayName: profile.displayName,
-    firstName: profile.name?.givenName || "",
-    lastName: profile.name?.familyName || "",
+    firstName: profile.name?.givenName || firstName || "",
+    lastName: profile.name?.familyName || lastName || "",
     middleName: profile.name?.middleName || "",
     profilePhoto: profile.photos?.length > 0 ? profile.photos[0].value : "",
     provider: provider,
@@ -201,9 +209,40 @@ UserSchema.statics.findOrCreateFromOAuthProfile = async function (
   return newUser;
 };
 
-// Add the static method to the interface
-interface User extends mongoose.Model<IUser> {
+// Static method to find or create a user from local registration
+UserSchema.statics.findOrCreateFromLocal = async function (
+  email: string,
+  password: string,
+  firstName: string,
+  lastName: string
+): Promise<{ user: IUser; isNew: boolean }> {
+  const existingUser = await this.findOne({ email: email.toLowerCase() });
+
+  if (existingUser) {
+    return { user: existingUser, isNew: false };
+  }
+
+  const newUser = new this({
+    email: email.toLowerCase(),
+    username: email.toLowerCase().split("@")[0], // Default username from email
+    password, // Will be hashed by pre-save hook
+    firstName,
+    lastName,
+  });
+
+  await newUser.save();
+  return { user: newUser, isNew: true };
+};
+
+// Add the static methods to the interface
+export interface IUserModel extends Model<IUser> {
   findOrCreateFromOAuthProfile(profile: any, provider: string): Promise<IUser>;
+  findOrCreateFromLocal(
+    email: string,
+    password: string,
+    firstName: string,
+    lastName: string
+  ): Promise<{ user: IUser; isNew: boolean }>;
 }
 
-export default mongoose.model<IUser, User>("User", UserSchema);
+export default mongoose.model<IUser, IUserModel>("User", UserSchema);

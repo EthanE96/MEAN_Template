@@ -5,15 +5,20 @@ import { ThemeComponent } from '../../../shared/theme/theme.component';
 import { LandingHeaderComponent } from '../../landing/landing-header/landing-header.component';
 import { LandingFooterComponent } from '../../landing/landing-footer/landing-footer.component';
 import { RouterLink } from '@angular/router';
+import { MessageComponent } from '../../../shared/message/message.component';
+import { NgIf } from '@angular/common';
+import { ValidatorService } from '../../../services/validator.service';
 
 @Component({
   selector: 'app-login',
   standalone: true,
   imports: [
     FormsModule,
+    NgIf,
     RouterLink,
     LandingHeaderComponent,
     LandingFooterComponent,
+    MessageComponent,
   ],
   templateUrl: './login.component.html',
 })
@@ -22,21 +27,49 @@ export class LoginComponent {
   email: string = '';
   password: string = '';
   rememberMe: boolean = false;
+  error: string = '';
 
-  constructor(private theme: ThemeComponent, private authService: AuthService) {
+  constructor(
+    private theme: ThemeComponent,
+    private authService: AuthService,
+    private validatorService: ValidatorService
+  ) {
     this.logo = this.theme.logo;
   }
 
   loginWithGoogle() {
-    this.authService.loginWithGoogle();
+    this.authService.authWithGoogle();
   }
 
   loginWithGithub() {
-    // TODO: Implement GitHub login
-    // this.authService.loginWithGithub();
+    this.authService.authWithGitHub();
   }
 
-  loginWithLocal() {
-    this.authService.loginWithLocal(this.email, this.password);
+  async loginWithLocal() {
+    try {
+      this.error = '';
+
+      // Validate all fields
+      if (!this.validatorService.validateFields(this.email, this.password)) {
+        throw new Error('Missing fields.');
+      }
+
+      // Validate email
+      if (!this.validatorService.validateEmail(this.email)) {
+        throw new Error('Invalid email format.');
+      }
+
+      await this.authService.loginWithLocal(this.email, this.password);
+    } catch (error) {
+      this.handleErrorChange(error as string);
+    }
+  }
+
+  handleErrorChange(error: string) {
+    this.error = error;
+
+    setTimeout(() => {
+      this.error = '';
+    }, 5000);
   }
 }

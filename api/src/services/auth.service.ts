@@ -19,6 +19,7 @@ export class AuthService extends BaseService<IUser> {
     }
 
     const { firstName, lastName, displayName, email } = user;
+
     if (!firstName || !lastName || !email) {
       throw new Error("Incomplete user information");
     }

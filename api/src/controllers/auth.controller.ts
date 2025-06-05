@@ -1,15 +1,15 @@
 import { Request, Response, NextFunction } from "express";
 import passport from "passport";
-import User, { IUser } from "../models/user.model";
+import { IUser } from "../models/user.model";
 import { AuthService } from "../services/auth.service";
 
 export class AuthController {
   constructor(private authService: AuthService) {}
 
   logout = (req: Request, res: Response, next: NextFunction): void => {
-    req.logout((err) => {
-      if (err) {
-        return next(err);
+    req.logout((error) => {
+      if (error) {
+        return next(error);
       }
       res.status(200).json({
         message: "Logout successful",
@@ -26,53 +26,48 @@ export class AuthController {
     });
   };
 
-  localRegister = async (req: Request, res: Response, next: NextFunction): Promise<void> => {
-    try {
-      const { email, password, firstName, lastName } = req.body;
+  localRegister = (req: Request, res: Response, next: NextFunction): void => {
+    // Add registration flag to request body
+    req.body.isRegistration = true;
 
-      const existingUser = await User.findOne({ email });
-
-      if (existingUser) {
-        res.status(409).json({
-          authenticated: false,
-          message: "Email or username already exists",
-        });
-        return;
-      }
-
-      const newUser = new User({
-        email,
-        password, // Will be hashed by pre-save hook
-        firstName,
-        lastName,
-      });
-
-      await newUser.save();
-
-      req.login(newUser, (err) => {
-        if (err) {
-          return next(err);
+    passport.authenticate(
+      "local",
+      (error: Error | null, user: IUser | false, info: { message: string } | undefined) => {
+        if (error) {
+          return next(error);
         }
-        // Remove password from response
-        const userResponse = { ...newUser.toObject(), password: undefined };
 
-        return res.status(201).json({
-          authenticated: true,
-          message: "Registration successful",
-          user: this.authService.getCurrentUser(userResponse),
+        if (!user) {
+          return res.status(409).json({
+            authenticated: false,
+            message: info?.message || "Registration failed",
+          });
+        }
+
+        req.login(user, (error) => {
+          if (error) {
+            return next(error);
+          }
+
+          return res.status(201).json({
+            authenticated: true,
+            message: "Registration successful",
+            user: this.authService.getCurrentUser(user),
+          });
         });
-      });
-    } catch (error) {
-      next(error);
-    }
+      }
+    )(req, res, next);
   };
 
   localLogin = (req: Request, res: Response, next: NextFunction): void => {
+    // Ensure registration flag is false for login
+    req.body.isRegistration = false;
+
     passport.authenticate(
       "local",
-      (err: Error | null, user: IUser | false, info: { message: string } | undefined) => {
-        if (err) {
-          return next(err);
+      (error: Error | null, user: IUser | false, info: { message: string } | undefined) => {
+        if (error) {
+          return next(error);
         }
         if (!user) {
           return res.status(401).json({
@@ -81,19 +76,15 @@ export class AuthController {
           });
         }
 
-        req.login(user, (err) => {
-          if (err) {
-            return next(err);
+        req.login(user, (error) => {
+          if (error) {
+            return next(error);
           }
-
-          // Remove password from user object before sending response
-          const userResponse = user.toObject();
-          delete userResponse.password;
 
           return res.status(200).json({
             authenticated: true,
             message: "Login successful",
-            user: this.authService.getCurrentUser(userResponse),
+            user: this.authService.getCurrentUser(user),
           });
         });
       }

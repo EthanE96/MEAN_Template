@@ -2,6 +2,7 @@ import { NgClass, NgIf } from '@angular/common';
 import { Component, Output, EventEmitter } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { AuthService } from '../../../../services/auth.service';
+import { ValidatorService } from '../../../../services/validator.service';
 
 @Component({
   selector: 'app-signup-form',
@@ -20,7 +21,10 @@ export class SignupFormComponent {
   @Output() stepChange = new EventEmitter<number>();
   @Output() errorChange = new EventEmitter<string>();
 
-  constructor(private authService: AuthService) {}
+  constructor(
+    private authService: AuthService,
+    private validatorService: ValidatorService
+  ) {}
 
   async onSubmit() {
     if (this.step === 1) {
@@ -28,7 +32,28 @@ export class SignupFormComponent {
       this.stepChange.emit(this.step);
     } else {
       try {
-        this.error = ''; // Clear any previous errors
+        this.error = '';
+
+        // Validate all fields
+        if (
+          !this.validatorService.validateFields(
+            this.email,
+            this.password,
+            this.firstName,
+            this.lastName
+          )
+        ) {
+          throw new Error('Missing fields.');
+        }
+
+        // Validate email and password
+        if (
+          !this.validatorService.validateEmail(this.email) ||
+          !this.validatorService.validatePassword(this.password)
+        ) {
+          throw new Error('Invalid email or password format.');
+        }
+
         await this.authService.signUpWithLocal(
           this.email,
           this.password,
@@ -36,8 +61,7 @@ export class SignupFormComponent {
           this.lastName
         );
       } catch (error: any) {
-        this.error = error.error.error;
-        console.log(this.error);
+        this.error = error;
         this.errorChange.emit(this.error);
       }
     }

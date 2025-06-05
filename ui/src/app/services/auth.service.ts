@@ -41,8 +41,13 @@ export class AuthService {
   }
 
   // Redirects to the google login page, then to the callback URL
-  loginWithGoogle(): void {
+  authWithGoogle(): void {
     window.location.href = `${this.baseURL}/auth/google`;
+  }
+
+  // Redirects to the google login page, then to the callback URL
+  authWithGitHub(): void {
+    window.location.href = `${this.baseURL}/auth/github`;
   }
 
   // Local login
@@ -53,9 +58,8 @@ export class AuthService {
           authenticated: boolean;
           message: string;
           user: Partial<IUser>;
-          error?: any;
         }>(
-          `${this.baseURL}/auth/local/login`,
+          `${this.baseURL}/auth/login`,
           { email, password },
           { withCredentials: true }
         )
@@ -64,13 +68,15 @@ export class AuthService {
             if (response.authenticated) {
               this.currentUserSubject.next(response.user);
               resolve();
-            } else {
-              reject(response.error);
+            }
+            // Handle non auth with 200 status
+            else {
+              reject(response.message || 'Login failed');
             }
           },
           error: (error) => {
             this.handleUnauthenticated();
-            reject(error);
+            reject(error.error.message || 'Login failed');
           },
         });
     });
@@ -89,7 +95,6 @@ export class AuthService {
           authenticated: boolean;
           message: string;
           user: Partial<IUser>;
-          error?: any;
         }>(
           `${this.baseURL}/auth/register`,
           { email, password, firstName, lastName },
@@ -100,13 +105,16 @@ export class AuthService {
             if (response.authenticated) {
               this.currentUserSubject.next(response.user);
               resolve();
-            } else {
-              reject(response.error);
+            }
+            // Handle non auth with 200 status
+            else {
+              reject(response.message || 'Registration failed');
             }
           },
-          error: (error) => {
+          // Handle error with 4xx or 5xx status
+          error: (error: any) => {
             this.handleUnauthenticated();
-            reject(error);
+            reject(error.error.message || 'Registration failed');
           },
         });
     });

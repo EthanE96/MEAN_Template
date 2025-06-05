@@ -2,15 +2,15 @@
   <!-- Header -->
   <app-landing-header></app-landing-header>
 
-  <div class="container mx-auto w-3/4 py-3 inline">
-    <app-message *ngIf="error" [message]="error" type="error"></app-message>
+  <div *ngIf="error" class="container mx-auto w-3/4 py-3 inline">
+    <app-message [message]="error" type="error"></app-message>
   </div>
 
   <!-- Main Content -->
   <div class="flex flex-grow justify-center items-center mx-auto mb-20">
     <div class="card bg-base-300 w-100 shadow-xl">
       <div class="card-body">
-        <h2 class="card-title text-4xl py-2">Sign Up</h2>
+        <h2 class="card-title text-4xl py-2">Create an Account</h2>
 
         <!-- Sign Up  -->
         <div class="flex flex-col gap-4 py-1">
@@ -26,7 +26,10 @@
 
             <div class="flex flex-row gap-2 items-center justify-center">
               <!-- Google Login -->
-              <button class="flex-grow btn btn-neutral mt-2">
+              <button
+                (click)="signupWithGoogle()"
+                class="flex-grow btn btn-neutral mt-2"
+              >
                 <img
                   class="w-5 h-5"
                   src="/auth-logos/google.png"
@@ -36,7 +39,10 @@
               </button>
 
               <!-- Github Login -->
-              <button class="flex-grow btn btn-neutral mt-2">
+              <button
+                (click)="signupWithGithub()"
+                class="flex-grow btn btn-neutral mt-2"
+              >
                 <img
                   class="w-5 h-5"
                   src="/auth-logos/github-mark-white.png"
