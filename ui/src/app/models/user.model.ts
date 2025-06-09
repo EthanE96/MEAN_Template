@@ -1,5 +1,6 @@
 export interface IUser extends Document {
   // Basic profile information
+  _id: string;
   email: string;
   username: string;
   password: string;

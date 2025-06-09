@@ -13,17 +13,21 @@ export class AuthService extends BaseService<IUser> {
    * @param user The user object from the request
    * @returns A partial user object containing only non-sensitive fields
    */
-  getCurrentUser(user: Partial<IUser>): Partial<IUser> {
-    if (!user) {
-      throw new Error("User not found");
+  async getCurrentUser(user: Partial<IUser>): Promise<Partial<IUser>> {
+    try {
+      if (!user) {
+        throw new Error("User not found");
+      }
+
+      const { firstName, lastName, displayName, email, profilePhoto, _id } = user;
+
+      if (!_id || !firstName || !lastName || !email) {
+        throw new Error("Incomplete user information");
+      }
+
+      return { firstName, lastName, displayName, email, profilePhoto, _id };
+    } catch (error) {
+      return Promise.reject(error);
     }
-
-    const { firstName, lastName, displayName, email } = user;
-
-    if (!firstName || !lastName || !email) {
-      throw new Error("Incomplete user information");
-    }
-
-    return { firstName, lastName, displayName, email };
   }
 }

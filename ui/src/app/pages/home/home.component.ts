@@ -7,15 +7,22 @@ import { NgIf } from '@angular/common';
 import { AuthService } from '../../services/auth.service';
 import { IUser } from '../../models/user.model';
 import { Observable } from 'rxjs';
+import { RouterOutlet } from '@angular/router';
 
 @Component({
   selector: 'app-home',
-  imports: [NgIf, HeaderComponent, FooterComponent, DrawerComponent],
+  imports: [
+    NgIf,
+    HeaderComponent,
+    FooterComponent,
+    DrawerComponent,
+    RouterOutlet,
+  ],
   templateUrl: './home.component.html',
 })
 export class HomeComponent {
   currentTheme: string;
-  isDrawerOpen: boolean = false;
+  isDrawerOpen: boolean = true;
   currentUser$ = new Observable<Partial<IUser> | null>();
 
   constructor(private theme: ThemeComponent, private authService: AuthService) {

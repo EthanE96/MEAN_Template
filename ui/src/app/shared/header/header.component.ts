@@ -1,33 +1,26 @@
-import { AsyncPipe, NgIf } from '@angular/common';
+import { NgIf } from '@angular/common';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { Router } from '@angular/router';
 import { LucideAngularModule, PanelLeftOpen, Settings } from 'lucide-angular';
 import { ThemeComponent } from '../theme/theme.component';
-import { IUser } from '../../models/user.model';
-import { Observable } from 'rxjs';
 import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-header',
-  imports: [LucideAngularModule, AsyncPipe, NgIf],
+  imports: [LucideAngularModule, NgIf],
   templateUrl: './header.component.html',
 })
 export class HeaderComponent {
   readonly PanelLeftOpen = PanelLeftOpen;
   readonly Settings = Settings;
 
-  @Input() isDrawerOpen: boolean = false;
-  @Input() currentUser$ = new Observable<Partial<IUser> | null>();
+  @Input() isDrawerOpen: boolean = true;
   @Output() isDrawerOpenChange = new EventEmitter();
   @Output() currentThemeChange = new EventEmitter();
 
   currentTheme: string;
 
-  constructor(
-    private router: Router,
-    private themeComponent: ThemeComponent,
-    private authService: AuthService
-  ) {
+  constructor(private router: Router, private themeComponent: ThemeComponent) {
     this.currentTheme = this.themeComponent.currentTheme;
   }
 
@@ -39,19 +32,6 @@ export class HeaderComponent {
   onThemeToggle() {
     this.currentTheme = this.themeComponent.toggleTheme();
     this.currentThemeChange.emit(this.currentTheme);
-  }
-
-  async onLogout() {
-    try {
-      this.authService.logout();
-      window.location.href = '/login';
-    } catch (error) {
-      alert('Logout failed. Please try again.');
-    }
-  }
-
-  onProfile() {
-    this.router.navigate(['/profile']);
   }
 
   onApp() {

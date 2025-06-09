@@ -4,6 +4,7 @@ import { use } from "passport";
 
 export interface IUser extends Document {
   // Basic profile information
+  _id: string; // Mongoose adds this automatically
   email: string;
   firstName?: string;
   lastName?: string;

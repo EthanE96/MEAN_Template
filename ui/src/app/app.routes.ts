@@ -7,14 +7,26 @@ import { SignupComponent } from './pages/account/signup/signup.component';
 import { HomeComponent } from './pages/home/home.component';
 import { NotFoundComponent } from './pages/errors/not-found/not-found.component';
 import { ForgotPasswordComponent } from './pages/account/forgot-password/forgot-password.component';
+import { ProfileComponent } from './pages/home/profile/profile.component';
+import { DashboardComponent } from './pages/home/dashboard/dashboard.component';
 
 export const routes: Routes = [
   { path: '', component: LandingComponent },
-  { path: 'app', component: HomeComponent, canActivate: [authGuard] },
   { path: 'login', component: LoginComponent },
   { path: 'signup', component: SignupComponent },
   { path: 'logout', component: LogoutComponent },
   { path: 'forgot-password', component: ForgotPasswordComponent },
+
+  // App Protected Routes
+  {
+    path: 'app',
+    component: HomeComponent,
+    canActivate: [authGuard],
+    children: [
+      { path: '', component: DashboardComponent },
+      { path: 'profile', component: ProfileComponent },
+    ],
+  },
 
   // wildcard route for a 404
   { path: '**', component: NotFoundComponent },

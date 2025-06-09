@@ -1,0 +1,78 @@
+<div class="flex flex-col items-center min-h-screen py-8">
+  <!-- Header -->
+  <div class="w-full max-w-2xl mb-6">
+    <h1 class="text-3xl font-bold text-base-content mb-1">Profile</h1>
+    <h2 class="text-base text-base-content/70 mb-4">
+      This information will be displayed publicly so be careful what you share.
+    </h2>
+    <div class="divider"></div>
+  </div>
+
+  <!-- User Info Card -->
+  <ng-container *ngIf="currentUser$ | async as user">
+    <div class="card w-full max-w-2xl bg-base-100 shadow-xl">
+      <form class="card-body space-y-6" (ngSubmit)="updateProfile()">
+        <div class="flex flex-col md:flex-row gap-6">
+          <div class="avatar self-center md:self-start">
+            <div
+              class="w-24 rounded-full ring ring-primary ring-offset-base-100 ring-offset-2"
+            >
+              <img
+                src="https://api.dicebear.com/7.x/initials/svg?seed={{
+                  user.firstName
+                }}%20{{ user.lastName }}"
+                alt="User Avatar"
+              />
+            </div>
+          </div>
+          <div class="flex-1 space-y-4">
+            <div class="form-control">
+              <label class="label">
+                <span class="label-text font-semibold pb-1">First Name</span>
+              </label>
+              <input
+                class="input input-bordered w-full"
+                type="text"
+                [(ngModel)]="user.firstName"
+                name="firstName"
+                required
+                placeholder="First Name"
+              />
+            </div>
+            <div class="form-control">
+              <label class="label">
+                <span class="label-text font-semibold pb-1">Last Name</span>
+              </label>
+              <input
+                class="input input-bordered w-full"
+                type="text"
+                [(ngModel)]="user.lastName"
+                name="lastName"
+                required
+                placeholder="Last Name"
+              />
+            </div>
+            <div class="form-control">
+              <label class="label">
+                <span class="label-text font-semibold pb-1">Email</span>
+              </label>
+              <input
+                class="input input-bordered w-full"
+                type="email"
+                [(ngModel)]="user.email"
+                name="email"
+                required
+                placeholder="Email"
+              />
+            </div>
+          </div>
+        </div>
+        <div class="card-actions">
+          <button class="btn btn-primary w-full md:w-auto" type="submit">
+            Update Profile
+          </button>
+        </div>
+      </form>
+    </div>
+  </ng-container>
+</div>
