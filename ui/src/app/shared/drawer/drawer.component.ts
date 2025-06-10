@@ -1,4 +1,6 @@
 import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Router } from '@angular/router';
+import { AsyncPipe, NgIf } from '@angular/common';
 import { Observable } from 'rxjs';
 import {
   LucideAngularModule,
@@ -6,8 +8,7 @@ import {
   PanelLeftClose,
 } from 'lucide-angular';
 import { IUser } from '../../models/user.model';
-import { AsyncPipe, NgIf } from '@angular/common';
-import { Router } from '@angular/router';
+import { UserService } from '../../services/user.service';
 
 @Component({
   selector: 'app-drawer',
@@ -19,10 +20,13 @@ export class DrawerComponent {
   readonly PanelLeftClose = PanelLeftClose;
 
   @Input() isDrawerOpen: boolean = false;
-  @Input() currentUser$ = new Observable<Partial<IUser> | null>();
   @Output() isDrawerOpenChange = new EventEmitter();
 
-  constructor(private router: Router) {}
+  currentUser$ = new Observable<Partial<IUser> | null>();
+
+  constructor(private router: Router, private userService: UserService) {
+    this.currentUser$ = this.userService.currentUser$;
+  }
 
   onDrawerChange() {
     this.isDrawerOpen = !this.isDrawerOpen;

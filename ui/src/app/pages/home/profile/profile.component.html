@@ -9,8 +9,8 @@
   </div>
 
   <!-- User Info Card -->
-  <ng-container *ngIf="currentUser$ | async as user">
-    <div class="card w-full max-w-2xl bg-base-100 shadow-xl">
+  <ng-container *ngIf="user">
+    <div class="card w-full max-w-2xl bg-base-100 shadow-xl shadow-base-300/10">
       <form class="card-body space-y-6" (ngSubmit)="updateProfile()">
         <div class="flex flex-col md:flex-row gap-6">
           <div class="avatar self-center md:self-start">

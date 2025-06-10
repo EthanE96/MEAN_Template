@@ -17,13 +17,21 @@ export class AuthController {
     });
   };
 
-  getCurrentUser = (req: Request, res: Response, _next: NextFunction): void => {
-    const userInfo = this.authService.getCurrentUser(req.user as IUser);
+  getCurrentUser = async (req: Request, res: Response, _next: NextFunction): Promise<void> => {
+    try {
+      const userInfo = await this.authService.getCurrentUser(req.user as IUser);
 
-    res.status(200).json({
-      authenticated: true,
-      user: userInfo,
-    });
+      res.status(200).json({
+        authenticated: true,
+        user: userInfo,
+        message: "User retrieved successfully",
+      });
+    } catch (error) {
+      res.status(500).json({
+        authenticated: false,
+        message: error,
+      });
+    }
   };
 
   localRegister = (req: Request, res: Response, next: NextFunction): void => {

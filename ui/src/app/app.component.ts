@@ -6,6 +6,5 @@ import { ThemeComponent } from './shared/theme/theme.component';
   selector: 'app-root',
   imports: [RouterOutlet, ThemeComponent],
   templateUrl: './app.component.html',
-  styleUrl: './app.component.css',
 })
 export class AppComponent {}

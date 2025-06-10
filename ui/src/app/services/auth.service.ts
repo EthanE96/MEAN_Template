@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 import { environment } from '../../envs/envs';
 import { HttpClient } from '@angular/common/http';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject } from 'rxjs';
 import { IUser } from '../models/user.model';
 
 @Injectable({
@@ -9,9 +9,8 @@ import { IUser } from '../models/user.model';
 })
 export class AuthService {
   private baseURL = environment.apiUrl;
-  private currentUserSubject = new BehaviorSubject<Partial<IUser> | null>(null);
-  currentUser$: Observable<Partial<IUser> | null> =
-    this.currentUserSubject.asObservable();
+  currentUserSubject = new BehaviorSubject<Partial<IUser> | null>(null);
+  currentUser$ = this.currentUserSubject.asObservable();
 
   constructor(private http: HttpClient) {}
 
@@ -25,12 +24,16 @@ export class AuthService {
         )
         .subscribe({
           next: (response) => {
-            if (response.authenticated && response.user) {
+            if (
+              response.authenticated &&
+              response.user &&
+              Object.keys(response.user).length > 0
+            ) {
               this.currentUserSubject.next(response.user);
               resolve(response.user);
             } else {
               this.handleUnauthenticated();
-              reject(response.error);
+              reject(response || 'User is not authenticated');
             }
           },
           error: (error) => {

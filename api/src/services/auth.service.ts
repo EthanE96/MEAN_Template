@@ -19,13 +19,13 @@ export class AuthService extends BaseService<IUser> {
         throw new Error("User not found");
       }
 
-      const { firstName, lastName, displayName, email, profilePhoto, _id } = user;
+      const { _id, firstName, lastName, email, displayName, profilePhoto } = user;
 
       if (!_id || !firstName || !lastName || !email) {
         throw new Error("Incomplete user information");
       }
 
-      return { firstName, lastName, displayName, email, profilePhoto, _id };
+      return { _id, firstName, lastName, email, displayName, profilePhoto };
     } catch (error) {
       return Promise.reject(error);
     }

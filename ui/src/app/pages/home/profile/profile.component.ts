@@ -1,42 +1,36 @@
 import { Component } from '@angular/core';
-import { AsyncPipe, NgIf } from '@angular/common';
+import { NgIf } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Observable } from 'rxjs';
-import { AuthService } from '../../../services/auth.service';
 import { IUser } from '../../../models/user.model';
 import { UserService } from '../../../services/user.service';
 
 @Component({
   selector: 'app-profile',
-  imports: [NgIf, AsyncPipe, FormsModule],
+  imports: [NgIf, FormsModule],
   templateUrl: './profile.component.html',
 })
 export class ProfileComponent {
   currentUser$ = new Observable<Partial<IUser> | null>();
   user: Partial<IUser> | null = null;
 
-  constructor(
-    private authService: AuthService,
-    private userService: UserService
-  ) {}
+  constructor(private userService: UserService) {
+    this.currentUser$ = this.userService.currentUser$;
 
-  ngOnInit() {
-    this.currentUser$ = this.authService.currentUser$;
-    this.currentUser$.subscribe((user) => (this.user = user));
+    this.currentUser$.subscribe((user) => {
+      this.user = user ? { ...user } : null;
+    });
   }
 
   updateProfile() {
-    if (this.user) {
-      this.userService.updateUser(this.user).subscribe({
-        next: () => {
-          this.authService.checkAuth().then((user) => {
-            this.user = user;
-          });
-        },
-        error: (error) => {
-          alert('Error updating profile:' + error);
-        },
+    if (this.user && this.user._id) {
+      this.userService.update(this.user._id, this.user).subscribe({
+        // TODO: Handle success and error responses with alerts popups
+        next: () => console.log('Updated'),
+        error: (error) => console.error('Error updating profile:', error),
       });
+    } else {
+      console.error('User ID is missing. Cannot update profile.');
     }
   }
 }

@@ -1,40 +1,36 @@
 import { Injectable } from '@angular/core';
-import { environment } from '../../envs/envs';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { IUser } from '../models/user.model';
+import { BaseService } from './base.service';
+import { AuthService } from './auth.service';
 import { tap } from 'rxjs/operators';
 
 @Injectable({
   providedIn: 'root',
 })
-export class UserService {
-  private baseURL = environment.apiUrl;
-  private userSubject = new BehaviorSubject<Partial<IUser> | null>(null);
-  user$: Observable<Partial<IUser> | null> = this.userSubject.asObservable();
+export class UserService extends BaseService<IUser> {
+  protected override endpoint = '/user';
+  currentUserSubject = new BehaviorSubject<Partial<IUser> | null>(null);
+  currentUser$ = new Observable<Partial<IUser> | null>();
 
-  constructor(private http: HttpClient) {}
+  constructor(http: HttpClient, private authService: AuthService) {
+    super(http);
 
-  updateUser(user: Partial<IUser>): Observable<Partial<IUser>> {
-    return this.http
-      .put<Partial<IUser>>(`${this.baseURL}/user/${user._id}`, user, {
-        withCredentials: true,
-      })
-      .pipe(
-        tap({
-          next: (response) => {
-            this.userSubject.next(response);
-          },
-          error: () => {
-            this.handleUnauthenticated();
-          },
-        })
-      );
+    this.currentUserSubject = this.authService.currentUserSubject;
+    this.currentUser$ = this.authService.currentUser$;
   }
 
-  // Updates the currentUserSubject and redirects to the login page
-  handleUnauthenticated(): void {
-    // Update the currentUserSubject
-    this.userSubject.next(null);
+  // Have to override because not inheriting from BaseService
+  override update(id: string, item: Partial<IUser>): Observable<IUser> {
+    return super.update(id, item).pipe(
+      tap((updatedUser) => {
+        // Update the current user subject if the updated user is the current user
+        const current = this.currentUserSubject.value;
+        if (current && current._id === updatedUser._id) {
+          this.currentUserSubject.next({ ...current, ...updatedUser });
+        }
+      })
+    );
   }
 }
