@@ -67,10 +67,21 @@
             </div>
           </div>
         </div>
-        <div class="card-actions">
-          <button class="btn btn-primary w-full md:w-auto" type="submit">
-            Update Profile
-          </button>
+        <div class="card-actions flex">
+          <div class="flex-1 text-center">
+            <button class="btn btn-primary w-full md:w-auto" type="submit">
+              Update Profile
+            </button>
+          </div>
+          <div class="flex-1 text-center">
+            <button
+              class="btn btn-secondary w-full md:w-auto"
+              type="button"
+              (click)="onLogout()"
+            >
+              Logout
+            </button>
+          </div>
         </div>
       </form>
     </div>

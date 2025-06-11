@@ -9,12 +9,12 @@ import { IUser } from '../models/user.model';
 })
 export class AuthService {
   private baseURL = environment.apiUrl;
-  currentUserSubject = new BehaviorSubject<Partial<IUser> | null>(null);
-  currentUser$ = this.currentUserSubject.asObservable();
+  currentSessionSubject = new BehaviorSubject<Partial<IUser> | null>(null);
+  currentSession$ = this.currentSessionSubject.asObservable();
 
   constructor(private http: HttpClient) {}
 
-  // Updates the currentUserSubject
+  // Updates the currentSessionSubject
   async checkAuth(): Promise<Partial<IUser> | null> {
     return new Promise<Partial<IUser> | null>((resolve, reject) => {
       this.http
@@ -29,7 +29,7 @@ export class AuthService {
               response.user &&
               Object.keys(response.user).length > 0
             ) {
-              this.currentUserSubject.next(response.user);
+              this.currentSessionSubject.next(response.user);
               resolve(response.user);
             } else {
               this.handleUnauthenticated();
@@ -70,7 +70,7 @@ export class AuthService {
         .subscribe({
           next: (response) => {
             if (response.authenticated) {
-              this.currentUserSubject.next(response.user);
+              this.currentSessionSubject.next(response.user);
               // Redirect to the home page after successful login
               window.location.href = '/app';
               resolve();
@@ -101,7 +101,7 @@ export class AuthService {
           authenticated: boolean;
           message: string;
           user: Partial<IUser>;
-        }>(`${this.baseURL}/auth/register`, {
+        }>(`${this.baseURL}/auth/signup`, {
           email,
           password,
           firstName,
@@ -110,7 +110,9 @@ export class AuthService {
         .subscribe({
           next: (response) => {
             if (response.authenticated) {
-              this.currentUserSubject.next(response.user);
+              this.currentSessionSubject.next(response.user);
+              // Redirect to the home page after successful login
+              window.location.href = '/app';
               resolve();
             }
             // Handle non auth with 200 status
@@ -132,20 +134,21 @@ export class AuthService {
     this.http
       .post(`${this.baseURL}/auth/logout`, {}, { withCredentials: true })
       .subscribe(() => {
-        this.currentUserSubject.next(null);
+        this.currentSessionSubject.next(null);
+        window.location.href = '/app';
       });
   }
 
-  // Updates the currentUserSubject and redirects to the login page
+  // Updates the currentSessionSubject and redirects to the login page
   handleUnauthenticated(): void {
-    // Update the currentUserSubject
-    this.currentUserSubject.next(null);
+    // Update the currentSessionSubject
+    this.currentSessionSubject.next(null);
   }
 
-  // Checks if the user is authenticated
+  //Checks if the user is authenticated via API
   async isAuthenticated(): Promise<boolean> {
-    // Check if currentUserSubject has a value
-    if (this.currentUserSubject.value) {
+    // Check if currentSessionSubject has a value
+    if (this.currentSessionSubject.value) {
       return true;
     }
     try {

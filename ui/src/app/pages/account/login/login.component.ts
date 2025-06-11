@@ -39,8 +39,12 @@ export class LoginComponent {
   }
 
   async ngOnInit() {
-    if (await this.authService.isAuthenticated()) {
-      this.router.navigate(['/app']);
+    try {
+      if (await this.authService.isAuthenticated()) {
+        this.router.navigate(['/app']);
+      }
+    } catch {
+      // Suppress errors: do nothing if not authenticated
     }
   }
 

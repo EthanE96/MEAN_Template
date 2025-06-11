@@ -17,8 +17,8 @@ export class UserService extends BaseService<IUser> {
   constructor(http: HttpClient, private authService: AuthService) {
     super(http);
 
-    this.currentUserSubject = this.authService.currentUserSubject;
-    this.currentUser$ = this.authService.currentUser$;
+    this.currentUserSubject = this.authService.currentSessionSubject;
+    this.currentUser$ = this.authService.currentSession$;
   }
 
   // Have to override because not inheriting from BaseService
