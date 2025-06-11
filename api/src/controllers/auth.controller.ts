@@ -11,9 +11,9 @@ export class AuthController {
       req.login(user, (loginErr) => {
         if (loginErr) return next(loginErr);
 
-        res.status(201).json({
+        return res.status(200).json({
           authenticated: true,
-          message: "User created and signed in successfully.",
+          message: "Signup and login successful.",
         });
       });
     } catch (error) {

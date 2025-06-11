@@ -91,12 +91,16 @@ export class AuthService {
   ): Promise<void> {
     return new Promise<void>((resolve, reject) => {
       this.http
-        .post(`${this.baseURL}/signup`, {
-          email,
-          password,
-          firstName,
-          lastName,
-        })
+        .post(
+          `${this.baseURL}/signup`,
+          {
+            email,
+            password,
+            firstName,
+            lastName,
+          },
+          { withCredentials: true }
+        )
         .subscribe({
           next: () => {
             resolve();
