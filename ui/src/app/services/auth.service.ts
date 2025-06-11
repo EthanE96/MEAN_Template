@@ -37,6 +37,7 @@ export class AuthService {
               resolve(response.user);
             }
           },
+          // Handle error with 4xx or 5xx status
           error: (error) => {
             this.handleUnauthenticated();
             reject(error);
@@ -72,6 +73,7 @@ export class AuthService {
           next: () => {
             resolve();
           },
+          // Handle error with 4xx or 5xx status
           error: (error) => {
             this.handleUnauthenticated();
             reject(error);
@@ -89,33 +91,20 @@ export class AuthService {
   ): Promise<void> {
     return new Promise<void>((resolve, reject) => {
       this.http
-        .post<{
-          authenticated: boolean;
-          message: string;
-          user: Partial<IUser>;
-        }>(`${this.baseURL}/signup`, {
+        .post(`${this.baseURL}/signup`, {
           email,
           password,
           firstName,
           lastName,
         })
         .subscribe({
-          next: (response) => {
-            if (response.authenticated) {
-              this.currentUserSubject.next(response.user);
-              // Redirect to the home page after successful login
-              window.location.href = '/app';
-              resolve();
-            }
-            // Handle non auth with 200 status
-            else {
-              reject(response.message || 'Registration failed');
-            }
+          next: () => {
+            resolve();
           },
           // Handle error with 4xx or 5xx status
-          error: (error: any) => {
+          error: (error) => {
             this.handleUnauthenticated();
-            reject(error || 'Registration failed');
+            reject(error);
           },
         });
     });

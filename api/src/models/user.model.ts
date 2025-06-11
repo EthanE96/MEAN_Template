@@ -242,11 +242,11 @@ UserSchema.statics.createLocalFromSignup = async function (
   const existingUser = await this.findOne({ email: email.toLowerCase() });
 
   if (existingUser) {
-    throw new Error("Email already exists");
+    throw new Error("This email already exists. Try logging in instead.");
   }
 
   if (!email || !password || !firstName || !lastName) {
-    throw new Error("All fields are required");
+    throw new Error("All fields are required.");
   }
 
   const newUser = new this({

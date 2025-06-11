@@ -16,7 +16,7 @@ export const passportConfig = (): void => {
       const user = await User.findById(id);
 
       if (!user) {
-        console.error("No user found during deserialization");
+        console.error("No user found during deserialization.");
         return done(null, false);
       }
 
@@ -42,16 +42,16 @@ export const passportConfig = (): void => {
           const user = await User.findOne({ email: email.toLowerCase() });
 
           if (!user) {
-            return done(null, false, { message: "Invalid email or password" });
+            return done(null, false, { message: "Invalid email or password." });
           }
 
           if (!user.isActive) {
-            return done(null, false, { message: "Account is deactivated" });
+            return done(null, false, { message: "Account is deactivated." });
           }
 
           const isMatch = await user.comparePassword(password);
           if (!isMatch) {
-            return done(null, false, { message: "Invalid email or password" });
+            return done(null, false, { message: "Invalid email or password." });
           }
 
           // Update last login

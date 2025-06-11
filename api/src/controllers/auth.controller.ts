@@ -8,13 +8,12 @@ export class AuthController {
       const { email, password, firstName, lastName } = req.body;
       const user = await User.createLocalFromSignup(email, password, firstName, lastName);
 
-      req.login(user, (error) => {
-        if (error) return next(error);
+      req.login(user, (loginErr) => {
+        if (loginErr) return next(loginErr);
 
         res.status(201).json({
-          message: "User created and signed in successfully",
-          user: user.getPublicProfile(),
           authenticated: true,
+          message: "User created and signed in successfully.",
         });
       });
     } catch (error) {
@@ -30,7 +29,7 @@ export class AuthController {
       if (!user) {
         return res.status(401).json({
           authenticated: false,
-          message: info?.message || "Invalid email or password",
+          message: info?.message || "Invalid email or password.",
         });
       }
 
@@ -39,7 +38,7 @@ export class AuthController {
 
         return res.status(200).json({
           authenticated: true,
-          message: "Login successful",
+          message: "Login successful.",
         });
       });
     })(req, res, next);
@@ -49,7 +48,7 @@ export class AuthController {
     try {
       req.logout(() => {
         res.status(200).json({
-          message: "Logout successful",
+          message: "Logout successful.",
         });
       });
     } catch (error) {
@@ -62,7 +61,7 @@ export class AuthController {
       if (!req.user) {
         res.status(401).json({
           authenticated: false,
-          message: "No user authenticated",
+          message: "No user authenticated.",
         });
         return;
       }
@@ -72,7 +71,7 @@ export class AuthController {
       res.status(200).json({
         authenticated: true,
         user: sanitizedUser,
-        message: "User retrieved successfully",
+        message: "User retrieved successfully.",
       });
     } catch (error) {
       return next(error);

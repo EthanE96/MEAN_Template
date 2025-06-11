@@ -74,7 +74,9 @@ export class LoginComponent {
       // Redirect to the app
       this.router.navigate(['/app']);
     } catch (error: any) {
-      this.handleErrorChange(String(error));
+      this.handleErrorChange(
+        error.error.message || 'An error occurred during login.'
+      );
     }
   }
 

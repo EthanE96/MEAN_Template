@@ -86,7 +86,7 @@ app.use((error: Error, _req: Request, res: Response, _next: NextFunction) => {
   console.log(error.stack); // Log the error for debugging
 
   res.status(500).json({
-    message: "An internal server error occurred",
+    message: error.message,
     error: error.stack,
   });
 });
