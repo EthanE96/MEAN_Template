@@ -5,6 +5,7 @@ import { Observable } from 'rxjs';
 import { IUser } from '../../../models/user.model';
 import { UserService } from '../../../services/user.service';
 import { AuthService } from '../../../services/auth.service';
+import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-profile',
@@ -17,7 +18,8 @@ export class ProfileComponent {
 
   constructor(
     private userService: UserService,
-    private authService: AuthService
+    private authService: AuthService,
+    private router: Router
   ) {
     this.currentUser$ = this.userService.currentUser$;
 
@@ -39,9 +41,7 @@ export class ProfileComponent {
   }
 
   onLogout() {
-    this.authService.logout().then(() => {
-      console.log('Logged out successfully');
-      this.user = null; // Clear user data on logout
-    });
+    this.router.navigate(['/']);
+    this.authService.logout();
   }
 }

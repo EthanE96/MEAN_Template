@@ -7,19 +7,23 @@ import { IUser } from '../models/user.model';
 @Injectable({
   providedIn: 'root',
 })
+
+// All routing will be handled by the UI, so this service will only handle authentication
 export class AuthService {
-  private baseURL = environment.apiUrl;
-  currentSessionSubject = new BehaviorSubject<Partial<IUser> | null>(null);
-  currentSession$ = this.currentSessionSubject.asObservable();
+  private baseURL = `${environment.apiUrl}/auth`;
+  currentUserSubject = new BehaviorSubject<Partial<IUser> | null>(null);
+  currentUser$ = this.currentUserSubject.asObservable();
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) {
+    console.log(this.baseURL);
+  }
 
-  // Updates the currentSessionSubject
-  async checkAuth(): Promise<Partial<IUser> | null> {
+  // Updates the currentUserSubject with session user data
+  async getSession(): Promise<Partial<IUser> | null> {
     return new Promise<Partial<IUser> | null>((resolve, reject) => {
       this.http
         .get<{ authenticated: boolean; user: Partial<IUser>; error: any }>(
-          `${this.baseURL}/auth/me`,
+          `${this.baseURL}/me`,
           { withCredentials: true }
         )
         .subscribe({
@@ -29,11 +33,8 @@ export class AuthService {
               response.user &&
               Object.keys(response.user).length > 0
             ) {
-              this.currentSessionSubject.next(response.user);
+              this.currentUserSubject.next(response.user);
               resolve(response.user);
-            } else {
-              this.handleUnauthenticated();
-              reject(response || 'User is not authenticated');
             }
           },
           error: (error) => {
@@ -44,17 +45,17 @@ export class AuthService {
     });
   }
 
-  // Redirects to the google login page, then to the callback URL
+  // Redirects to the google login page, then to the callback URL, sets session
   authWithGoogle(): void {
-    window.location.href = `${this.baseURL}/auth/google`;
+    window.location.href = `${this.baseURL}/google`;
   }
 
-  // Redirects to the google login page, then to the callback URL
+  // Redirects to the google login page, then to the callback URL, sets session
   authWithGitHub(): void {
-    window.location.href = `${this.baseURL}/auth/github`;
+    window.location.href = `${this.baseURL}/github`;
   }
 
-  // Local login
+  // Local login, sets session
   async loginWithLocal(
     email: string,
     password: string,
@@ -62,27 +63,18 @@ export class AuthService {
   ): Promise<void> {
     return new Promise<void>((resolve, reject) => {
       this.http
-        .post<{
-          authenticated: boolean;
-          message: string;
-          user: Partial<IUser>;
-        }>(`${this.baseURL}/auth/login`, { email, password, rememberMe })
+        .post(
+          `${this.baseURL}/login`,
+          { email, password, rememberMe },
+          { withCredentials: true }
+        )
         .subscribe({
-          next: (response) => {
-            if (response.authenticated) {
-              this.currentSessionSubject.next(response.user);
-              // Redirect to the home page after successful login
-              window.location.href = '/app';
-              resolve();
-            }
-            // Handle non auth with 200 status
-            else {
-              reject(response.message || 'Login failed');
-            }
+          next: () => {
+            resolve();
           },
           error: (error) => {
             this.handleUnauthenticated();
-            reject(error.error.message || 'Login failed');
+            reject(error);
           },
         });
     });
@@ -101,7 +93,7 @@ export class AuthService {
           authenticated: boolean;
           message: string;
           user: Partial<IUser>;
-        }>(`${this.baseURL}/auth/signup`, {
+        }>(`${this.baseURL}/signup`, {
           email,
           password,
           firstName,
@@ -110,7 +102,7 @@ export class AuthService {
         .subscribe({
           next: (response) => {
             if (response.authenticated) {
-              this.currentSessionSubject.next(response.user);
+              this.currentUserSubject.next(response.user);
               // Redirect to the home page after successful login
               window.location.href = '/app';
               resolve();
@@ -123,37 +115,46 @@ export class AuthService {
           // Handle error with 4xx or 5xx status
           error: (error: any) => {
             this.handleUnauthenticated();
-            reject(error.error.message || 'Registration failed');
+            reject(error || 'Registration failed');
           },
         });
     });
   }
 
   // Logs the user out
-  async logout() {
+  logout() {
     this.http
-      .post(`${this.baseURL}/auth/logout`, {}, { withCredentials: true })
+      .post(`${this.baseURL}/logout`, {}, { withCredentials: true })
       .subscribe(() => {
-        this.currentSessionSubject.next(null);
-        window.location.href = '/app';
+        this.handleUnauthenticated();
+        console.log('logout successful, service');
       });
   }
 
-  // Updates the currentSessionSubject and redirects to the login page
+  // Updates the currentUserSubject and redirects to the login page
   handleUnauthenticated(): void {
-    // Update the currentSessionSubject
-    this.currentSessionSubject.next(null);
+    // Update the currentUserSubject
+    this.currentUserSubject.next(null);
   }
 
-  //Checks if the user is authenticated via API
+  /**
+   * Checks if the user is currently authenticated.
+   *
+   * This method first checks if the `currentUserSubject` has a value,
+   * indicating that the user is already authenticated in the current session.
+   * If not, it attempts to retrieve the session from the backend by calling `getSession()`.
+   * Returns `true` if the user is authenticated, otherwise returns `false`.
+   *
+   * @returns {Promise<boolean>} A promise that resolves to `true` if the user is authenticated, or `false` otherwise.
+   */
   async isAuthenticated(): Promise<boolean> {
-    // Check if currentSessionSubject has a value
-    if (this.currentSessionSubject.value) {
+    // Check if currentUserSubject has a value
+    if (this.currentUserSubject.value) {
       return true;
     }
+
     try {
-      await this.checkAuth();
-      return true;
+      return !!(await this.getSession());
     } catch {
       return false;
     }

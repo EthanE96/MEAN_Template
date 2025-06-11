@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import User, { IUser } from "../models/user.model";
+import passport from "passport";
 
 export class AuthController {
   signup = async (req: Request, res: Response, next: NextFunction) => {
@@ -19,6 +20,29 @@ export class AuthController {
     } catch (error) {
       return next(error);
     }
+  };
+
+  login = (req: Request, res: Response, next: NextFunction) => {
+    passport.authenticate("local", (error: any, user: IUser, info: any) => {
+      if (error) return next(error);
+
+      // Check is user is returned
+      if (!user) {
+        return res.status(401).json({
+          authenticated: false,
+          message: info?.message || "Invalid email or password",
+        });
+      }
+
+      req.login(user, (loginErr) => {
+        if (loginErr) return next(loginErr);
+
+        return res.status(200).json({
+          authenticated: true,
+          message: "Login successful",
+        });
+      });
+    })(req, res, next);
   };
 
   logout = (req: Request, res: Response, next: NextFunction) => {

@@ -6,19 +6,14 @@ import { AuthController } from "../controllers/auth.controller";
 const router = Router();
 const authController = new AuthController();
 
+// TODO: Update routes to use env
+
 // ^ Local Auth routes
 // Signup
 router.post("/signup", authController.signup);
 
 // Login
-router.post(
-  "/login",
-  passport.authenticate("local", {
-    failureRedirect: "http://localhost:4200/login",
-    failureMessage: true,
-    successRedirect: process.env.UI_AUTH_REDIRECT_URL || "http://localhost:4200/app",
-  })
-);
+router.post("/login", authController.login);
 
 //^ Google Auth routes
 // Google OAuth2.0 authentication (login/register)

@@ -29,17 +29,16 @@ export const passportConfig = (): void => {
     }
   });
 
-  // Configure local strategy
+  // Configure local strategy, Login Only
   passport.use(
     new LocalStrategy(
       {
         usernameField: "email",
         passwordField: "password",
-        session: true,
       },
       async (email, password, done) => {
+        // Gets email and password from the request body within the session
         try {
-          // Only handle login here
           const user = await User.findOne({ email: email.toLowerCase() });
 
           if (!user) {
