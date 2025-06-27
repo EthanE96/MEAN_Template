@@ -1,6 +1,10 @@
 # MEAN_Template
 
-MEAN stack development template to ship faster
+MEAN stack development template to ship faster.
+
+## Purpose
+
+This template is create as a boilerplate for various SaaS web applications. Due to this nature, there was a heavier emphasis on API, Infrastructure, and Monitoring capabilities than UI and Testing. This is because SaaS applications will vary greatly in UI and Testing instances.
 
 ---
 
