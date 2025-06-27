@@ -1,11 +1,10 @@
-  <div *ngIf="errorMessage" class="container mx-auto w-1/2 py-3 inline">
-    <app-message [message]="errorMessage" type="error"></app-message>
-  </div>
+<div *ngIf="errorMessage" class="container mx-auto w-1/2 py-3 inline">
+  <app-message [message]="errorMessage" type="error"></app-message>
+</div>
 
-  <div *ngIf="successMessage" class="container mx-auto w-1/2 py-3 inline">
-    <app-message [message]="successMessage" type="success"></app-message>
-  </div>
-
+<div *ngIf="successMessage" class="container mx-auto w-1/2 py-3 inline">
+  <app-message [message]="successMessage" type="success"></app-message>
+</div>
 
 <div class="flex flex-col items-center min-h-screen py-8">
   <!-- Header -->
@@ -22,7 +21,9 @@
     <div class="card w-full max-w-2xl bg-base-100 shadow-xl shadow-base-300/10">
       <form class="card-body space-y-6" (ngSubmit)="updateProfile()">
         <div class="flex flex-col md:flex-row gap-6">
-          <div class="avatar self-center md:self-start">
+          <div
+            class="avatar self-center md:self-start flex flex-col items-center"
+          >
             <div
               class="w-24 rounded-full ring ring-primary ring-offset-base-100 ring-offset-2"
             >
@@ -33,6 +34,10 @@
                 alt="User Avatar"
               />
             </div>
+            <!-- User Privilege/Role -->
+            <span class="mt-4 badge badge-outline badge-primary text-xs">
+              {{ user.role === "admin" ? "Admin" : "User" }}
+            </span>
           </div>
           <div class="flex-1 space-y-4">
             <div class="form-control">
@@ -76,21 +81,12 @@
             </div>
           </div>
         </div>
-        <div class="card-actions flex">
-          <div class="flex-1 text-center">
-            <button class="btn btn-primary w-full md:w-auto" type="submit">
-              Update Profile
-            </button>
-          </div>
-          <div class="flex-1 text-center">
-            <button
-              class="btn btn-secondary w-full md:w-auto"
-              type="button"
-              (click)="onLogout()"
-            >
-              Logout
-            </button>
-          </div>
+        <!-- Buttons -->
+        <div class="card-actions flex justify-end gap-2">
+          <button class="btn btn-primary" type="submit">Update Profile</button>
+          <button class="btn btn-secondary" type="button" (click)="onLogout()">
+            Logout
+          </button>
         </div>
       </form>
     </div>

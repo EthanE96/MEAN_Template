@@ -9,6 +9,4 @@ import { Component, Input } from '@angular/core';
 export class MessageComponent {
   @Input() message: string = '';
   @Input() type: 'info' | 'success' | 'warning' | 'error' = 'error';
-
-  // TODO: Fix the spacing issue on appearance
 }

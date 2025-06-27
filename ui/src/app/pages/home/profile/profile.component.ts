@@ -34,9 +34,9 @@ export class ProfileComponent {
   updateProfile() {
     if (this.user && this.user._id) {
       this.userService.update(this.user._id, this.user).subscribe({
-        // TODO: Handle success and error responses with alerts popups
         next: () => this.handleSuccessChange('Profile updated successfully!'),
-        error: (error) => this.handleErrorChange(error.error || 'Failed to update profile.'),
+        error: (error) =>
+          this.handleErrorChange(error.error || 'Failed to update profile.'),
       });
     } else {
       console.error('User ID is missing. Cannot update profile.');
@@ -63,6 +63,4 @@ export class ProfileComponent {
       this.successMessage = '';
     }, 3000);
   }
-
-
 }
