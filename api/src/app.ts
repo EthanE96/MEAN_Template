@@ -70,7 +70,8 @@ passportConfig();
 morgan.token("body", (req: Request) => {
   return JSON.stringify(req.body);
 });
-app.use(morgan(":method :url :status - :response-time ms body:body"));
+
+app.use(morgan(":method :url :status - :response-time ms req:body"));
 
 // Seed data
 seedNotes();
@@ -80,11 +81,12 @@ app.use("/api", routes);
 
 // Error-handling middleware
 app.use((error: Error, _req: Request, res: Response, _next: NextFunction) => {
-  console.error(error.stack); // Log the error for debugging
+  // If next(error) is called in your controller, this middleware will catch it
+  // and send a response.
+  console.log(error.stack); // Log the error for debugging
 
   res.status(500).json({
-    success: false,
-    message: "An internal server error occurred",
+    message: error.message,
     error: error.stack,
   });
 });

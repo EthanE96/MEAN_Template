@@ -27,7 +27,7 @@ export class LoginComponent {
   email: string = '';
   password: string = '';
   rememberMe: boolean = false;
-  error: string = '';
+  error?: string;
 
   constructor(
     private theme: ThemeComponent,
@@ -39,23 +39,21 @@ export class LoginComponent {
   }
 
   async ngOnInit() {
-    if (await this.authService.isAuthenticated()) {
+    // Check if user is already authenticated
+    if (await this.authService.isAuthenticated())
       this.router.navigate(['/app']);
-    }
   }
 
-  loginWithGoogle() {
+  async loginWithGoogle() {
     this.authService.authWithGoogle();
   }
 
-  loginWithGithub() {
+  async loginWithGithub() {
     this.authService.authWithGitHub();
   }
 
   async loginWithLocal() {
     try {
-      this.error = '';
-
       // Validate all fields
       if (!this.validatorService.validateFields(this.email, this.password)) {
         throw new Error('Missing fields.');
@@ -66,21 +64,27 @@ export class LoginComponent {
         throw new Error('Invalid email format.');
       }
 
+      // Login
       await this.authService.loginWithLocal(
         this.email,
         this.password,
         this.rememberMe
       );
-    } catch (error) {
-      this.handleErrorChange(error as string);
+
+      // Redirect to the app
+      this.router.navigate(['/app']);
+    } catch (error: any) {
+      this.handleErrorChange(
+        error.error.message || 'An error occurred during login.'
+      );
     }
   }
 
-  handleErrorChange(error: string) {
+  handleErrorChange(error?: string) {
     this.error = error;
 
     setTimeout(() => {
-      this.error = '';
-    }, 5000);
+      this.error = undefined;
+    }, 7000);
   }
 }

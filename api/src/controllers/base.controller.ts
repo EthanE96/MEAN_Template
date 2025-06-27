@@ -12,7 +12,7 @@ export class BaseController<T> {
     this.service = service;
   }
 
-  public getAll = async (req: Request, res: Response): Promise<void> => {
+  public getAll = async (_req: Request, res: Response): Promise<void> => {
     try {
       const documents = await this.service.findAll();
       res.json(documents);

@@ -25,7 +25,7 @@ export class LandingComponent {
   }
 
   onGetStarted() {
-    this.router.navigate(['/app']);
+    this.router.navigate(['/login']);
   }
 
   onGetSourceCode() {

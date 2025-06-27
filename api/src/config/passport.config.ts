@@ -6,17 +6,17 @@ import User, { IUser } from "../models/user.model";
 
 export const passportConfig = (): void => {
   // Serialize and deserialize the user for session management
-  passport.serializeUser((user: any, done) => {
+  passport.serializeUser((user: Partial<IUser>, done) => {
     done(null, user._id);
   });
 
   passport.deserializeUser(async (id: string, done) => {
     try {
       // Use MongoDB's _id to find the user
-      const user: IUser | null = await User.findById(id).lean();
+      const user = await User.findById(id);
 
       if (!user) {
-        console.error("No user found during deserialization");
+        console.error("No user found during deserialization.");
         return done(null, false);
       }
 
@@ -25,67 +25,43 @@ export const passportConfig = (): void => {
       done(null, user);
     } catch (error) {
       console.error("Error during deserialization:", id, error);
-      done(error);
+      done(error, false);
     }
   });
 
-  // Configure local strategy
+  // Configure local strategy, Login Only
   passport.use(
     new LocalStrategy(
       {
         usernameField: "email",
         passwordField: "password",
-        passReqToCallback: true,
       },
-      async (req, email, password, done) => {
+      async (email, password, done) => {
+        // Gets email and password from the request body within the session
         try {
-          const { firstName, lastName, isRegistration } = req.body;
+          const user = await User.findOne({ email: email.toLowerCase() });
 
-          // If user is registering, a flag on controller will indicate it
-          if (isRegistration) {
-            // Registration flow
-            const { user, isNew } = await User.findOrCreateFromLocal(
-              email,
-              password,
-              firstName,
-              lastName
-            );
-
-            if (!isNew) {
-              return done(null, false, { message: "Email already exists." });
-            }
-
-            // User registration and login successful
-            delete (user as Partial<IUser>).password; // Remove password from user object
-            return done(null, user);
-          } else {
-            // Login flow
-            const user = await User.findOne({ email: email.toLowerCase() });
-
-            if (!user) {
-              return done(null, false, { message: "Invalid email or password" });
-            }
-
-            if (!user.isActive) {
-              return done(null, false, { message: "Account is deactivated" });
-            }
-
-            const isMatch = await user.comparePassword(password);
-            if (!isMatch) {
-              return done(null, false, { message: "Invalid email or password" });
-            }
-
-            // Update last login
-            user.lastLogin = new Date();
-            await user.save();
-
-            // User login successful
-            delete (user as Partial<IUser>).password; // Remove password from user object
-
-            return done(null, user);
+          if (!user) {
+            return done(null, false, { message: "Invalid email or password." });
           }
+
+          if (!user.isActive) {
+            return done(null, false, { message: "Account is deactivated." });
+          }
+
+          const isMatch = await user.comparePassword(password);
+          if (!isMatch) {
+            return done(null, false, { message: "Invalid email or password." });
+          }
+
+          // Update last login
+          user.lastLogin = new Date();
+          await user.save();
+
+          delete (user as Partial<IUser>).password;
+          return done(null, user);
         } catch (error) {
-          return done(error);
+          return done(error, false);
         }
       }
     )

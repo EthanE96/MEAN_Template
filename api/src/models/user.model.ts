@@ -1,7 +1,7 @@
 import mongoose, { Document, Schema, Model } from "mongoose";
 import bcrypt from "bcryptjs";
-import { use } from "passport";
 
+//^ Interface
 export interface IUser extends Document {
   // Basic profile information
   _id: string; // Mongoose adds this automatically
@@ -34,8 +34,10 @@ export interface IUser extends Document {
 
   // Methods
   comparePassword(candidatePassword: string): Promise<boolean>;
+  getPublicProfile(): Partial<IUser>;
 }
 
+// ^ Schema
 const UserSchema = new Schema<IUser>(
   {
     // Basic profile information
@@ -129,6 +131,8 @@ const UserSchema = new Schema<IUser>(
   }
 );
 
+//^ Pre-save hook
+
 // Hash password before saving
 UserSchema.pre("save", async function (next) {
   const user = this;
@@ -145,12 +149,30 @@ UserSchema.pre("save", async function (next) {
   }
 });
 
+//^  Methods - For instance level methods (on the document)
 // Method to compare passwords
 UserSchema.methods.comparePassword = async function (candidatePassword: string): Promise<boolean> {
   return bcrypt.compare(candidatePassword, this.password);
 };
 
-// Static method to find or create a user from OAuth profile
+// Methods to get user info without sensitive data
+UserSchema.methods.getPublicProfile = function (): Partial<IUser> {
+  return {
+    _id: this._id,
+    email: this.email,
+    firstName: this.firstName,
+    lastName: this.lastName,
+    username: this.username,
+    displayName: this.displayName,
+    profilePhoto: this.profilePhoto,
+    isActive: this.isActive,
+    role: this.role,
+    lastLogin: this.lastLogin,
+  };
+};
+
+//^ Static methods - For model-level methods (don't need to access instance data directly)
+// Method to find or create a user from OAuth profile
 UserSchema.statics.findOrCreateFromOAuthProfile = async function (
   profile: any,
   provider: string
@@ -210,40 +232,44 @@ UserSchema.statics.findOrCreateFromOAuthProfile = async function (
   return newUser;
 };
 
-// Static method to find or create a user from local registration
-UserSchema.statics.findOrCreateFromLocal = async function (
+// Method to create a user from local signup
+UserSchema.statics.createLocalFromSignup = async function (
   email: string,
   password: string,
   firstName: string,
   lastName: string
-): Promise<{ user: IUser; isNew: boolean }> {
+): Promise<IUser> {
   const existingUser = await this.findOne({ email: email.toLowerCase() });
 
   if (existingUser) {
-    return { user: existingUser, isNew: false };
+    throw new Error("This email already exists. Try logging in instead.");
+  }
+
+  if (!email || !password || !firstName || !lastName) {
+    throw new Error("All fields are required.");
   }
 
   const newUser = new this({
     email: email.toLowerCase(),
-    username: email.toLowerCase().split("@")[0], // Default username from email
+    username: email.toLowerCase(),
     password, // Will be hashed by pre-save hook
     firstName,
     lastName,
   });
 
   await newUser.save();
-  return { user: newUser, isNew: true };
+  return newUser;
 };
 
 // Add the static methods to the interface
 export interface IUserModel extends Model<IUser> {
   findOrCreateFromOAuthProfile(profile: any, provider: string): Promise<IUser>;
-  findOrCreateFromLocal(
+  createLocalFromSignup(
     email: string,
     password: string,
     firstName: string,
     lastName: string
-  ): Promise<{ user: IUser; isNew: boolean }>;
+  ): Promise<IUser>;
 }
 
 export default mongoose.model<IUser, IUserModel>("User", UserSchema);

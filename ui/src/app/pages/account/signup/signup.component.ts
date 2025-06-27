@@ -25,7 +25,7 @@ import { MessageComponent } from '../../../shared/message/message.component';
 export class SignupComponent {
   logo: string;
   currentStep: number = 1;
-  error: string = '';
+  error?: string;
 
   constructor(
     private authService: AuthService,
@@ -57,7 +57,7 @@ export class SignupComponent {
     this.error = error;
 
     setTimeout(() => {
-      this.error = '';
-    }, 5000);
+      this.error = undefined;
+    }, 7000);
   }
 }

@@ -1,6 +1,7 @@
 import { NgClass, NgIf } from '@angular/common';
 import { Component, Output, EventEmitter } from '@angular/core';
 import { FormsModule } from '@angular/forms';
+import { Router } from '@angular/router';
 import { AuthService } from '../../../../services/auth.service';
 import { ValidatorService } from '../../../../services/validator.service';
 
@@ -16,14 +17,15 @@ export class SignupFormComponent {
   password: string = '';
   firstName: string = '';
   lastName: string = '';
-  error: string = '';
+  error?: string;
 
   @Output() stepChange = new EventEmitter<number>();
   @Output() errorChange = new EventEmitter<string>();
 
   constructor(
     private authService: AuthService,
-    private validatorService: ValidatorService
+    private validatorService: ValidatorService,
+    private router: Router
   ) {}
 
   async onSubmit() {
@@ -32,8 +34,6 @@ export class SignupFormComponent {
       this.stepChange.emit(this.step);
     } else {
       try {
-        this.error = '';
-
         // Validate all fields
         if (
           !this.validatorService.validateFields(
@@ -60,9 +60,13 @@ export class SignupFormComponent {
           this.firstName,
           this.lastName
         );
+
+        // Redirect to the app
+        this.router.navigate(['/app']);
       } catch (error: any) {
-        this.error = error;
+        this.error = error.error.message || 'An error occurred during signup.';
         this.errorChange.emit(this.error);
+        this.error = undefined; // Clear error after emitting
       }
     }
   }

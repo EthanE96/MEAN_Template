@@ -7,19 +7,23 @@ import { IUser } from '../models/user.model';
 @Injectable({
   providedIn: 'root',
 })
+
+// All routing will be handled by the UI, so this service will only handle authentication
 export class AuthService {
-  private baseURL = environment.apiUrl;
+  private baseURL = `${environment.apiUrl}/auth`;
   currentUserSubject = new BehaviorSubject<Partial<IUser> | null>(null);
   currentUser$ = this.currentUserSubject.asObservable();
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) {
+    console.log(this.baseURL);
+  }
 
-  // Updates the currentUserSubject
-  async checkAuth(): Promise<Partial<IUser> | null> {
+  // Updates the currentUserSubject with session user data
+  async getSession(): Promise<Partial<IUser> | null> {
     return new Promise<Partial<IUser> | null>((resolve, reject) => {
       this.http
         .get<{ authenticated: boolean; user: Partial<IUser>; error: any }>(
-          `${this.baseURL}/auth/me`,
+          `${this.baseURL}/me`,
           { withCredentials: true }
         )
         .subscribe({
@@ -31,11 +35,9 @@ export class AuthService {
             ) {
               this.currentUserSubject.next(response.user);
               resolve(response.user);
-            } else {
-              this.handleUnauthenticated();
-              reject(response || 'User is not authenticated');
             }
           },
+          // Handle error with 4xx or 5xx status
           error: (error) => {
             this.handleUnauthenticated();
             reject(error);
@@ -44,17 +46,17 @@ export class AuthService {
     });
   }
 
-  // Redirects to the google login page, then to the callback URL
+  // Redirects to the google login page, then to the callback URL, sets session
   authWithGoogle(): void {
-    window.location.href = `${this.baseURL}/auth/google`;
+    window.location.href = `${this.baseURL}/google`;
   }
 
-  // Redirects to the google login page, then to the callback URL
+  // Redirects to the google login page, then to the callback URL, sets session
   authWithGitHub(): void {
-    window.location.href = `${this.baseURL}/auth/github`;
+    window.location.href = `${this.baseURL}/github`;
   }
 
-  // Local login
+  // Local login, sets session
   async loginWithLocal(
     email: string,
     password: string,
@@ -62,27 +64,19 @@ export class AuthService {
   ): Promise<void> {
     return new Promise<void>((resolve, reject) => {
       this.http
-        .post<{
-          authenticated: boolean;
-          message: string;
-          user: Partial<IUser>;
-        }>(`${this.baseURL}/auth/login`, { email, password, rememberMe })
+        .post(
+          `${this.baseURL}/login`,
+          { email, password, rememberMe },
+          { withCredentials: true }
+        )
         .subscribe({
-          next: (response) => {
-            if (response.authenticated) {
-              this.currentUserSubject.next(response.user);
-              // Redirect to the home page after successful login
-              window.location.href = '/app';
-              resolve();
-            }
-            // Handle non auth with 200 status
-            else {
-              reject(response.message || 'Login failed');
-            }
+          next: () => {
+            resolve();
           },
+          // Handle error with 4xx or 5xx status
           error: (error) => {
             this.handleUnauthenticated();
-            reject(error.error.message || 'Login failed');
+            reject(error);
           },
         });
     });
@@ -97,42 +91,36 @@ export class AuthService {
   ): Promise<void> {
     return new Promise<void>((resolve, reject) => {
       this.http
-        .post<{
-          authenticated: boolean;
-          message: string;
-          user: Partial<IUser>;
-        }>(`${this.baseURL}/auth/register`, {
-          email,
-          password,
-          firstName,
-          lastName,
-        })
+        .post(
+          `${this.baseURL}/signup`,
+          {
+            email,
+            password,
+            firstName,
+            lastName,
+          },
+          { withCredentials: true }
+        )
         .subscribe({
-          next: (response) => {
-            if (response.authenticated) {
-              this.currentUserSubject.next(response.user);
-              resolve();
-            }
-            // Handle non auth with 200 status
-            else {
-              reject(response.message || 'Registration failed');
-            }
+          next: () => {
+            resolve();
           },
           // Handle error with 4xx or 5xx status
-          error: (error: any) => {
+          error: (error) => {
             this.handleUnauthenticated();
-            reject(error.error.message || 'Registration failed');
+            reject(error);
           },
         });
     });
   }
 
   // Logs the user out
-  async logout() {
+  logout() {
     this.http
-      .post(`${this.baseURL}/auth/logout`, {}, { withCredentials: true })
+      .post(`${this.baseURL}/logout`, {}, { withCredentials: true })
       .subscribe(() => {
-        this.currentUserSubject.next(null);
+        this.handleUnauthenticated();
+        console.log('logout successful, service');
       });
   }
 
@@ -142,15 +130,24 @@ export class AuthService {
     this.currentUserSubject.next(null);
   }
 
-  // Checks if the user is authenticated
+  /**
+   * Checks if the user is currently authenticated.
+   *
+   * This method first checks if the `currentUserSubject` has a value,
+   * indicating that the user is already authenticated in the current session.
+   * If not, it attempts to retrieve the session from the backend by calling `getSession()`.
+   * Returns `true` if the user is authenticated, otherwise returns `false`.
+   *
+   * @returns {Promise<boolean>} A promise that resolves to `true` if the user is authenticated, or `false` otherwise.
+   */
   async isAuthenticated(): Promise<boolean> {
     // Check if currentUserSubject has a value
     if (this.currentUserSubject.value) {
       return true;
     }
+
     try {
-      await this.checkAuth();
-      return true;
+      return !!(await this.getSession());
     } catch {
       return false;
     }
