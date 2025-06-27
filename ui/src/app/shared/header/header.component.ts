@@ -1,13 +1,15 @@
-import { NgIf } from '@angular/common';
+import { AsyncPipe, NgIf } from '@angular/common';
 import { Component, EventEmitter, Input, Output } from '@angular/core';
 import { Router } from '@angular/router';
-import { LucideAngularModule, PanelLeftOpen, Settings } from 'lucide-angular';
+import { Observable } from 'rxjs';
 import { ThemeComponent } from '../theme/theme.component';
-import { AuthService } from '../../services/auth.service';
+import { LucideAngularModule, PanelLeftOpen, Settings } from 'lucide-angular';
+import { IUser } from '../../models/user.model';
+import { UserService } from '../../services/user.service';
 
 @Component({
   selector: 'app-header',
-  imports: [LucideAngularModule, NgIf],
+  imports: [LucideAngularModule, NgIf, AsyncPipe],
   templateUrl: './header.component.html',
 })
 export class HeaderComponent {
@@ -18,10 +20,16 @@ export class HeaderComponent {
   @Output() isDrawerOpenChange = new EventEmitter();
   @Output() currentThemeChange = new EventEmitter();
 
+  currentUser$ = new Observable<Partial<IUser> | null>();
   currentTheme: string;
 
-  constructor(private router: Router, private themeComponent: ThemeComponent) {
+  constructor(
+    private router: Router,
+    private themeComponent: ThemeComponent,
+    private userService: UserService
+  ) {
     this.currentTheme = this.themeComponent.currentTheme;
+    this.currentUser$ = this.userService.currentUser$;
   }
 
   onDrawerChange() {
@@ -32,6 +40,10 @@ export class HeaderComponent {
   onThemeToggle() {
     this.currentTheme = this.themeComponent.toggleTheme();
     this.currentThemeChange.emit(this.currentTheme);
+  }
+
+  onProfile() {
+    this.router.navigate(['/app/profile']);
   }
 
   onApp() {

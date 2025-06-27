@@ -19,7 +19,7 @@ import { DrawerComponent } from '../../shared/drawer/drawer.component';
 })
 export class HomeComponent {
   currentTheme: string;
-  isDrawerOpen: boolean = true;
+  isDrawerOpen: boolean = false;
 
   constructor(private theme: ThemeComponent) {
     this.currentTheme = this.theme.currentTheme;
