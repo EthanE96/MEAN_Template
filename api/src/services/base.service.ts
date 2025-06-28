@@ -1,5 +1,8 @@
 import { Model } from "mongoose";
 
+// BaseService class that provides CRUD operations for a given Mongoose model
+// This class is generic and can be used with any Mongoose model.
+// It includes methods for basic CRUD operations, as well as user-specific operations.
 export class BaseService<T> {
   protected model: Model<T>;
 
