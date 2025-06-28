@@ -8,7 +8,7 @@ export const globalSettingsData: Partial<IGlobalSettings> = {
   },
   seeding: {
     enabled: false,
-    lastSeededAt: null,
+    lastSeededAt: new Date(),
   },
   rateLimit: {
     windowMinutes: 15,

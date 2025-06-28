@@ -24,6 +24,9 @@ async function configureApp() {
   const mongoURI = process.env.MONGODB_URI;
   await connectDB(mongoURI);
 
+  // Seed initial data if needed, creates users and notes
+  await seedNotes();
+
   // Fetch global settings from cache/DB
   const globalSettings = await getGlobalSettings();
   if (!globalSettings) {
@@ -100,9 +103,6 @@ async function configureApp() {
    */
   morgan.token("body", (req: Request) => JSON.stringify(req.body));
   app.use(morgan(":method :url :status - :response-time ms req:body"));
-
-  // Seed initial data if needed
-  seedNotes();
 
   // Register API routes
   app.use("/api", routes);

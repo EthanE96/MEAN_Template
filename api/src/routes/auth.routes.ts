@@ -7,18 +7,9 @@ import { getGlobalSettings } from "../utils/global-settings-cache";
 const router = Router();
 const authController = new AuthController();
 
-// Global settings loader (loads once at startup)
-let globalSettings: Awaited<ReturnType<typeof getGlobalSettings>> | null = null;
-(async () => {
-  try {
-    globalSettings = await getGlobalSettings();
-  } catch (error) {
-    console.error("Failed to load global settings for auth routes:", error);
-  }
-})();
-
 // Helper to get URLs from settings or fallback
-function getAuthUrls() {
+async function getAuthUrls() {
+  const globalSettings = await getGlobalSettings();
   return {
     failureRedirect:
       globalSettings?.environment.uiFailureUrl || "http://localhost:4200/login",
@@ -39,8 +30,8 @@ router.post("/login", authController.login);
 router.get("/google", passport.authenticate("google", { scope: ["profile", "email"] }));
 
 // Google OAuth2.0 callback
-router.get("/callback/google", (req, res, next) => {
-  const { failureRedirect, successRedirect } = getAuthUrls();
+router.get("/callback/google", async (req, res, next) => {
+  const { failureRedirect, successRedirect } = await getAuthUrls();
   passport.authenticate("google", {
     failureRedirect,
     failureMessage: true,
@@ -53,8 +44,8 @@ router.get("/callback/google", (req, res, next) => {
 router.get("/github", passport.authenticate("github", { scope: ["user:email"] }));
 
 // GitHub OAuth2.0 callback
-router.get("/callback/github", (req, res, next) => {
-  const { failureRedirect, successRedirect } = getAuthUrls();
+router.get("/callback/github", async (req, res, next) => {
+  const { failureRedirect, successRedirect } = await getAuthUrls();
   passport.authenticate("github", {
     failureRedirect,
     failureMessage: true,
