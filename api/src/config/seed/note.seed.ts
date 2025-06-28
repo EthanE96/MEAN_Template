@@ -1,29 +1,32 @@
-import Note, { INote } from "../../models/note.model";
-import { NoteService } from "../../services/note.service";
+import { INote } from "../../models/note.model";
 
-const noteData: INote[] = [
-  new Note({
+export const noteData: Partial<INote>[] = [
+  {
+    userId: "000000000000000000000001",
     title: "First Note",
     content: "This is my first note.",
-  }),
-  new Note({
+    createdAt: new Date(),
+    updatedAt: new Date(),
+  },
+  {
+    userId: "000000000000000000000001",
     title: "Second Note",
     content: "This is my second note.",
-  }),
-  new Note({
-    title: "Third Note",
-    content: "This is my third note.",
-  }),
+    createdAt: new Date(),
+    updatedAt: new Date(),
+  },
+  {
+    userId: "000000000000000000000002",
+    title: "First Note",
+    content: "This is my first note.",
+    createdAt: new Date(),
+    updatedAt: new Date(),
+  },
+  {
+    userId: "000000000000000000000002",
+    title: "Second Note",
+    content: "This is my second note.",
+    createdAt: new Date(),
+    updatedAt: new Date(),
+  },
 ];
-
-export const seedNotes = async () => {
-  console.log("Seeding Notes...");
-  const noteService = new NoteService();
-  const existingNotes = await noteService.findAll();
-
-  if (existingNotes.length === 0) {
-    await noteService.createMany(noteData).then(() => {
-      console.log("Notes seeded successfully.");
-    });
-  }
-};

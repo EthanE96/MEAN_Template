@@ -1,10 +1,10 @@
 import mongoose, { Document, Schema, Model } from "mongoose";
 import bcrypt from "bcryptjs";
 
-//^ Interface
+//^ Interfaces
 export interface IUser extends Document {
   // Basic profile information
-  _id: string; // Mongoose adds this automatically
+  _id: string;
   email: string;
   firstName?: string;
   lastName?: string;
@@ -132,7 +132,6 @@ const UserSchema = new Schema<IUser>(
 );
 
 //^ Pre-save hook
-
 // Hash password before saving
 UserSchema.pre("save", async function (next) {
   const user = this;
@@ -151,7 +150,9 @@ UserSchema.pre("save", async function (next) {
 
 //^  Methods - For instance level methods (on the document)
 // Method to compare passwords
-UserSchema.methods.comparePassword = async function (candidatePassword: string): Promise<boolean> {
+UserSchema.methods.comparePassword = async function (
+  candidatePassword: string
+): Promise<boolean> {
   return bcrypt.compare(candidatePassword, this.password);
 };
 
