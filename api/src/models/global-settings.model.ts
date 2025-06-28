@@ -6,6 +6,7 @@ export interface IGlobalSettings extends Document {
   seeding: GlobalSeedingConfig;
   rateLimit: GlobalRateLimitConfig;
   session: GlobalSessionConfig;
+  environment: GlobalEnvironmentConfig;
 
   createdAt: Date;
   updatedAt: Date;
@@ -32,6 +33,14 @@ export interface GlobalSessionConfig {
   secureCookies: boolean;
 }
 
+export interface GlobalEnvironmentConfig {
+  env: "development" | "production" | "staging";
+  uiUrl: string;
+  uiFailureUrl: string;
+  uiSuccessUrl: string;
+  apiUrl: string;
+}
+
 //^ Schema
 const GlobalSettingsSchema = new Schema<IGlobalSettings>(
   {
@@ -52,8 +61,20 @@ const GlobalSettingsSchema = new Schema<IGlobalSettings>(
       sessionCookieName: { type: String, required: true },
       secureCookies: { type: Boolean, required: true },
     },
+    environment: {
+      env: {
+        type: String,
+        enum: ["development", "production", "staging"],
+        required: true,
+      },
+      uiUrl: { type: String, required: true },
+      uiFailureUrl: { type: String, required: true },
+      uiSuccessUrl: { type: String, required: true },
+      apiUrl: { type: String, required: true },
+    },
   },
   { timestamps: true }
 );
 
 export default mongoose.model<IGlobalSettings>("GlobalSettings", GlobalSettingsSchema);
+

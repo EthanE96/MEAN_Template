@@ -11,7 +11,7 @@ import { connectDB } from "./config/db.config";
 import { passportConfig } from "./config/passport.config";
 import routes from "./routes/routes";
 import { seedNotes } from "./config/seed/seed";
-import GlobalSettings from "./models/global-settings.model";
+import { getGlobalSettings } from "./utils/global-settings-cache";
 
 const app = express();
 
@@ -24,8 +24,8 @@ async function configureApp() {
   const mongoURI = process.env.MONGODB_URI;
   await connectDB(mongoURI);
 
-  // Fetch global settings from DB
-  const globalSettings = await GlobalSettings.findOne({});
+  // Fetch global settings from cache/DB
+  const globalSettings = await getGlobalSettings();
   if (!globalSettings) {
     throw new Error("Global settings not found in database.");
   }
@@ -49,9 +49,9 @@ async function configureApp() {
 
   /**
    * Middleware: CORS
-   * Restricts origins based on environment variable.
+   * Restricts origins based on global settings.
    */
-  const allowedOrigins = [process.env.UI_URL];
+  const allowedOrigins = [globalSettings.environment.uiUrl];
   app.use(
     cors({
       origin: (origin, callback) => {
@@ -75,7 +75,7 @@ async function configureApp() {
    */
   app.use(
     session({
-      secret: process.env.SESSION_SECRET || "your_secret_key",
+      secret: process.env.SESSION_SECRET || "!7vV$QW^vmU&ne4!#cPu1%",
       resave: false,
       saveUninitialized: false,
       store: MongoStore.create({ mongoUrl: mongoURI }),

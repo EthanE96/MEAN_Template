@@ -1,5 +1,5 @@
 // Seed data for users in the application
-import { IUser } from "../../models/user.model";
+import { IUser } from "../../../models/user.model";
 
 export const userData: Partial<IUser>[] = [
   {
