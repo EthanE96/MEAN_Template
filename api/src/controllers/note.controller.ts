@@ -10,7 +10,12 @@ export class NoteController extends BaseController<INote> {
 
   async summarizeNotes(req: Request, res: Response): Promise<void> {
     try {
-      const notes = await this.noteService.findAll();
+      const userId = req.params.userId || (req.query.userId as string);
+      if (!userId) {
+        res.status(400).json({ message: "Missing userId" });
+        return;
+      }
+      const notes = await this.noteService.findAllByUser(userId);
       const summary = await this.noteService.summarizeNotes(notes);
       res.json(summary);
     } catch (error) {

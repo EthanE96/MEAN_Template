@@ -11,6 +11,7 @@ const globalSettingsService = new BaseService(GlobalSettings);
 const userService = new BaseService(UserModel);
 const noteService = new NoteService();
 
+// Function to seed notes, users, and global settings
 export const seedNotes = async () => {
   try {
     const globalSettings = await globalSettingsService.findOne({});
@@ -21,10 +22,8 @@ export const seedNotes = async () => {
 
       // Add global settings
       if (!globalSettings) {
-        await globalSettingsService.create(globalSettingsData).then(
-          () => console.log("Global settings created successfully."),
-          (error) => console.error("Error creating global settings:", error)
-        );
+        await globalSettingsService.create(globalSettingsData);
+        console.log("Global settings created successfully.");
       }
 
       // Add users
@@ -32,20 +31,16 @@ export const seedNotes = async () => {
         // Check if user already exists by email
         const existingUser = await userService.findOne({ email: user.email });
         if (!existingUser) {
-          await userService.create(user).then(
-            () => console.log(`User ${user.email} created successfully.`),
-            (error) => console.error(`Error creating user ${user.email}:`, error)
-          );
+          await userService.create(user);
+          console.log(`User ${user.email} created successfully.`);
         }
       }
 
       // Add notes
       const existingNotes = await noteService.findOne({});
       if (!existingNotes) {
-        await noteService.createMany(noteData).then(
-          () => console.log("Notes created successfully."),
-          (error) => console.error("Error creating notes:", error)
-        );
+        await noteService.createMany(noteData);
+        console.log("Notes created successfully.");
       }
     }
   } catch (error) {

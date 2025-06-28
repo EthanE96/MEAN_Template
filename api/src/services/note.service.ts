@@ -14,7 +14,6 @@ export class NoteService extends BaseService<INote> {
    * @returns A response from the AI model summarizing the notes
    * @throws Error if there are no notes to summarize or if there is an error calling the AI model
    */
-
   async summarizeNotes(notes: INote[]) {
     const llmService = new LLMService("llama-3.3-70b-versatile", 0.7, 1024);
 

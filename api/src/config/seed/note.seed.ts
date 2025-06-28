@@ -1,3 +1,4 @@
+// Seed data for notes in the application
 import { INote } from "../../models/note.model";
 
 export const noteData: Partial<INote>[] = [
