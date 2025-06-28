@@ -1,4 +1,5 @@
 import express, { Request, Response, NextFunction } from "express";
+import rateLimit from "express-rate-limit";
 import cors from "cors";
 import morgan from "morgan";
 import { connectDB } from "./config/db.config";
@@ -16,8 +17,14 @@ const app = express();
 const mongoURI = process.env.MONGODB_URI;
 connectDB(mongoURI);
 
-// Trust proxy, before middleware
-// app.set("trust proxy", 1);
+// Rate Limiter Middleware
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  max: 100, // Limit each IP to 100 requests per windowMs
+  standardHeaders: true, // Return rate limit info in the `RateLimit-*` headers
+  legacyHeaders: false, // Disable the `X-RateLimit-*` headers
+});
+app.use(limiter);
 
 // Middleware to parse JSON
 app.use(express.json());
