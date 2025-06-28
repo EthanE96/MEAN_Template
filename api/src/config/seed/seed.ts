@@ -1,9 +1,10 @@
-import { userData } from "./users.seed";
-import { noteData } from "./note.seed";
 import GlobalSettings from "../../models/global-settings.model";
 import UserModel from "../../models/user.model";
 import { BaseService } from "../../services/base.service";
 import { NoteService } from "../../services/note.service";
+import { globalSettingsData } from "./global-settings.seed";
+import { noteData } from "./note.seed";
+import { userData } from "./users.seed";
 
 // Instantiate services
 const globalSettingsService = new BaseService(GlobalSettings);
@@ -16,22 +17,35 @@ export const seedNotes = async () => {
 
     // If no global settings, or seeding is enabled, proceed
     if (!globalSettings || globalSettings.seeding.enabled) {
+      console.log("Seeding notes...");
+
+      // Add global settings
+      if (!globalSettings) {
+        await globalSettingsService.create(globalSettingsData).then(
+          () => console.log("Global settings created successfully."),
+          (error) => console.error("Error creating global settings:", error)
+        );
+      }
+
       // Add users
       for (const user of userData) {
-        // Check if user already exists
-        const existingUser = await userService.findOne(user);
+        // Check if user already exists by email
+        const existingUser = await userService.findOne({ email: user.email });
         if (!existingUser) {
-          await userService.create(user);
+          await userService.create(user).then(
+            () => console.log(`User ${user.email} created successfully.`),
+            (error) => console.error(`Error creating user ${user.email}:`, error)
+          );
         }
       }
 
       // Add notes
-      for (const note of noteData) {
-        // Check if note already exists
-        const existingNote = await noteService.findAll();
-        if (!existingNote) {
-          await noteService.create(note);
-        }
+      const existingNotes = await noteService.findOne({});
+      if (!existingNotes) {
+        await noteService.createMany(noteData).then(
+          () => console.log("Notes created successfully."),
+          (error) => console.error("Error creating notes:", error)
+        );
       }
     }
   } catch (error) {

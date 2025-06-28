@@ -9,7 +9,7 @@ import passport from "passport";
 import { passportConfig } from "./config/passport.config";
 import session from "express-session";
 import routes from "./routes/routes";
-import { seedNotes } from "./config/seed/note.seed";
+import { seedNotes } from "./config/seed/seed";
 
 const app = express();
 
