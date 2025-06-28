@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable, BehaviorSubject } from 'rxjs';
 import { tap } from 'rxjs/operators';
 import { environment } from '../../envs/envs';
@@ -11,56 +11,77 @@ export class BaseService<T = any> {
   protected baseURL = environment.apiUrl;
   protected endpoint = ''; // Override this in derived classes
 
+  // The userId to use for all requests (must be set by consumer)
+  userId: string | null = null;
+
   // BehaviorSubject to hold the current list of items
   protected itemsSubject = new BehaviorSubject<T[] | T | null>(null);
   items$ = this.itemsSubject.asObservable();
 
   constructor(protected http: HttpClient) {}
 
-  // GET all items and update the subject
+  // GET all items for user
   getAll(): Observable<T[]> {
+    if (!this.userId) throw new Error('userId is required');
+    const params = new HttpParams().set('userId', this.userId);
     return this.http.get<T[]>(`${this.baseURL}${this.endpoint}`, {
       withCredentials: true,
+      params,
     });
   }
 
-  // GET item by ID (optionally you can add a subject for a single item)
+  // GET item by ID for user
   getById(id: string): Observable<T> {
+    if (!this.userId) throw new Error('userId is required');
+    const params = new HttpParams().set('userId', this.userId);
     return this.http.get<T>(`${this.baseURL}${this.endpoint}/${id}`, {
       withCredentials: true,
+      params,
     });
   }
 
-  // POST - Create new item and refresh the list
+  // POST - Create new item for user
   create(item: Partial<T>): Observable<T> {
+    if (!this.userId) throw new Error('userId is required');
+    // Attach userId to body if not present
+    const body = { ...item, userId: this.userId };
     return this.http
-      .post<T>(`${this.baseURL}${this.endpoint}`, item, {
+      .post<T>(`${this.baseURL}${this.endpoint}`, body, {
         withCredentials: true,
       })
       .pipe(tap((created) => this.updateSubjectWithItem(created)));
   }
 
-  // PUT - Update item and refresh the list
+  // PUT - Update item for user
   update(id: string, item: Partial<T>): Observable<T> {
+    if (!this.userId) throw new Error('userId is required');
+    // Attach userId to body if not present
+    const body = { ...item, userId: this.userId };
     return this.http
-      .put<T>(`${this.baseURL}${this.endpoint}/${id}`, item, {
+      .put<T>(`${this.baseURL}${this.endpoint}/${id}`, body, {
         withCredentials: true,
       })
       .pipe(tap((updated) => this.updateSubjectWithItem(updated)));
   }
 
-  // DELETE - Remove item and refresh the list
+  // DELETE - Remove item for user
   delete(id: string): Observable<void> {
+    if (!this.userId) throw new Error('userId is required');
+    const params = new HttpParams().set('userId', this.userId);
     return this.http
       .delete<void>(`${this.baseURL}${this.endpoint}/${id}`, {
         withCredentials: true,
+        params,
       })
       .pipe(tap(() => this.removeItemFromSubject(id)));
   }
 
-  // PATCH - Partial update and refresh the list
+  // PATCH - Partial update for user
   patch(id: string, item: Partial<T>): Observable<T> {
-    return this.http.patch<T>(`${this.baseURL}${this.endpoint}/${id}`, item, {
+    if (!this.userId) throw new Error('userId is required');
+    // Attach userId to body if not present
+    const body = { ...item, userId: this.userId };
+    return this.http.patch<T>(`${this.baseURL}${this.endpoint}/${id}`, body, {
       withCredentials: true,
     });
   }

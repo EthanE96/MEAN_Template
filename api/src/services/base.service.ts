@@ -119,7 +119,7 @@ export class BaseService<T> {
    */
   public async findAllByUser(userId: string): Promise<T[]> {
     try {
-      return await this.model.find({ user: userId });
+      return await this.model.find({ userId }); // changed from { user: userId }
     } catch (error) {
       throw new Error("Error fetching user documents: " + error);
     }
@@ -133,7 +133,7 @@ export class BaseService<T> {
    */
   public async findByIdAndUser(id: string, userId: string): Promise<T | null> {
     try {
-      return await this.model.findOne({ _id: id, user: userId });
+      return await this.model.findOne({ _id: id, userId }); // changed from { _id: id, user: userId }
     } catch (error) {
       throw new Error("Error fetching user document: " + error);
     }
@@ -147,7 +147,7 @@ export class BaseService<T> {
    */
   public async createForUser(data: Partial<T>, userId: string): Promise<T> {
     try {
-      const document = new this.model({ ...data, user: userId });
+      const document = new this.model({ ...data, userId }); // changed from { ...data, user: userId }
       return (await document.save()) as T;
     } catch (error) {
       throw new Error("Error creating user document: " + error);
@@ -163,7 +163,7 @@ export class BaseService<T> {
   public async createManyForUser(data: Partial<T>[], userId: string): Promise<T[]> {
     try {
       const documents = await this.model.insertMany(
-        data.map((d) => ({ ...d, user: userId }))
+        data.map((d) => ({ ...d, userId })) // changed from { ...d, user: userId }
       );
       return documents as T[];
     } catch (error) {
@@ -184,9 +184,9 @@ export class BaseService<T> {
     userId: string
   ): Promise<T | null> {
     try {
-      return await this.model.findOneAndUpdate({ _id: id, user: userId }, data, {
+      return await this.model.findOneAndUpdate({ _id: id, userId }, data, {
         new: true,
-      });
+      }); // changed from { _id: id, user: userId }
     } catch (error) {
       throw new Error("Error updating user document: " + error);
     }
@@ -200,7 +200,7 @@ export class BaseService<T> {
    */
   public async deleteForUser(id: string, userId: string): Promise<T | null> {
     try {
-      return await this.model.findOneAndDelete({ _id: id, user: userId });
+      return await this.model.findOneAndDelete({ _id: id, userId }); // changed from { _id: id, user: userId }
     } catch (error) {
       throw new Error("Error deleting user document: " + error);
     }
@@ -213,7 +213,7 @@ export class BaseService<T> {
    */
   public async deleteAllForUser(userId: string): Promise<void> {
     try {
-      await this.model.deleteMany({ user: userId });
+      await this.model.deleteMany({ userId }); // changed from { user: userId }
     } catch (error) {
       throw new Error("Error deleting all user documents: " + error);
     }

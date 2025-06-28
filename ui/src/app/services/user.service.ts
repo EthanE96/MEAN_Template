@@ -19,6 +19,18 @@ export class UserService extends BaseService<IUser> {
 
     this.currentUserSubject = this.authService.currentUserSubject;
     this.currentUser$ = this.authService.currentUser$;
+
+    // Set userId from current user if available
+    const current = this.currentUserSubject.value;
+    if (current && current._id) {
+      this.userId = current._id;
+    }
+    // Optionally, subscribe to changes in currentUserSubject to update userId
+    this.currentUserSubject.subscribe((user) => {
+      if (user && user._id) {
+        this.userId = user._id;
+      }
+    });
   }
 
   // Have to override because not inheriting from BaseService
