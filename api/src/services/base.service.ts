@@ -1,11 +1,17 @@
-import { Model } from "mongoose";
+import { Model, FilterQuery, UpdateQuery } from "mongoose";
 
-// BaseService class that provides CRUD operations for a given Mongoose model
-// This class is generic and can be used with any Mongoose model.
-// It includes methods for basic CRUD operations, as well as user-specific operations.
+/**
+ * BaseService class that provides CRUD operations for a given Mongoose model.
+ * This class is generic and can be used with any Mongoose model.
+ * It includes methods for basic CRUD operations, as well as user-specific operations.
+ */
 export class BaseService<T> {
   protected model: Model<T>;
 
+  /**
+   * Constructs an instance of BaseService.
+   * @param model Mongoose model instance
+   */
   constructor(model: Model<T>) {
     this.model = model;
   }
@@ -16,22 +22,22 @@ export class BaseService<T> {
    */
   public async findAll(): Promise<T[]> {
     try {
-      return await this.model.find();
+      return await this.model.find().exec();
     } catch (error) {
-      throw new Error("Error fetching documents: " + error);
+      throw error;
     }
   }
 
   /**
    * Find a single document matching the query.
-   * @param query The query object.
+   * @param query The query object (Mongoose filter).
    * @returns Promise resolving to the found document or null.
    */
-  public async findOne(query: Partial<T>): Promise<T | null> {
+  public async findOne(query: FilterQuery<T>): Promise<T | null> {
     try {
-      return await this.model.findOne(query);
+      return await this.model.findOne(query).exec();
     } catch (error) {
-      throw new Error("Error fetching document: " + error);
+      throw error;
     }
   }
 
@@ -42,9 +48,9 @@ export class BaseService<T> {
    */
   public async findById(id: string): Promise<T | null> {
     try {
-      return await this.model.findById(id);
+      return await this.model.findById(id).exec();
     } catch (error) {
-      throw new Error("Error fetching document: " + error);
+      throw error;
     }
   }
 
@@ -58,7 +64,7 @@ export class BaseService<T> {
       const document = new this.model(data);
       return (await document.save()) as T;
     } catch (error) {
-      throw new Error("Error creating document: " + error);
+      throw error;
     }
   }
 
@@ -72,21 +78,21 @@ export class BaseService<T> {
       const documents = await this.model.insertMany(data);
       return documents as T[];
     } catch (error) {
-      throw new Error("Error creating documents: " + error);
+      throw error;
     }
   }
 
   /**
    * Update a document by its ID.
    * @param id The document ID.
-   * @param data The update data.
+   * @param data The update data (Mongoose update query).
    * @returns Promise resolving to the updated document or null.
    */
-  public async update(id: string, data: Partial<T>): Promise<T | null> {
+  public async update(id: string, data: UpdateQuery<T>): Promise<T | null> {
     try {
-      return await this.model.findByIdAndUpdate(id, data, { new: true });
+      return await this.model.findByIdAndUpdate(id, data, { new: true }).exec();
     } catch (error) {
-      throw new Error("Error updating document: " + error);
+      throw error;
     }
   }
 
@@ -97,9 +103,9 @@ export class BaseService<T> {
    */
   public async delete(id: string): Promise<T | null> {
     try {
-      return await this.model.findByIdAndDelete(id);
+      return await this.model.findByIdAndDelete(id).exec();
     } catch (error) {
-      throw new Error("Error deleting document: " + error);
+      throw error;
     }
   }
 
@@ -109,9 +115,9 @@ export class BaseService<T> {
    */
   public async deleteAll(): Promise<void> {
     try {
-      await this.model.deleteMany({});
+      await this.model.deleteMany({}).exec();
     } catch (error) {
-      throw new Error("Error deleting all documents: " + error);
+      throw error;
     }
   }
 
@@ -122,9 +128,9 @@ export class BaseService<T> {
    */
   public async findAllByUser(userId: string): Promise<T[]> {
     try {
-      return await this.model.find({ userId });
+      return await this.model.find({ userId } as FilterQuery<T>).exec();
     } catch (error) {
-      throw new Error("Error fetching user documents: " + error);
+      throw error;
     }
   }
 
@@ -136,9 +142,9 @@ export class BaseService<T> {
    */
   public async findByIdAndUser(id: string, userId: string): Promise<T | null> {
     try {
-      return await this.model.findOne({ _id: id, userId });
+      return await this.model.findOne({ _id: id, userId } as FilterQuery<T>).exec();
     } catch (error) {
-      throw new Error("Error fetching user document: " + error);
+      throw error;
     }
   }
 
@@ -153,7 +159,7 @@ export class BaseService<T> {
       const document = new this.model({ ...data, userId });
       return (await document.save()) as T;
     } catch (error) {
-      throw new Error("Error creating user document: " + error);
+      throw error;
     }
   }
 
@@ -168,26 +174,28 @@ export class BaseService<T> {
       const documents = await this.model.insertMany(data.map((d) => ({ ...d, userId })));
       return documents as T[];
     } catch (error) {
-      throw new Error("Error creating user documents: " + error);
+      throw error;
     }
   }
 
   /**
    * Update a document by ID for a specific user.
    * @param id The document ID.
-   * @param data The update data.
+   * @param data The update data (Mongoose update query).
    * @param userId The user's ID.
    * @returns Promise resolving to the updated document or null.
    */
   public async updateForUser(
     id: string,
-    data: Partial<T>,
+    data: UpdateQuery<T>,
     userId: string
   ): Promise<T | null> {
     try {
-      return await this.model.findOneAndUpdate({ _id: id, userId }, data, { new: true });
+      return await this.model
+        .findOneAndUpdate({ _id: id, userId } as FilterQuery<T>, data, { new: true })
+        .exec();
     } catch (error) {
-      throw new Error("Error updating user document: " + error);
+      throw error;
     }
   }
 
@@ -199,9 +207,11 @@ export class BaseService<T> {
    */
   public async deleteForUser(id: string, userId: string): Promise<T | null> {
     try {
-      return await this.model.findOneAndDelete({ _id: id, userId });
+      return await this.model
+        .findOneAndDelete({ _id: id, userId } as FilterQuery<T>)
+        .exec();
     } catch (error) {
-      throw new Error("Error deleting user document: " + error);
+      throw error;
     }
   }
 
@@ -212,9 +222,9 @@ export class BaseService<T> {
    */
   public async deleteAllForUser(userId: string): Promise<void> {
     try {
-      await this.model.deleteMany({ userId });
+      await this.model.deleteMany({ userId } as FilterQuery<T>).exec();
     } catch (error) {
-      throw new Error("Error deleting all user documents: " + error);
+      throw error;
     }
   }
 }

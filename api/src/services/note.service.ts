@@ -38,7 +38,7 @@ export class NoteService extends BaseService<INote> {
 
       return await llmService.sendMessageToModel(systemPrompt, notesContent);
     } catch (error) {
-      throw new Error(`Error summarizing notes: ${error}`);
+      throw error;
     }
   }
 }

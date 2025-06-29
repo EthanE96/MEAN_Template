@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import { IUser } from "../models/user.model";
+import { IApiResponse } from "../models/api-response.model";
 
 /**
  * Middleware to check if the user is authenticated.
@@ -16,8 +17,9 @@ export const isAuthenticated = (
   }
   res.status(401).json({
     success: false,
+    authenticated: false,
     message: "Authentication required",
-  });
+  } as IApiResponse<null>);
 };
 
 /**
@@ -31,6 +33,7 @@ export const isAdmin = (req: Request, res: Response, next: NextFunction): void =
   }
   res.status(403).json({
     success: false,
+    authenticated: true,
     message: "Admin access required",
-  });
+  } as IApiResponse<null>);
 };

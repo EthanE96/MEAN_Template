@@ -111,11 +111,12 @@ async function configureApp() {
    * Error-handling middleware
    * Catches errors and sends a JSON response.
    */
-  app.use((error: Error, _req: Request, res: Response, _next: NextFunction) => {
+  app.use((error: any, _req: Request, res: Response, _next: NextFunction) => {
     console.log(error.stack);
-    res.status(500).json({
-      message: error.message,
-      error: error.stack,
+    res.status(error.status || 500).json({
+      success: false,
+      message: error.message || "Internal Server Error",
+      errors: error.errors || error.stack,
     });
   });
 }

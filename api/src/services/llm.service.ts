@@ -37,7 +37,7 @@ export class LLMService {
 
       return response.content.toString();
     } catch (error) {
-      throw new Error(`Failed to invoke AI model: ${error}`);
+      throw error;
     }
   }
 }
