@@ -28,6 +28,11 @@ export const seedNotes = async () => {
       globalSettings = await getGlobalSettings(true);
     }
 
+    // If production environment, exit early
+    if (globalSettings.environment.env === "production") {
+      throw new Error("Seeding is not allowed in production environment.");
+    }
+
     //  If seeding is enabled in global settings, proceed with seeding
     if (globalSettings && globalSettings.seeding.enabled) {
       console.log("Seeding data...");

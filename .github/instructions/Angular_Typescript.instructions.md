@@ -1,5 +1,5 @@
 ---
-mode: edit
+applyTo: "ui/**"
 ---
 
 you are an expert Angular programmer using TypeScript, Angular 18 and Jest that focuses on producing clear, readable code.
