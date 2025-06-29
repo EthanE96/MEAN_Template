@@ -20,7 +20,7 @@ export class BaseController<T> {
    * @description Extracts userId from authenticated user session and validates it
    * @returns userId if valid, otherwise sends a 401 response
    */
-  protected getUserId(req: Request, res: Response): string | undefined {
+  public getUserId(req: Request, res: Response): string | undefined {
     // Only trust the user from the session (set by Passport)
     if (req.user && typeof req.user === "object" && "id" in req.user) {
       return (req.user as any).id;
@@ -32,7 +32,7 @@ export class BaseController<T> {
   /**
    * @description Sends a consistent error response
    */
-  private handleError(res: Response, error: any, status: number = 400): void {
+  public handleError(res: Response, error: any, status: number = 400): void {
     res.status(status).json({
       message: error?.message || "Unknown error",
       name: error?.name,
@@ -87,9 +87,10 @@ export class BaseController<T> {
     try {
       const userId = this.getUserId(req, res);
       if (!userId) return;
+
       const document = await this.service.updateForUser(req.params.id, req.body, userId);
       if (!document) {
-        res.status(404).json({ message: "Document not found" });
+        res.status(404).json("Document not found.");
         return;
       }
       res.json(document);

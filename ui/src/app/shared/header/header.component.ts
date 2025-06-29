@@ -5,7 +5,7 @@ import { Observable } from 'rxjs';
 import { ThemeComponent } from '../theme/theme.component';
 import { LucideAngularModule, PanelLeftOpen, Settings } from 'lucide-angular';
 import { IUser } from '../../models/user.model';
-import { UserService } from '../../services/user.service';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-header',
@@ -26,10 +26,10 @@ export class HeaderComponent {
   constructor(
     private router: Router,
     private themeComponent: ThemeComponent,
-    private userService: UserService
+    private authService: AuthService
   ) {
     this.currentTheme = this.themeComponent.currentTheme;
-    this.currentUser$ = this.userService.currentUser$;
+    this.currentUser$ = this.authService.currentUser$;
   }
 
   onDrawerChange() {

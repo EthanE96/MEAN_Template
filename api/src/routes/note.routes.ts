@@ -4,8 +4,9 @@ import { INote } from "../models/note.model";
 import { NoteService } from "../services/note.service";
 import BaseRouter from "./base.routes";
 
-const noteController = new NoteController(new NoteService());
 const router = Router();
+
+const noteController = new NoteController(new NoteService());
 const baseRouter = new BaseRouter<INote>(noteController, {
   getAll: true,
   getById: true,

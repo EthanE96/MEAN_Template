@@ -30,4 +30,9 @@ router.use("/user", isAuthenticated, userRoutes);
 // /api/api-docs
 router.use("/", isAuthenticated, swaggerRoutes);
 
+// 404 handler for unknown routes
+router.use((_req: Request, res: Response) => {
+  res.status(404).json("Route does not exist.");
+});
+
 export default router;

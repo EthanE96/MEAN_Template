@@ -1,29 +1,25 @@
-import { Injectable } from '@angular/core';
+import { inject, Injectable } from '@angular/core';
 import { environment } from '../../envs/envs';
 import { HttpClient } from '@angular/common/http';
-import { BehaviorSubject } from 'rxjs';
+import { BehaviorSubject, Observable } from 'rxjs';
 import { IUser } from '../models/user.model';
 
-@Injectable({
-  providedIn: 'root',
-})
-
-// All routing will be handled by the UI, so this service will only handle authentication
+@Injectable({ providedIn: 'root' })
 export class AuthService {
-  private baseURL = `${environment.apiUrl}/auth`;
+  private http = inject(HttpClient);
+  private baseURL = `${environment.apiUrl}`;
   currentUserSubject = new BehaviorSubject<Partial<IUser> | null>(null);
   currentUser$ = this.currentUserSubject.asObservable();
 
-  constructor(private http: HttpClient) {
-    console.log(this.baseURL);
-  }
+  constructor() {}
 
+  //^ Auth Methods
   // Updates the currentUserSubject with session user data
   async getSession(): Promise<Partial<IUser> | null> {
     return new Promise<Partial<IUser> | null>((resolve, reject) => {
       this.http
         .get<{ authenticated: boolean; user: Partial<IUser>; error: any }>(
-          `${this.baseURL}/me`,
+          `${this.baseURL}/auth/me`,
           { withCredentials: true }
         )
         .subscribe({
@@ -35,6 +31,9 @@ export class AuthService {
             ) {
               this.currentUserSubject.next(response.user);
               resolve(response.user);
+            } else {
+              this.handleUnauthenticated();
+              resolve(null);
             }
           },
           // Handle error with 4xx or 5xx status
@@ -48,12 +47,12 @@ export class AuthService {
 
   // Redirects to the google login page, then to the callback URL, sets session
   authWithGoogle(): void {
-    window.location.href = `${this.baseURL}/google`;
+    window.location.href = `${this.baseURL}/auth/google`;
   }
 
   // Redirects to the google login page, then to the callback URL, sets session
   authWithGitHub(): void {
-    window.location.href = `${this.baseURL}/github`;
+    window.location.href = `${this.baseURL}/auth/github`;
   }
 
   // Local login, sets session
@@ -65,7 +64,7 @@ export class AuthService {
     return new Promise<void>((resolve, reject) => {
       this.http
         .post(
-          `${this.baseURL}/login`,
+          `${this.baseURL}/auth/login`,
           { email, password, rememberMe },
           { withCredentials: true }
         )
@@ -92,7 +91,7 @@ export class AuthService {
     return new Promise<void>((resolve, reject) => {
       this.http
         .post(
-          `${this.baseURL}/signup`,
+          `${this.baseURL}/auth/signup`,
           {
             email,
             password,
@@ -117,7 +116,7 @@ export class AuthService {
   // Logs the user out
   logout() {
     this.http
-      .post(`${this.baseURL}/logout`, {}, { withCredentials: true })
+      .post(`${this.baseURL}/auth/logout`, {}, { withCredentials: true })
       .subscribe(() => {
         this.handleUnauthenticated();
         console.log('logout successful, service');
@@ -130,16 +129,6 @@ export class AuthService {
     this.currentUserSubject.next(null);
   }
 
-  /**
-   * Checks if the user is currently authenticated.
-   *
-   * This method first checks if the `currentUserSubject` has a value,
-   * indicating that the user is already authenticated in the current session.
-   * If not, it attempts to retrieve the session from the backend by calling `getSession()`.
-   * Returns `true` if the user is authenticated, otherwise returns `false`.
-   *
-   * @returns {Promise<boolean>} A promise that resolves to `true` if the user is authenticated, or `false` otherwise.
-   */
   async isAuthenticated(): Promise<boolean> {
     // Check if currentUserSubject has a value
     if (this.currentUserSubject.value) {
@@ -151,5 +140,12 @@ export class AuthService {
     } catch {
       return false;
     }
+  }
+
+  //^ User Methods
+  updateUser(user: Partial<IUser>): Observable<Partial<IUser>> {
+    return this.http.put<Partial<IUser>>(`${this.baseURL}/user`, user, {
+      withCredentials: true,
+    });
   }
 }

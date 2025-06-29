@@ -3,7 +3,6 @@ import { NgIf } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Observable } from 'rxjs';
 import { IUser } from '../../../models/user.model';
-import { UserService } from '../../../services/user.service';
 import { AuthService } from '../../../services/auth.service';
 import { Router } from '@angular/router';
 import { MessageComponent } from '../../../shared/message/message.component';
@@ -19,28 +18,32 @@ export class ProfileComponent {
   errorMessage: string | null = null;
   successMessage: string | null = null;
 
-  constructor(
-    private userService: UserService,
-    private authService: AuthService,
-    private router: Router
-  ) {
-    this.currentUser$ = this.userService.currentUser$;
-
+  constructor(private authService: AuthService, private router: Router) {
+    this.currentUser$ = this.authService.currentUser$;
     this.currentUser$.subscribe((user) => {
       this.user = user ? { ...user } : null;
     });
   }
 
   updateProfile() {
-    if (this.user && this.user._id) {
-      this.userService.update(this.user._id, this.user).subscribe({
-        next: () => this.handleSuccessChange('Profile updated successfully!'),
-        error: (error) =>
-          this.handleErrorChange(error.error || 'Failed to update profile.'),
-      });
-    } else {
-      console.error('User ID is missing. Cannot update profile.');
+    if (!this.user) {
+      this.handleErrorChange('No user data available to update.');
+      return;
     }
+
+    this.authService.updateUser(this.user).subscribe({
+      next: (res) => {
+        console.log(res);
+        if (res && res._id) {
+          this.authService.currentUserSubject.next(res);
+          this.handleSuccessChange('Profile updated successfully.');
+        }
+      },
+      error: (error) => {
+        this.handleErrorChange(error.error);
+        this.user = this.authService.currentUserSubject.value || null;
+      },
+    });
   }
 
   onLogout() {
