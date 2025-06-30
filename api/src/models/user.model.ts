@@ -1,5 +1,6 @@
 import mongoose, { Document, Schema, Model } from "mongoose";
 import bcrypt from "bcryptjs";
+import crypto from "crypto"; // Added ES module import for crypto
 
 //^ Interfaces
 export interface IUser extends Document {
@@ -134,14 +135,11 @@ const UserSchema = new Schema<IUser>(
 //^ Pre-save hook
 // Hash password before saving
 UserSchema.pre("save", async function (next) {
-  const user = this;
-
-  // Only hash the password if it has been modified (or is new)
-  if (!user.isModified("password")) return next();
+  if (!this.isModified("password")) return next();
 
   try {
     const salt = await bcrypt.genSalt(10);
-    user.password = await bcrypt.hash(user.password, salt);
+    this.password = await bcrypt.hash(this.password, salt);
     next();
   } catch (error) {
     next(error as Error);
@@ -215,7 +213,7 @@ UserSchema.statics.findOrCreateFromOAuthProfile = async function (
   const newUser = new this({
     email: email,
     username: profile.username || `${provider}_${providerId.substring(0, 8)}`,
-    password: require("crypto").randomBytes(32).toString("hex"),
+    password: crypto.randomBytes(32).toString("hex"), // Use imported crypto
     displayName: profile.displayName,
     firstName: profile.name?.givenName || firstName || "",
     lastName: profile.name?.familyName || lastName || "",
@@ -253,7 +251,7 @@ UserSchema.statics.createLocalFromSignup = async function (
   const newUser = new this({
     email: email.toLowerCase(),
     username: email.toLowerCase(),
-    password, // Will be hashed by pre-save hook
+    password: password, // Will be hashed by pre-save hook
     firstName,
     lastName,
   });

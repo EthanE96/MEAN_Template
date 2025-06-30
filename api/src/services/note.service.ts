@@ -1,3 +1,4 @@
+import { NotFoundError } from "../models/errors.model";
 import Note, { INote } from "../models/note.model";
 import { BaseService } from "./base.service";
 import { LLMService } from "./llm.service";
@@ -19,26 +20,22 @@ export class NoteService extends BaseService<INote> {
 
     // Check if notes are empty
     if (notes.length <= 0) {
-      throw new Error("Zero notes found for summarization");
+      throw new NotFoundError("Zero notes found for summarization.");
     }
 
-    try {
-      // Prepare the notes for summarization
-      const notesContent = notes
-        .map((note) => note.content)
-        .filter(Boolean)
-        .join("\n\n");
+    // Prepare the notes for summarization
+    const notesContent = notes
+      .map((note) => note.content)
+      .filter(Boolean)
+      .join("\n\n");
 
-      if (!notesContent) {
-        throw new Error("No valid note content found");
-      }
-
-      const systemPrompt =
-        "You are a helpful assistant that summarizes notes. Return your response in markdown only. Create a concise summary of the following notes:";
-
-      return await llmService.sendMessageToModel(systemPrompt, notesContent);
-    } catch (error) {
-      throw error;
+    if (!notesContent) {
+      throw new NotFoundError("No valid note content found.");
     }
+
+    const systemPrompt =
+      "You are a helpful assistant that summarizes notes. Return your response in markdown only. Create a concise summary of the following notes:";
+
+    return await llmService.sendMessageToModel(systemPrompt, notesContent);
   }
 }

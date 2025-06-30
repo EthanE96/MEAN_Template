@@ -30,14 +30,8 @@ export class LLMService {
    * @throws Error if the model invocation fails.
    */
   async sendMessageToModel(systemMessage: string, humanMessage: string): Promise<string> {
-    try {
-      const messages = [new SystemMessage(systemMessage), new HumanMessage(humanMessage)];
-
-      const response = await this.model.invoke(messages);
-
-      return response.content.toString();
-    } catch (error) {
-      throw error;
-    }
+    const messages = [new SystemMessage(systemMessage), new HumanMessage(humanMessage)];
+    const response = await this.model.invoke(messages);
+    return response.content.toString();
   }
 }

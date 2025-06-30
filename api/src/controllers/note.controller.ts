@@ -1,4 +1,5 @@
-import { NextFunction, Request, Response } from "express";
+import "express-async-errors";
+import { Request, Response } from "express";
 import { INote } from "../models/note.model";
 import { IApiResponse } from "../models/api-response.model";
 import { NoteService } from "../services/note.service";
@@ -9,23 +10,16 @@ export class NoteController extends BaseController<INote> {
     super(noteService);
   }
 
-  async summarizeNotes(
-    req: Request,
-    res: Response,
-    next: NextFunction = () => {}
-  ): Promise<void> {
-    try {
-      const userId = this.getUserId(req, res);
-      if (!userId) return;
-      const notes = await this.noteService.findAllByUser(userId);
-      const summary = await this.noteService.summarizeNotes(notes);
-      res.json({
-        success: true,
-        data: summary,
-        message: "Notes summarized successfully.",
-      } as IApiResponse<string>);
-    } catch (error) {
-      return next(error);
-    }
+  async summarizeNotes(req: Request, res: Response): Promise<void> {
+    const userId = this.getUserId(req);
+    if (!userId) return;
+    const notes = await this.noteService.findAllByUser(userId);
+    const summary = await this.noteService.summarizeNotes(notes);
+
+    res.json({
+      success: true,
+      data: summary,
+      message: "Notes summarized successfully.",
+    } as IApiResponse<string>);
   }
 }

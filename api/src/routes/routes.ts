@@ -33,7 +33,7 @@ router.use("/", isAuthenticated, swaggerRoutes);
 
 // 404 handler for unknown routes
 router.use((req: Request, _res: Response, next: NextFunction) => {
-  next(new AppError(`Can't find ${req.originalUrl} on this server!`, 404));
+  next(new AppError(404, true, `Can't find ${req.originalUrl} on this server!`));
 });
 
 export default router;

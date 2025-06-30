@@ -23,7 +23,7 @@ export class AppError extends Error implements IAppError {
 
   constructor(
     statusCode: number,
-    isOperational: boolean = true,
+    isOperational: boolean = true, // Operational errors are expected and handled by the application
     message: string = "",
     stack?: string
   ) {
