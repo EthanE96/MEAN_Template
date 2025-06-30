@@ -1,33 +1,31 @@
 {
   "swagger": "2.0",
   "info": {
-    "description": "API documentation for MEAN Template Authentication",
+    "description": "API documentation for MEAN Template application.",
     "version": "1.0.0",
     "title": "MEAN Template API Documentation",
     "contact": {
-      "email": "ethanaedwards5@outlook.com"
+      "email": "ethanaedwards5@outlook.com",
+      "name": "Ethan Edwards",
+      "github": "https://github.com/EthanE96/MEAN_Template"
     }
   },
   "host": "localhost:3000",
   "basePath": "/api",
   "tags": [
-    {
-      "name": "auth",
-      "description": "Authentication endpoints"
-    },
-    {
-      "name": "notes",
-      "description": "Note management endpoints"
-    }
+    { "name": "auth", "description": "Authentication endpoints" },
+    { "name": "notes", "description": "Note management endpoints" },
+    { "name": "user", "description": "User profile endpoints" },
+    { "name": "settings", "description": "Settings endpoints" }
   ],
   "schemes": ["http", "https"],
   "paths": {
-    "/auth/register": {
+    "/auth/signup": {
       "post": {
         "tags": ["auth"],
         "summary": "Register a new user",
         "description": "Create a new user account with email and password",
-        "operationId": "register",
+        "operationId": "signup",
         "consumes": ["application/json"],
         "produces": ["application/json"],
         "parameters": [
@@ -36,23 +34,17 @@
             "name": "body",
             "description": "User registration details",
             "required": true,
-            "schema": {
-              "$ref": "#/definitions/RegisterRequest"
-            }
+            "schema": { "$ref": "#/definitions/RegisterRequest" }
           }
         ],
         "responses": {
           "201": {
             "description": "Registration successful",
-            "schema": {
-              "$ref": "#/definitions/AuthResponse"
-            }
+            "schema": { "$ref": "#/definitions/AuthResponse" }
           },
           "409": {
             "description": "Email or username already exists",
-            "schema": {
-              "$ref": "#/definitions/ErrorResponse"
-            }
+            "schema": { "$ref": "#/definitions/ErrorResponse" }
           }
         }
       }
@@ -71,23 +63,17 @@
             "name": "body",
             "description": "Login credentials",
             "required": true,
-            "schema": {
-              "$ref": "#/definitions/LoginRequest"
-            }
+            "schema": { "$ref": "#/definitions/LoginRequest" }
           }
         ],
         "responses": {
           "200": {
             "description": "Login successful",
-            "schema": {
-              "$ref": "#/definitions/AuthResponse"
-            }
+            "schema": { "$ref": "#/definitions/AuthResponse" }
           },
           "401": {
             "description": "Authentication failed",
-            "schema": {
-              "$ref": "#/definitions/ErrorResponse"
-            }
+            "schema": { "$ref": "#/definitions/ErrorResponse" }
           }
         }
       }
@@ -99,15 +85,9 @@
         "description": "End user session",
         "operationId": "logout",
         "produces": ["application/json"],
-        "security": [
-          {
-            "session": []
-          }
-        ],
+        "security": [{ "session": [] }],
         "responses": {
-          "200": {
-            "description": "Logout successful"
-          }
+          "200": { "description": "Logout successful" }
         }
       }
     },
@@ -118,14 +98,11 @@
         "description": "Get currently authenticated user information",
         "operationId": "getCurrentUser",
         "produces": ["application/json"],
-        "security": [
-          {
-            "session": []
-          }
-        ],
+        "security": [{ "session": [] }],
         "responses": {
           "200": {
-            "description": "User information retrieved successfully"
+            "description": "User information retrieved successfully",
+            "schema": { "$ref": "#/definitions/UserResponse" }
           }
         }
       }
@@ -137,22 +114,40 @@
         "description": "Initiate Google OAuth2.0 authentication flow",
         "operationId": "googleAuth",
         "responses": {
-          "302": {
-            "description": "Redirect to Google authentication"
-          }
+          "302": { "description": "Redirect to Google authentication" }
         }
       }
     },
-    "/auth/google/callback": {
+    "/auth/callback/google": {
       "get": {
         "tags": ["auth"],
         "summary": "Google OAuth2.0 callback",
         "description": "Handle the Google OAuth2.0 callback",
         "operationId": "googleCallback",
         "responses": {
-          "302": {
-            "description": "Redirect to application"
-          }
+          "302": { "description": "Redirect to application" }
+        }
+      }
+    },
+    "/auth/github": {
+      "get": {
+        "tags": ["auth"],
+        "summary": "GitHub OAuth2.0 authentication",
+        "description": "Initiate GitHub OAuth2.0 authentication flow",
+        "operationId": "githubAuth",
+        "responses": {
+          "302": { "description": "Redirect to GitHub authentication" }
+        }
+      }
+    },
+    "/auth/callback/github": {
+      "get": {
+        "tags": ["auth"],
+        "summary": "GitHub OAuth2.0 callback",
+        "description": "Handle the GitHub OAuth2.0 callback",
+        "operationId": "githubCallback",
+        "responses": {
+          "302": { "description": "Redirect to application" }
         }
       }
     },
@@ -163,19 +158,13 @@
         "description": "Retrieve all notes",
         "operationId": "getAllNotes",
         "produces": ["application/json"],
-        "security": [
-          {
-            "session": []
-          }
-        ],
+        "security": [{ "session": [] }],
         "responses": {
           "200": {
             "description": "Notes retrieved successfully",
             "schema": {
               "type": "array",
-              "items": {
-                "$ref": "#/definitions/Notes"
-              }
+              "items": { "$ref": "#/definitions/Note" }
             }
           }
         }
@@ -187,28 +176,33 @@
         "operationId": "createNote",
         "consumes": ["application/json"],
         "produces": ["application/json"],
-        "security": [
-          {
-            "session": []
-          }
-        ],
+        "security": [{ "session": [] }],
         "parameters": [
           {
             "in": "body",
             "name": "body",
             "description": "Note object",
             "required": true,
-            "schema": {
-              "$ref": "#/definitions/Notes"
-            }
+            "schema": { "$ref": "#/definitions/Note" }
           }
         ],
         "responses": {
           "201": {
             "description": "Note created successfully",
-            "schema": {
-              "$ref": "#/definitions/Notes"
-            }
+            "schema": { "$ref": "#/definitions/Note" }
+          }
+        }
+      },
+      "delete": {
+        "tags": ["notes"],
+        "summary": "Delete all notes",
+        "description": "Delete all notes for the user",
+        "operationId": "deleteAllNotes",
+        "security": [{ "session": [] }],
+        "responses": {
+          "200": {
+            "description": "All notes deleted",
+            "schema": { "$ref": "#/definitions/SuccessResponse" }
           }
         }
       }
@@ -228,23 +222,15 @@
             "description": "ID of the note"
           }
         ],
-        "security": [
-          {
-            "session": []
-          }
-        ],
+        "security": [{ "session": [] }],
         "responses": {
           "200": {
             "description": "Note retrieved successfully",
-            "schema": {
-              "$ref": "#/definitions/Notes"
-            }
+            "schema": { "$ref": "#/definitions/Note" }
           },
           "404": {
             "description": "Note not found",
-            "schema": {
-              "$ref": "#/definitions/ErrorResponse"
-            }
+            "schema": { "$ref": "#/definitions/ErrorResponse" }
           }
         }
       },
@@ -266,28 +252,18 @@
             "name": "body",
             "description": "Updated note object",
             "required": true,
-            "schema": {
-              "$ref": "#/definitions/Notes"
-            }
+            "schema": { "$ref": "#/definitions/Note" }
           }
         ],
-        "security": [
-          {
-            "session": []
-          }
-        ],
+        "security": [{ "session": [] }],
         "responses": {
           "200": {
             "description": "Note updated successfully",
-            "schema": {
-              "$ref": "#/definitions/Notes"
-            }
+            "schema": { "$ref": "#/definitions/Note" }
           },
           "404": {
             "description": "Note not found",
-            "schema": {
-              "$ref": "#/definitions/ErrorResponse"
-            }
+            "schema": { "$ref": "#/definitions/ErrorResponse" }
           }
         }
       },
@@ -305,23 +281,15 @@
             "description": "ID of the note"
           }
         ],
-        "security": [
-          {
-            "session": []
-          }
-        ],
+        "security": [{ "session": [] }],
         "responses": {
           "200": {
             "description": "Note deleted successfully",
-            "schema": {
-              "$ref": "#/definitions/SuccessResponse"
-            }
+            "schema": { "$ref": "#/definitions/SuccessResponse" }
           },
           "404": {
             "description": "Note not found",
-            "schema": {
-              "$ref": "#/definitions/ErrorResponse"
-            }
+            "schema": { "$ref": "#/definitions/ErrorResponse" }
           }
         }
       }
@@ -333,22 +301,78 @@
         "description": "Get an AI-generated summary of all notes",
         "operationId": "summarizeNotes",
         "produces": ["application/json"],
-        "security": [
+        "security": [{ "session": [] }],
+        "responses": {
+          "200": {
+            "description": "Notes summary retrieved successfully",
+            "schema": { "type": "string" }
+          },
+          "500": {
+            "description": "Error summarizing notes",
+            "schema": { "$ref": "#/definitions/ErrorResponse" }
+          }
+        }
+      }
+    },
+    "/user": {
+      "put": {
+        "tags": ["user"],
+        "summary": "Update user profile",
+        "description": "Update the authenticated user's profile",
+        "operationId": "updateUserProfile",
+        "consumes": ["application/json"],
+        "produces": ["application/json"],
+        "security": [{ "session": [] }],
+        "parameters": [
           {
-            "session": []
+            "in": "body",
+            "name": "body",
+            "description": "User profile update data",
+            "required": true,
+            "schema": { "$ref": "#/definitions/User" }
           }
         ],
         "responses": {
           "200": {
-            "description": "Notes summary retrieved successfully",
-            "schema": {
-              "type": "string"
-            }
+            "description": "User profile updated successfully",
+            "schema": { "$ref": "#/definitions/UserResponse" }
           },
-          "500": {
-            "description": "Error summarizing notes",
+          "404": {
+            "description": "User not found",
+            "schema": { "$ref": "#/definitions/ErrorResponse" }
+          }
+        }
+      }
+    },
+    "/api-docs": {
+      "get": {
+        "tags": ["swagger"],
+        "summary": "Swagger UI",
+        "description": "API documentation UI",
+        "operationId": "swaggerDocs",
+        "produces": ["text/html"],
+        "responses": {
+          "200": { "description": "Swagger UI" }
+        }
+      }
+    },
+    "/health": {
+      "get": {
+        "tags": ["system"],
+        "summary": "Health check",
+        "description": "API health check endpoint",
+        "operationId": "healthCheck",
+        "produces": ["application/json"],
+        "responses": {
+          "200": {
+            "description": "API is healthy",
             "schema": {
-              "$ref": "#/definitions/ErrorResponse"
+              "type": "object",
+              "properties": {
+                "status": { "type": "string" },
+                "version": { "type": "string" },
+                "timestamp": { "type": "string", "format": "date-time" }
+              }
             }
           }
         }
@@ -365,39 +389,16 @@
   "definitions": {
     "User": {
       "type": "object",
-      "required": ["email", "username", "password", "isActive", "role", "authMethod"],
+      "required": ["email", "password", "isActive", "role", "authMethod"],
       "properties": {
-        "email": {
-          "type": "string",
-          "description": "User's email address",
-          "minLength": 5
-        },
-        "username": {
-          "type": "string",
-          "description": "User's unique username",
-          "minLength": 3
-        },
-        "password": {
-          "type": "string",
-          "description": "User password",
-          "minLength": 6
-        },
-        "displayName": {
-          "type": "string",
-          "description": "User's display name"
-        },
-        "firstName": {
-          "type": "string",
-          "description": "User's first name"
-        },
-        "lastName": {
-          "type": "string",
-          "description": "User's last name"
-        },
-        "middleName": {
-          "type": "string",
-          "description": "User's middle name"
-        },
+        "_id": { "type": "string" },
+        "email": { "type": "string", "description": "User's email address" },
+        "username": { "type": "string", "description": "User's unique username" },
+        "password": { "type": "string", "description": "User password" },
+        "displayName": { "type": "string", "description": "User's display name" },
+        "firstName": { "type": "string", "description": "User's first name" },
+        "lastName": { "type": "string", "description": "User's last name" },
+        "middleName": { "type": "string", "description": "User's middle name" },
         "profilePhoto": {
           "type": "string",
           "description": "URL to user's profile photo"
@@ -413,29 +414,14 @@
           "description": "User's role in the system",
           "default": "user"
         },
-        "provider": {
-          "type": "string",
-          "description": "OAuth provider name"
-        },
-        "providerId": {
-          "type": "string",
-          "description": "OAuth provider's user ID"
-        },
-        "googleId": {
-          "type": "string",
-          "description": "Google OAuth ID"
-        },
-        "facebookId": {
-          "type": "string",
-          "description": "Facebook OAuth ID"
-        },
-        "twitterId": {
-          "type": "string",
-          "description": "Twitter OAuth ID"
-        },
+        "provider": { "type": "string", "description": "OAuth provider name" },
+        "providerId": { "type": "string", "description": "OAuth provider's user ID" },
+        "googleId": { "type": "string", "description": "Google OAuth ID" },
+        "facebookId": { "type": "string", "description": "Facebook OAuth ID" },
+        "twitterId": { "type": "string", "description": "Twitter OAuth ID" },
         "authMethod": {
           "type": "string",
-          "enum": ["local", "google", "facebook", "twitter"],
+          "enum": ["local", "google", "github"],
           "description": "Authentication method used",
           "default": "local"
         },
@@ -456,17 +442,14 @@
         }
       }
     },
-    "Notes": {
+    "Note": {
       "type": "object",
+      "required": ["title", "content"],
       "properties": {
-        "title": {
-          "type": "string",
-          "description": "Title of the note"
-        },
-        "content": {
-          "type": "string",
-          "description": "Content of the note"
-        },
+        "_id": { "type": "string" },
+        "userId": { "type": "string", "description": "User ID" },
+        "title": { "type": "string", "description": "Title of the note" },
+        "content": { "type": "string", "description": "Content of the note" },
         "createdAt": {
           "type": "string",
           "format": "date-time",
@@ -477,94 +460,116 @@
           "format": "date-time",
           "description": "Last update timestamp"
         }
-      },
-      "required": ["title", "content"]
-    },
-    "LoginRequest": {
-      "type": "object",
-      "required": ["username", "password"],
-      "properties": {
-        "username": {
-          "type": "string",
-          "description": "Username or email"
-        },
-        "password": {
-          "type": "string",
-          "description": "User password"
-        }
       }
     },
-    "RegisterRequest": {
+    "UserSettings": {
       "type": "object",
-      "required": ["email", "username", "password"],
       "properties": {
-        "email": {
-          "type": "string",
-          "description": "User email"
+        "_id": { "type": "string" },
+        "userId": { "type": "string", "description": "User ID" },
+        "featureFlags": {
+          "type": "object",
+          "additionalProperties": { "type": "boolean" },
+          "description": "Feature flags for the user"
         },
-        "username": {
-          "type": "string",
-          "description": "Username"
+        "rateLimit": {
+          "type": "object",
+          "properties": {
+            "windowMinutes": { "type": "number" },
+            "maxRequests": { "type": "number" }
+          }
         },
-        "password": {
-          "type": "string",
-          "description": "User password"
-        },
-        "firstName": {
-          "type": "string",
-          "description": "User first name"
-        },
-        "lastName": {
-          "type": "string",
-          "description": "User last name"
-        }
+        "theme": { "type": "string", "description": "Theme (e.g., dark, light)" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
       }
     },
-    "AuthResponse": {
+    "GlobalSettings": {
       "type": "object",
       "properties": {
-        "success": {
-          "type": "boolean"
+        "_id": { "type": "string" },
+        "name": { "type": "string", "description": "Settings name" },
+        "featureFlags": {
+          "type": "object",
+          "additionalProperties": { "type": "boolean" },
+          "description": "Global feature flags"
         },
-        "message": {
-          "type": "string"
+        "maxRateLimit": {
+          "type": "object",
+          "properties": {
+            "windowMinutes": { "type": "number" },
+            "maxRequests": { "type": "number" }
+          }
         },
-        "user": {
-          "$ref": "#/definitions/User"
-        }
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      }
+    },
+    "ApiResponse": {
+      "type": "object",
+      "properties": {
+        "success": { "type": "boolean" },
+        "message": { "type": "string" },
+        "data": { "type": "object" },
+        "error": { "$ref": "#/definitions/Error" }
+      }
+    },
+    "Error": {
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "statusCode": { "type": "integer" },
+        "isOperational": { "type": "boolean" },
+        "message": { "type": "string" },
+        "stack": { "type": "string" }
       }
     },
     "ErrorResponse": {
       "type": "object",
       "properties": {
-        "success": {
-          "type": "boolean"
-        },
-        "message": {
-          "type": "string"
-        }
+        "success": { "type": "boolean" },
+        "message": { "type": "string" },
+        "error": { "$ref": "#/definitions/Error" }
       }
     },
     "SuccessResponse": {
       "type": "object",
       "properties": {
-        "success": {
-          "type": "boolean"
-        },
-        "message": {
-          "type": "string"
-        }
+        "success": { "type": "boolean" },
+        "message": { "type": "string" }
       }
     },
     "UserResponse": {
       "type": "object",
       "properties": {
-        "success": {
-          "type": "boolean"
-        },
-        "user": {
-          "$ref": "#/definitions/User"
-        }
+        "success": { "type": "boolean" },
+        "user": { "$ref": "#/definitions/User" }
+      }
+    },
+    "AuthResponse": {
+      "type": "object",
+      "properties": {
+        "success": { "type": "boolean" },
+        "message": { "type": "string" },
+        "user": { "$ref": "#/definitions/User" }
+      }
+    },
+    "LoginRequest": {
+      "type": "object",
+      "required": ["username", "password"],
+      "properties": {
+        "username": { "type": "string", "description": "Username or email" },
+        "password": { "type": "string", "description": "User password" }
+      }
+    },
+    "RegisterRequest": {
+      "type": "object",
+      "required": ["email", "password", "firstName", "lastName"],
+      "properties": {
+        "email": { "type": "string", "description": "User email" },
+        "password": { "type": "string", "description": "User password" },
+        "firstName": { "type": "string", "description": "User first name" },
+        "lastName": { "type": "string", "description": "User last name" }
       }
     }
   }
