@@ -78,36 +78,37 @@ async function configureApp() {
    * Middleware: Session Management
    * Uses settings from the database for session configuration.
    */
-  const sessionTimeoutMinutes = parseInt(process.env.SESSION_TIMEOUT_MINUTES || "", 10);
-  const sessionMaxAge =
-    (!isNaN(sessionTimeoutMinutes) ? sessionTimeoutMinutes : 1440) * 60 * 1000;
-  const secureCookie = process.env.SECURE_SESSION_COOKIE === "true";
+  if (!process.env.SESSION_SECRET) {
+    throw new Error("SESSION_SECRET is not defined in environment variables.");
+  }
+
+  const mins = parseInt(process.env.SESSION_TIMEOUT_MINUTES || "", 10);
+  const sessionMaxAge = (!isNaN(mins) ? mins : 1440) * 60 * 1000;
   const sessionCookieName = process.env.SESSION_COOKIE_NAME?.trim() || "session";
+
+  // Use ENV to determine environment
+  const isProduction = process.env.ENV === "production";
+  const secureCookie = isProduction || process.env.SECURE_SESSION_COOKIE === "true";
+  const sameSiteValue = secureCookie ? "none" : "lax";
 
   if (secureCookie) {
     // If running behind a proxy (e.g., Heroku, Nginx), trust the proxy for secure cookies
     app.set("trust proxy", 1);
   }
 
-  if (!process.env.SESSION_SECRET) {
-    throw new Error("SESSION_SECRET is not defined in environment variables.");
-  }
-
   app.use(
     session({
       secret: process.env.SESSION_SECRET,
+      store: MongoStore.create({ mongoUrl: mongoURI }),
       resave: false,
       saveUninitialized: false,
-      store: MongoStore.create({ mongoUrl: mongoURI }),
       cookie: {
-        httpOnly: true,
         secure: secureCookie,
-        sameSite: secureCookie ? "none" : "lax",
+        sameSite: sameSiteValue,
         maxAge: sessionMaxAge,
       },
       name: sessionCookieName,
       unset: "destroy", // Destroy session on logout
-      proxy: secureCookie, // Trust proxy if secure cookies are enabled
     })
   );
 
