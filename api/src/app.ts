@@ -1,4 +1,4 @@
-import express, { Request, Response } from "express";
+import express, { NextFunction, Request, Response } from "express";
 import rateLimit from "express-rate-limit";
 import cors from "cors";
 import morgan from "morgan";
@@ -127,11 +127,9 @@ async function configureApp() {
   // Register API routes
   app.use("/api", routes);
 
-  /**
-   * Error-handling middleware
-   * Catches errors and sends a JSON response.
-   */
-  app.use((error: any, _req: Request, res: Response) => {
+  // Error-handling middleware (must be last)
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  app.use((error: any, _req: Request, res: Response, _next: NextFunction) => {
     const errorRes: IApiResponse<null> = {
       success: false,
       message: error.message || "An unexpected error occurred.",
@@ -153,6 +151,7 @@ async function configureApp() {
     } else {
       console.error("Unknown Error:", error);
     }
+
     res.status(errorRes.error?.statusCode ?? 500).json(errorRes);
   });
 }
