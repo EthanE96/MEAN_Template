@@ -11,7 +11,7 @@ import { connectDB } from "./config/db.config";
 import { seed } from "./config/seed/seed";
 import { passportConfig } from "./config/passport.config";
 import routes from "./routes/routes";
-import { getGlobalSettings } from "./utils/global-settings-cache";
+import { getGlobalSettings } from "./utils/global-settings-cache.utils";
 import { AppError } from "./models/errors.model";
 import { IApiResponse } from "./models/api-response.model";
 

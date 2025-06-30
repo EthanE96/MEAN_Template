@@ -3,7 +3,7 @@ import UserSettings from "../../models/user-settings.model";
 import User from "../../models/user.model";
 import Note from "../../models/note.model";
 import { BaseService } from "../../services/base.service";
-import { getGlobalSettings } from "../../utils/global-settings-cache";
+import { getGlobalSettings } from "../../utils/global-settings-cache.utils";
 import { globalSettingsData } from "./data/global-settings.data";
 import { noteData } from "./data/note.data";
 import { userData } from "./data/users.data";
