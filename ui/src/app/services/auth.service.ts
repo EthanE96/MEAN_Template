@@ -3,6 +3,7 @@ import { environment } from '../../envs/envs';
 import { HttpClient } from '@angular/common/http';
 import { BehaviorSubject, Observable } from 'rxjs';
 import { IUser } from '../models/user.model';
+import { IApiResponse } from '../models/api-response.model';
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
@@ -10,12 +11,23 @@ export class AuthService {
   private baseURL = `${environment.apiUrl}`;
   currentUserSubject = new BehaviorSubject<Partial<IUser> | null>(null);
   currentUser$ = this.currentUserSubject.asObservable();
-
   constructor() {}
 
   //^ Auth Methods
   // Updates the currentUserSubject with session user data
-  async getSession(): Promise<Partial<IUser> | null> {
+  async getSession(): Promise<void> {
+    this.http
+      .get<IApiResponse<Partial<IUser>>>(`${this.baseURL}/auth/me`, {
+        withCredentials: true,
+      })
+      .subscribe({
+        next: (res) => {
+          if (res.success) {
+          }
+        },
+        error: (error) => {},
+      });
+
     return new Promise<Partial<IUser> | null>((resolve, reject) => {
       this.http
         .get<{ authenticated: boolean; user: Partial<IUser>; error: any }>(
