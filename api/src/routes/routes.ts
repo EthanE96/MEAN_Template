@@ -1,9 +1,10 @@
-import { Router, Request, Response } from "express";
+import { Router, Request, Response, NextFunction } from "express";
 import { isAuthenticated } from "../middleware/auth.middleware";
 import authRoutes from "./auth.routes";
 import noteRoutes from "./note.routes";
 import swaggerRoutes from "./swagger.routes";
 import userRoutes from "./user.routes";
+import { AppError } from "../models/errors.model";
 
 const router = Router();
 
@@ -31,8 +32,8 @@ router.use("/user", isAuthenticated, userRoutes);
 router.use("/", isAuthenticated, swaggerRoutes);
 
 // 404 handler for unknown routes
-router.use((_req: Request, res: Response) => {
-  res.status(404).json("Route does not exist.");
+router.use((req: Request, _res: Response, next: NextFunction) => {
+  next(new AppError(`Can't find ${req.originalUrl} on this server!`, 404));
 });
 
 export default router;

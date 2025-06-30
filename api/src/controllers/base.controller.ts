@@ -1,12 +1,14 @@
-import { Request, Response, NextFunction } from "express";
+import "express-async-errors";
+import { Request, Response } from "express";
 import { BaseService } from "../services/base.service";
 import { IApiResponse } from "../models/api-response.model";
 import { IUser } from "../models/user.model";
+import { NotFoundError, UnauthorizedError } from "../models/errors.model";
 
 /**
  * BaseController class that provides CRUD operations for a given service.
  * Assumes the service handles user-specific data and the user ID is extracted from the request session.
- * All responses are sent in a consistent format.
+ * Utilizing express-async-error to handle async errors automatically.
  */
 export class BaseController<T> {
   protected service: BaseService<T>;
@@ -22,19 +24,17 @@ export class BaseController<T> {
   //^ Helper Methods
   /**
    * Extracts userId from authenticated user session and validates it.
-   * If not authenticated, sends a 401 response.
+   * If not authenticated, throws an UnauthorizedError.
    * @param req Express request object
-   * @param res Express response object
-   * @returns userId if valid, otherwise undefined (response sent)
+   * @returns userId if valid, otherwise throws error
    */
-  public getUserId(req: Request, res: Response): string | undefined {
+  protected getUserId(req: Request): string {
     // Only trust the user from the session (set by Passport)
-    if (req.user && typeof req.user === "object" && "id" in req.user) {
-      return (req.user as Partial<IUser>).id;
+    const user = req.user as IUser;
+    if (!user || !user.id) {
+      throw new UnauthorizedError("Authentication required or user ID not found.");
     }
-    res
-      .status(401)
-      .json({ success: false, message: "Unauthorized: user not authenticated." });
+    return user.id;
   }
 
   // ^ CRUD Methods
@@ -42,133 +42,83 @@ export class BaseController<T> {
    * Get all documents for the authenticated user.
    * @route GET /
    */
-  public getAll = async (
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ): Promise<void> => {
-    try {
-      const userId = this.getUserId(req, res);
-      if (!userId) return;
-      const documents = await this.service.findAllByUser(userId);
-      res.json({ success: true, data: documents } as IApiResponse<T[]>);
-    } catch (error) {
-      return next(error);
-    }
+  public getAll = async (req: Request, res: Response): Promise<void> => {
+    const userId = this.getUserId(req);
+    const documents = await this.service.findAllByUser(userId);
+    res.json({ success: true, data: documents } as IApiResponse<T[]>);
   };
 
   /**
    * Get a document by ID for the authenticated user.
    * @route GET /:id
    */
-  public getById = async (
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ): Promise<void> => {
-    try {
-      const userId = this.getUserId(req, res);
-      if (!userId) return;
-      const document = await this.service.findByIdAndUser(req.params.id, userId);
-      if (!document) {
-        res.status(404).json({ success: false, message: "Document not found." });
-        return;
-      }
-      res.json({ success: true, data: document } as IApiResponse<T>);
-    } catch (error) {
-      return next(error);
+  public getById = async (req: Request, res: Response): Promise<void> => {
+    const userId = this.getUserId(req);
+    const document = await this.service.findByIdAndUser(req.params.id, userId);
+
+    if (!document) {
+      throw new NotFoundError("Document not found for the authenticated user.");
     }
+
+    res.json({ success: true, data: document } as IApiResponse<T>);
   };
 
   /**
    * Create one or more documents for the authenticated user.
    * @route POST /
    */
-  public create = async (
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ): Promise<void> => {
-    try {
-      const userId = this.getUserId(req, res);
-      if (!userId) return;
-      let result: T | T[];
-      if (Array.isArray(req.body)) {
-        result = await this.service.createManyForUser(req.body, userId);
-      } else {
-        result = await this.service.createForUser(req.body, userId);
-      }
-      res.status(201).json({ success: true, data: result } as IApiResponse<T | T[]>);
-    } catch (error) {
-      return next(error);
+  public create = async (req: Request, res: Response): Promise<void> => {
+    const userId = this.getUserId(req);
+    let result: T | T[];
+
+    if (Array.isArray(req.body)) {
+      result = await this.service.createManyForUser(req.body, userId);
+    } else {
+      result = await this.service.createForUser(req.body, userId);
     }
+    res.status(201).json({ success: true, data: result } as IApiResponse<T | T[]>);
   };
 
   /**
    * Update a document by ID for the authenticated user.
    * @route PUT /:id
    */
-  public update = async (
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ): Promise<void> => {
-    try {
-      const userId = this.getUserId(req, res);
-      if (!userId) return;
-      const document = await this.service.updateForUser(req.params.id, req.body, userId);
-      if (!document) {
-        res.status(404).json({ success: false, message: "Document not found." });
-        return;
-      }
-      res.json({ success: true, data: document } as IApiResponse<T>);
-    } catch (error) {
-      return next(error);
+  public update = async (req: Request, res: Response): Promise<void> => {
+    const userId = this.getUserId(req);
+    const document = await this.service.updateForUser(req.params.id, req.body, userId);
+
+    if (!document) {
+      throw new NotFoundError("Document not found for the authenticated user.");
     }
+
+    res.json({ success: true, data: document } as IApiResponse<T>);
   };
 
   /**
    * Delete a document by ID for the authenticated user.
    * @route DELETE /:id
    */
-  public delete = async (
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ): Promise<void> => {
-    try {
-      const userId = this.getUserId(req, res);
-      if (!userId) return;
-      const document = await this.service.deleteForUser(req.params.id, userId);
-      if (!document) {
-        res.status(404).json({ success: false, message: "Document not found." });
-        return;
-      }
-      res.json({ success: true, message: "Document deleted." } as IApiResponse<null>);
-    } catch (error) {
-      return next(error);
+  public delete = async (req: Request, res: Response): Promise<void> => {
+    const userId = this.getUserId(req);
+    const document = await this.service.deleteForUser(req.params.id, userId);
+
+    if (!document) {
+      throw new NotFoundError("Document not found for the authenticated user.");
     }
+
+    res.json({ success: true, message: "Document deleted." } as IApiResponse<null>);
   };
 
   /**
    * Delete all documents for the authenticated user.
    * @route DELETE /
    */
-  public deleteAll = async (
-    req: Request,
-    res: Response,
-    next: NextFunction
-  ): Promise<void> => {
-    try {
-      const userId = this.getUserId(req, res);
-      if (!userId) return;
-      await this.service.deleteAllForUser(userId);
-      res.json({
-        success: true,
-        message: "All user documents deleted.",
-      } as IApiResponse<null>);
-    } catch (error) {
-      return next(error);
-    }
+  public deleteAll = async (req: Request, res: Response): Promise<void> => {
+    const userId = this.getUserId(req);
+    await this.service.deleteAllForUser(userId);
+    res.json({
+      success: true,
+      message: "All user documents deleted.",
+    } as IApiResponse<null>);
   };
 }

@@ -9,7 +9,11 @@ export class NoteController extends BaseController<INote> {
     super(noteService);
   }
 
-  async summarizeNotes(req: Request, res: Response, next: NextFunction): Promise<void> {
+  async summarizeNotes(
+    req: Request,
+    res: Response,
+    next: NextFunction = () => {}
+  ): Promise<void> {
     try {
       const userId = this.getUserId(req, res);
       if (!userId) return;

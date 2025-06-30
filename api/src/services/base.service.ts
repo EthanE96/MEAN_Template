@@ -1,4 +1,10 @@
 import { Model, FilterQuery, UpdateQuery } from "mongoose";
+import {
+  DatabaseError,
+  ValidationError,
+  ConflictError,
+  InternalServerError,
+} from "../models/errors.model";
 
 /**
  * BaseService class that provides CRUD operations for a given Mongoose model.
@@ -23,8 +29,8 @@ export class BaseService<T> {
   public async findAll(): Promise<T[]> {
     try {
       return await this.model.find().exec();
-    } catch (error) {
-      throw error;
+    } catch (error: unknown) {
+      throw new DatabaseError(`Failed to fetch documents`, error);
     }
   }
 
@@ -33,11 +39,11 @@ export class BaseService<T> {
    * @param query The query object (Mongoose filter).
    * @returns Promise resolving to the found document or null.
    */
-  public async findOne(query: FilterQuery<T>): Promise<T | null> {
+  public async findOne(query?: FilterQuery<T>): Promise<T | null> {
     try {
       return await this.model.findOne(query).exec();
-    } catch (error) {
-      throw error;
+    } catch (error: unknown) {
+      throw new DatabaseError(`Failed to fetch document`, error);
     }
   }
 
@@ -48,9 +54,14 @@ export class BaseService<T> {
    */
   public async findById(id: string): Promise<T | null> {
     try {
+      if (!id || !id.match(/^[0-9a-fA-F]{24}$/)) {
+        throw new ValidationError("Invalid document ID format");
+      }
+
       return await this.model.findById(id).exec();
-    } catch (error) {
-      throw error;
+    } catch (error: unknown) {
+      if (error instanceof ValidationError) throw error;
+      throw new DatabaseError(`Failed to fetch document`, error);
     }
   }
 
@@ -61,10 +72,24 @@ export class BaseService<T> {
    */
   public async create(data: Partial<T>): Promise<T> {
     try {
+      if (!data || Object.keys(data).length === 0) {
+        throw new ValidationError("Document data cannot be empty");
+      }
+
       const document = new this.model(data);
       return (await document.save()) as T;
-    } catch (error) {
-      throw error;
+    } catch (error: unknown) {
+      if (error instanceof ValidationError) throw error;
+
+      if (error instanceof Error && error.name === "ValidationError") {
+        throw new ValidationError(`Validation failed: ${error.message}`);
+      }
+
+      if (error && typeof error === "object" && "code" in error && error.code === 11000) {
+        throw new ConflictError("Document with this data already exists");
+      }
+
+      throw new InternalServerError(`Failed to create document`, error);
     }
   }
 
@@ -75,10 +100,24 @@ export class BaseService<T> {
    */
   public async createMany(data: Partial<T>[]): Promise<T[]> {
     try {
+      if (!Array.isArray(data) || data.length === 0) {
+        throw new ValidationError("Data must be a non-empty array");
+      }
+
       const documents = await this.model.insertMany(data);
       return documents as T[];
-    } catch (error) {
-      throw error;
+    } catch (error: unknown) {
+      if (error instanceof ValidationError) throw error;
+
+      if (error instanceof Error && error.name === "ValidationError") {
+        throw new ValidationError(`Validation failed: ${error.message}`);
+      }
+
+      if (error && typeof error === "object" && "code" in error && error.code === 11000) {
+        throw new ConflictError("One or more documents already exist");
+      }
+
+      throw new InternalServerError(`Failed to create documents`, error);
     }
   }
 
@@ -90,9 +129,22 @@ export class BaseService<T> {
    */
   public async update(id: string, data: UpdateQuery<T>): Promise<T | null> {
     try {
+      if (!id || !id.match(/^[0-9a-fA-F]{24}$/)) {
+        throw new ValidationError("Invalid document ID format");
+      }
+
+      if (!data || Object.keys(data).length === 0) {
+        throw new ValidationError("Update data cannot be empty");
+      }
       return await this.model.findByIdAndUpdate(id, data, { new: true }).exec();
-    } catch (error) {
-      throw error;
+    } catch (error: unknown) {
+      if (error instanceof ValidationError) throw error;
+
+      if (error instanceof Error && error.name === "ValidationError") {
+        throw new ValidationError(`Validation failed: ${error.message}`);
+      }
+
+      throw new InternalServerError(`Failed to update document`, error);
     }
   }
 
@@ -103,9 +155,14 @@ export class BaseService<T> {
    */
   public async delete(id: string): Promise<T | null> {
     try {
+      if (!id || !id.match(/^[0-9a-fA-F]{24}$/)) {
+        throw new ValidationError("Invalid document ID format");
+      }
+
       return await this.model.findByIdAndDelete(id).exec();
-    } catch (error) {
-      throw error;
+    } catch (error: unknown) {
+      if (error instanceof ValidationError) throw error;
+      throw new InternalServerError(`Failed to delete document`, error);
     }
   }
 
@@ -116,8 +173,8 @@ export class BaseService<T> {
   public async deleteAll(): Promise<void> {
     try {
       await this.model.deleteMany({}).exec();
-    } catch (error) {
-      throw error;
+    } catch (error: unknown) {
+      throw new DatabaseError(`Failed to delete all documents`, error);
     }
   }
 
@@ -128,9 +185,13 @@ export class BaseService<T> {
    */
   public async findAllByUser(userId: string): Promise<T[]> {
     try {
+      if (!userId || !userId.match(/^[0-9a-fA-F]{24}$/)) {
+        throw new ValidationError("Invalid user ID format");
+      }
       return await this.model.find({ userId } as FilterQuery<T>).exec();
-    } catch (error) {
-      throw error;
+    } catch (error: unknown) {
+      if (error instanceof ValidationError) throw error;
+      throw new DatabaseError(`Failed to fetch user documents`, error);
     }
   }
 
@@ -142,9 +203,17 @@ export class BaseService<T> {
    */
   public async findByIdAndUser(id: string, userId: string): Promise<T | null> {
     try {
+      if (!id || !id.match(/^[0-9a-fA-F]{24}$/)) {
+        throw new ValidationError("Invalid document ID format");
+      }
+
+      if (!userId || !userId.match(/^[0-9a-fA-F]{24}$/)) {
+        throw new ValidationError("Invalid user ID format");
+      }
       return await this.model.findOne({ _id: id, userId } as FilterQuery<T>).exec();
-    } catch (error) {
-      throw error;
+    } catch (error: unknown) {
+      if (error instanceof ValidationError) throw error;
+      throw new DatabaseError(`Failed to find user document`, error);
     }
   }
 
@@ -156,10 +225,27 @@ export class BaseService<T> {
    */
   public async createForUser(data: Partial<T>, userId: string): Promise<T> {
     try {
+      if (!userId || !userId.match(/^[0-9a-fA-F]{24}$/)) {
+        throw new ValidationError("Invalid user ID format");
+      }
+
+      if (!data || Object.keys(data).length === 0) {
+        throw new ValidationError("Document data cannot be empty");
+      }
       const document = new this.model({ ...data, userId });
       return (await document.save()) as T;
-    } catch (error) {
-      throw error;
+    } catch (error: unknown) {
+      if (error instanceof ValidationError) throw error;
+
+      if (error instanceof Error && error.name === "ValidationError") {
+        throw new ValidationError(`Validation failed: ${error.message}`);
+      }
+
+      if (error && typeof error === "object" && "code" in error && error.code === 11000) {
+        throw new ConflictError("Document with this data already exists for user");
+      }
+
+      throw new InternalServerError(`Failed to create user document`, error);
     }
   }
 
@@ -171,10 +257,27 @@ export class BaseService<T> {
    */
   public async createManyForUser(data: Partial<T>[], userId: string): Promise<T[]> {
     try {
+      if (!userId || !userId.match(/^[0-9a-fA-F]{24}$/)) {
+        throw new ValidationError("Invalid user ID format");
+      }
+
+      if (!Array.isArray(data) || data.length === 0) {
+        throw new ValidationError("Data must be a non-empty array");
+      }
       const documents = await this.model.insertMany(data.map((d) => ({ ...d, userId })));
       return documents as T[];
-    } catch (error) {
-      throw error;
+    } catch (error: unknown) {
+      if (error instanceof ValidationError) throw error;
+
+      if (error instanceof Error && error.name === "ValidationError") {
+        throw new ValidationError(`Validation failed: ${error.message}`);
+      }
+
+      if (error && typeof error === "object" && "code" in error && error.code === 11000) {
+        throw new ConflictError("One or more documents already exist for user");
+      }
+
+      throw new InternalServerError(`Failed to create user documents`, error);
     }
   }
 
@@ -191,11 +294,29 @@ export class BaseService<T> {
     userId: string
   ): Promise<T | null> {
     try {
+      if (!id || !id.match(/^[0-9a-fA-F]{24}$/)) {
+        throw new ValidationError("Invalid document ID format");
+      }
+
+      if (!userId || !userId.match(/^[0-9a-fA-F]{24}$/)) {
+        throw new ValidationError("Invalid user ID format");
+      }
+
+      if (!data || Object.keys(data).length === 0) {
+        throw new ValidationError("Update data cannot be empty");
+      }
+
       return await this.model
         .findOneAndUpdate({ _id: id, userId } as FilterQuery<T>, data, { new: true })
         .exec();
-    } catch (error) {
-      throw error;
+    } catch (error: unknown) {
+      if (error instanceof ValidationError) throw error;
+
+      if (error instanceof Error && error.name === "ValidationError") {
+        throw new ValidationError(`Validation failed: ${error.message}`);
+      }
+
+      throw new InternalServerError(`Failed to update user document`, error);
     }
   }
 
@@ -207,11 +328,20 @@ export class BaseService<T> {
    */
   public async deleteForUser(id: string, userId: string): Promise<T | null> {
     try {
+      if (!id || !id.match(/^[0-9a-fA-F]{24}$/)) {
+        throw new ValidationError("Invalid document ID format");
+      }
+
+      if (!userId || !userId.match(/^[0-9a-fA-F]{24}$/)) {
+        throw new ValidationError("Invalid user ID format");
+      }
+
       return await this.model
         .findOneAndDelete({ _id: id, userId } as FilterQuery<T>)
         .exec();
-    } catch (error) {
-      throw error;
+    } catch (error: unknown) {
+      if (error instanceof ValidationError) throw error;
+      throw new InternalServerError(`Failed to delete user document`, error);
     }
   }
 
@@ -222,9 +352,14 @@ export class BaseService<T> {
    */
   public async deleteAllForUser(userId: string): Promise<void> {
     try {
+      if (!userId || !userId.match(/^[0-9a-fA-F]{24}$/)) {
+        throw new ValidationError("Invalid user ID format");
+      }
+
       await this.model.deleteMany({ userId } as FilterQuery<T>).exec();
-    } catch (error) {
-      throw error;
+    } catch (error: unknown) {
+      if (error instanceof ValidationError) throw error;
+      throw new DatabaseError(`Failed to delete all user documents`, error);
     }
   }
 }

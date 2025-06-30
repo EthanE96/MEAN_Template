@@ -20,10 +20,10 @@ const baseRouter = new BaseRouter<IUser>(baseController, {
 router.use("/", baseRouter);
 
 // Override the update method to handle user profile updates
-router.put("/", async (req, res) => {
+router.put("/", async (req, res, next) => {
   try {
     const userId = baseController.getUserId(req, res);
-    let user = await User.findByIdAndUpdate(userId, req.body);
+    const user = await User.findByIdAndUpdate(userId, req.body);
 
     if (!user) {
       res.status(404).json("User not found");
@@ -32,7 +32,7 @@ router.put("/", async (req, res) => {
 
     res.status(200).json(user.getPublicProfile());
   } catch (error) {
-    baseController.handleError(res, error, 400);
+    next(error);
   }
 });
 

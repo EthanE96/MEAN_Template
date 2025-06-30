@@ -1,7 +1,9 @@
+import { IAppError } from "./errors.model";
+
 //^ Interfaces
 export interface IApiResponse<T> {
   success: boolean;
-  data?: T;
   message?: string;
-  errors?: any;
+  data?: T;
+  error?: IAppError;
 }

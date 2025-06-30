@@ -1,4 +1,4 @@
-import express, { Request, Response, NextFunction } from "express";
+import express, { Request, Response } from "express";
 import rateLimit from "express-rate-limit";
 import cors from "cors";
 import morgan from "morgan";
@@ -12,6 +12,8 @@ import { passportConfig } from "./config/passport.config";
 import routes from "./routes/routes";
 import { seedNotes } from "./config/seed/seed";
 import { getGlobalSettings } from "./utils/global-settings-cache";
+import { AppError } from "./models/errors.model";
+import { IApiResponse } from "./models/api-response.model";
 
 const app = express();
 
@@ -111,13 +113,29 @@ async function configureApp() {
    * Error-handling middleware
    * Catches errors and sends a JSON response.
    */
-  app.use((error: any, _req: Request, res: Response, _next: NextFunction) => {
-    console.log(error.stack);
-    res.status(error.status || 500).json({
+  app.use((error: any, _req: Request, res: Response) => {
+    const errorRes: IApiResponse<null> = {
       success: false,
-      message: error.message || "Internal Server Error",
-      errors: error.errors || error.stack,
-    });
+      message: error.message || "An unexpected error occurred.",
+      data: null,
+      error: {
+        name: error.name || "InternalServerError",
+        statusCode: error.statusCode || 500,
+        isOperational: error.isOperational || false,
+        message: error.message || "An unexpected error occurred.",
+        stack: error.stack,
+      },
+    };
+
+    // Log the error for server-side debugging
+    if (error instanceof AppError && !error.isOperational) {
+      console.error("Unexpected Error:", error);
+    } else if (error instanceof AppError) {
+      console.warn("Operational Error:", error.message);
+    } else {
+      console.error("Unknown Error:", error);
+    }
+    res.status(errorRes.error?.statusCode ?? 500).json(errorRes);
   });
 }
 
