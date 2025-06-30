@@ -2,19 +2,15 @@ import { Router } from "express";
 import passport from "passport";
 import { isAuthenticated } from "../middleware/auth.middleware";
 import { AuthController } from "../controllers/auth.controller";
-import { getGlobalSettings } from "../utils/global-settings-cache";
 
 const router = Router();
 const authController = new AuthController();
 
 // Helper to get URLs from settings or fallback
-async function getAuthUrls() {
-  const globalSettings = await getGlobalSettings();
+function getAuthUrls() {
   return {
-    failureRedirect:
-      globalSettings?.environment.uiFailureUrl || "http://localhost:4200/login",
-    successRedirect:
-      globalSettings?.environment.uiSuccessUrl || "http://localhost:4200/app",
+    failureRedirect: process.env.UI_FAILURE_URL || "http://localhost:4200/login",
+    successRedirect: process.env.UI_SUCCESS_URL || "http://localhost:4200/app",
   };
 }
 
@@ -31,7 +27,7 @@ router.get("/google", passport.authenticate("google", { scope: ["profile", "emai
 
 // Google OAuth2.0 callback
 router.get("/callback/google", async (req, res, next) => {
-  const { failureRedirect, successRedirect } = await getAuthUrls();
+  const { failureRedirect, successRedirect } = getAuthUrls();
   passport.authenticate("google", {
     failureRedirect,
     failureMessage: true,
@@ -45,7 +41,7 @@ router.get("/github", passport.authenticate("github", { scope: ["user:email"] })
 
 // GitHub OAuth2.0 callback
 router.get("/callback/github", async (req, res, next) => {
-  const { failureRedirect, successRedirect } = await getAuthUrls();
+  const { failureRedirect, successRedirect } = getAuthUrls();
   passport.authenticate("github", {
     failureRedirect,
     failureMessage: true,

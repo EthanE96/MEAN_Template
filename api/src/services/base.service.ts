@@ -22,6 +22,7 @@ export class BaseService<T> {
     this.model = model;
   }
 
+  //^ CRUD Operations
   /**
    * Find all documents.
    * @returns Promise resolving to an array of documents.
@@ -178,6 +179,7 @@ export class BaseService<T> {
     }
   }
 
+  //^ User-specific methods
   /**
    * Find all documents belonging to a specific user.
    * @param userId The user's ID.

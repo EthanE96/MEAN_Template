@@ -16,10 +16,12 @@ export async function getGlobalSettings(forceRefresh = false): Promise<IGlobalSe
   if (cachedSettings && lastLoaded && !forceRefresh && now - lastLoaded < CACHE_TTL_MS) {
     return cachedSettings;
   }
+
   const settings = await GlobalSettingsModel.findOne().lean();
   if (!settings) {
     throw new Error("Global settings not found in DB");
   }
+
   cachedSettings = settings as IGlobalSettings;
   lastLoaded = now;
   return cachedSettings;

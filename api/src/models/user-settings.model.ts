@@ -1,10 +1,11 @@
 import mongoose, { Document, Schema } from "mongoose";
 
 //^ Interfaces
-export interface IGlobalSettings extends Document {
-  name: string;
+export interface IUserSettings extends Document {
+  userId: string;
   featureFlags: IFeatureFlags;
-  maxRateLimit: IMaxRateLimit;
+  rateLimit: IRateLimit;
+  theme: string;
 
   // Timestamps
   createdAt: Date;
@@ -16,30 +17,31 @@ export interface IFeatureFlags {
   [key: string]: boolean;
 }
 
-export interface IMaxRateLimit {
+export interface IRateLimit {
   windowMinutes: number;
   maxRequests: number;
 }
 
 //^ Schema
-const GlobalSettingsSchema = new Schema<IGlobalSettings>(
+const UserSettingsSchema = new Schema<IUserSettings>(
   {
-    name: { type: String, required: true, unique: true },
+    userId: { type: String, ref: "User", required: true },
     featureFlags: {
       type: Map,
       of: Boolean,
       required: false,
       default: {},
     },
-    maxRateLimit: {
+    rateLimit: {
       windowMinutes: { type: Number, required: true, default: 15 },
       maxRequests: { type: Number, required: true, default: 100 },
     },
+    theme: { type: String, required: false, default: "dark" },
   },
   {
     timestamps: true,
-    collection: "global_settings",
+    collection: "user_settings",
   }
 );
 
-export default mongoose.model<IGlobalSettings>("GlobalSettings", GlobalSettingsSchema);
+export default mongoose.model<IUserSettings>("UserSettings", UserSettingsSchema);

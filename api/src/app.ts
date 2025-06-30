@@ -8,9 +8,9 @@ import MongoStore from "connect-mongo";
 import passport from "passport";
 
 import { connectDB } from "./config/db.config";
+import { seed } from "./config/seed/seed";
 import { passportConfig } from "./config/passport.config";
 import routes from "./routes/routes";
-import { seedNotes } from "./config/seed/seed";
 import { getGlobalSettings } from "./utils/global-settings-cache";
 import { AppError } from "./models/errors.model";
 import { IApiResponse } from "./models/api-response.model";
@@ -27,7 +27,7 @@ async function configureApp() {
   await connectDB(mongoURI);
 
   // Seed initial data if needed, creates users and notes
-  await seedNotes();
+  await seed();
 
   // Fetch global settings from cache/DB
   const globalSettings = await getGlobalSettings();
@@ -40,8 +40,8 @@ async function configureApp() {
    * Uses settings from the database for window and max requests.
    */
   const limiter = rateLimit({
-    windowMs: (globalSettings.rateLimit.windowMinutes || 15) * 60 * 1000,
-    max: globalSettings.rateLimit.maxRequests || 100,
+    windowMs: (globalSettings.maxRateLimit.windowMinutes || 15) * 60 * 1000,
+    max: globalSettings.maxRateLimit.maxRequests || 100,
     standardHeaders: true,
     legacyHeaders: false,
   });
@@ -56,7 +56,7 @@ async function configureApp() {
    * Middleware: CORS
    * Restricts origins based on global settings.
    */
-  const allowedOrigins = [globalSettings.environment.uiUrl];
+  const allowedOrigins = [process.env.UI_URL];
   app.use(
     cors({
       origin: (origin, callback) => {
@@ -78,19 +78,36 @@ async function configureApp() {
    * Middleware: Session Management
    * Uses settings from the database for session configuration.
    */
+  const sessionTimeoutMinutes = parseInt(process.env.SESSION_TIMEOUT_MINUTES || "", 10);
+  const sessionMaxAge =
+    (!isNaN(sessionTimeoutMinutes) ? sessionTimeoutMinutes : 1440) * 60 * 1000;
+  const secureCookie = process.env.SECURE_SESSION_COOKIE === "true";
+  const sessionCookieName = process.env.SESSION_COOKIE_NAME?.trim() || "session";
+
+  if (secureCookie) {
+    // If running behind a proxy (e.g., Heroku, Nginx), trust the proxy for secure cookies
+    app.set("trust proxy", 1);
+  }
+
+  if (!process.env.SESSION_SECRET) {
+    throw new Error("SESSION_SECRET is not defined in environment variables.");
+  }
+
   app.use(
     session({
-      secret: process.env.SESSION_SECRET || "!7vV$QW^vmU&ne4!#cPu1%",
+      secret: process.env.SESSION_SECRET,
       resave: false,
       saveUninitialized: false,
       store: MongoStore.create({ mongoUrl: mongoURI }),
       cookie: {
         httpOnly: true,
-        secure: globalSettings.session.secureCookies,
-        sameSite: globalSettings.session.secureCookies ? "none" : "lax",
-        maxAge: (globalSettings.session.sessionTimeoutMinutes || 1440) * 60 * 1000,
+        secure: secureCookie,
+        sameSite: secureCookie ? "none" : "lax",
+        maxAge: sessionMaxAge,
       },
-      name: globalSettings.session.sessionCookieName,
+      name: sessionCookieName,
+      unset: "destroy", // Destroy session on logout
+      proxy: secureCookie, // Trust proxy if secure cookies are enabled
     })
   );
 

@@ -1,79 +1,148 @@
 import GlobalSettings from "../../models/global-settings.model";
-import UserModel from "../../models/user.model";
+import UserSettings from "../../models/user-settings.model";
+import User from "../../models/user.model";
+import Note from "../../models/note.model";
 import { BaseService } from "../../services/base.service";
-import { NoteService } from "../../services/note.service";
+import { getGlobalSettings } from "../../utils/global-settings-cache";
 import { globalSettingsData } from "./data/global-settings.data";
 import { noteData } from "./data/note.data";
 import { userData } from "./data/users.data";
-import { getGlobalSettings } from "../../utils/global-settings-cache";
 
 // Instantiate services
 const globalSettingsService = new BaseService(GlobalSettings);
-const userService = new BaseService(UserModel);
-const noteService = new NoteService();
+const userService = new BaseService(User);
+const userSettingsService = new BaseService(UserSettings);
+const noteService = new BaseService(Note); // <-- add this line
 
 // Function to seed notes, users, and global settings
-export const seedNotes = async () => {
+export const seed = async () => {
   try {
-    // Use the service/model directly to check for settings
-    let globalSettings = await globalSettingsService.findOne({});
-
-    // If global settings are not found, create new settings
-    if (!globalSettings) {
-      console.log("Global settings not found, creating new settings...");
-      await globalSettingsService.create(globalSettingsData);
-      console.log("Global settings created successfully.");
-
-      // Now settings exist, you can safely use getGlobalSettings if needed
-      globalSettings = await getGlobalSettings(true);
-    }
-
-    // If production environment, exit early
-    if (globalSettings.environment.env === "production") {
-      throw new Error("Seeding is not allowed in production environment.");
-    }
-
-    //  If seeding is enabled in global settings, proceed with seeding
-    if (globalSettings && globalSettings.seeding.enabled) {
-      console.log("Seeding data...");
-
-      // Override the global settings
-      await globalSettingsService.deleteAll();
-      console.log("All global settings deleted.");
-
-      await globalSettingsService.create(globalSettingsData);
-      console.log("Global settings overwritten with saved data.");
-
-      await getGlobalSettings(true);
-      console.log("Global settings cache refreshed.");
-
-      // Add users
-      for (const user of userData) {
-        // Check if user already exists by email
-        const existingUser = await userService.findOne({ email: user.email });
-        if (!existingUser) {
-          console.log(`Creating user: ${user.email}`);
-          await userService.create(user);
-          console.log(`User ${user.email} created successfully.`);
-          console.log("");
-        }
+    if (!process.env.SEED || process.env.SEED.toLowerCase() == "true") {
+      // No seed in production
+      if (process.env.ENV === "production") {
+        console.log("Seeding is disabled in production environment.");
+        return;
       }
 
-      // Add notes
-      for (const note of noteData) {
-        const existingNote = await noteService.findOne({ title: note.title });
-        if (!existingNote) {
-          console.log(`Creating note: ${note.title}`);
-          await noteService.create(note);
-          console.log("Notes created successfully.");
-          console.log("");
-        }
-      }
+      console.log("Seeding Data...");
+      console.log("");
 
-      // Update the last seeded date in global settings
-      globalSettings.seeding.lastSeededAt = new Date();
+      await seedGlobalSettings();
+      await seedUsers();
+      await seedUserSettings();
+      await seedNotes();
     }
   } catch (error) {
-    throw new Error(`Error seeding notes: ${error}`);
+    console.error(error);
+    throw error;
+  }
+};
+
+// Function to seed global settings
+const seedGlobalSettings = async () => {
+  try {
+    let existingSettings;
+
+    // Attempt to get existing global settings from cache or DB
+    try {
+      existingSettings = await getGlobalSettings();
+    } catch (error: any) {
+      if (
+        typeof error.message === "string" &&
+        error.message.includes("Global settings not found in DB")
+      ) {
+        existingSettings = null; // Suppress this error
+      } else {
+        throw error; // Rethrow other errors
+      }
+    }
+
+    if (existingSettings) {
+      console.log("Global settings already exist, skipping seed.");
+      return;
+    }
+
+    const settings = await globalSettingsService.create(globalSettingsData);
+    console.log("Global settings seeded:", settings);
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+};
+
+// Function to seed users
+const seedUsers = async () => {
+  try {
+    const existingUsers = await userService.findAll();
+
+    userData.forEach((user) => {
+      if (existingUsers.some((u) => u.email === user.email)) {
+        console.log(`User with email ${user.email} already exists, skipping seed.`);
+      } else {
+        userService
+          .create(user)
+          .then((createdUser) => {
+            console.log(`User seeded: ${createdUser.email}`);
+          })
+          .catch((error) => {
+            console.error(error);
+          });
+      }
+    });
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+};
+
+// Function to seed user settings
+const seedUserSettings = async () => {
+  try {
+    const existingSettings = await userSettingsService.findAll();
+
+    existingSettings.forEach((setting) => {
+      if (existingSettings.some((s) => s.userId === setting.userId)) {
+        console.log(
+          `User settings for user ID ${setting.userId} already exist, skipping seed.`
+        );
+      } else {
+        userSettingsService
+          .create(setting)
+          .then((createdSetting) => {
+            console.log(`User settings seeded for user ID: ${createdSetting.userId}`);
+          })
+          .catch((error) => {
+            console.error(error);
+          });
+      }
+    });
+  } catch (error) {
+    console.error(error);
+    throw error;
+  }
+};
+
+// Function to seed notes
+const seedNotes = async () => {
+  try {
+    const existingNotes = await noteService.findAll();
+
+    noteData.forEach((note) => {
+      if (existingNotes.some((n) => n.title === note.title)) {
+        console.log(`Note with title "${note.title}" already exists, skipping seed.`);
+      } else {
+        noteService
+          .create(note)
+          .then((createdNote) => {
+            console.log(`Note seeded: ${createdNote.title}`);
+          })
+          .catch((error) => {
+            console.error(error);
+          });
+      }
+    });
+  } catch (error) {
+    console.error(error);
+    throw error;
   }
 };

@@ -18,7 +18,10 @@ const NoteSchema = new Schema<INote>(
     title: { type: String, required: true },
     content: { type: String, required: true },
   },
-  { timestamps: true }
+  {
+    timestamps: true,
+    collection: "notes",
+  }
 );
 
 export default mongoose.model<INote>("Note", NoteSchema);
