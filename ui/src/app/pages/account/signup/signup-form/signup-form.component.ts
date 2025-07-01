@@ -3,7 +3,11 @@ import { Component, Output, EventEmitter } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../../../../services/auth.service';
-import ValidatorUtils from '../../../../utils/validator.utils';
+import {
+  isValidEmail,
+  isValidFields,
+  isValidPassword,
+} from '../../../../utils/validator.utils';
 import ErrorType from '../../../../utils/error-type.utils';
 
 @Component({
@@ -33,7 +37,7 @@ export class SignupFormComponent {
       try {
         // Validate all fields
         if (
-          !ValidatorUtils.isValidFields(
+          !isValidFields(
             this.email,
             this.password,
             this.firstName,
@@ -44,10 +48,7 @@ export class SignupFormComponent {
         }
 
         // Validate email and password
-        if (
-          !ValidatorUtils.isValidEmail(this.email) ||
-          !ValidatorUtils.isValidPassword(this.password)
-        ) {
+        if (!isValidEmail(this.email) || !isValidPassword(this.password)) {
           throw new Error('Invalid email or password format.');
         }
 
@@ -61,7 +62,7 @@ export class SignupFormComponent {
         // Redirect to the app
         this.router.navigate(['/app']);
       } catch (error: unknown) {
-        this.error = ErrorType.returnErrorMessage(error);
+        this.error = ErrorType(error);
         this.errorChange.emit(this.error);
         this.error = undefined; // Clear error after emitting
       }

@@ -7,7 +7,7 @@ import { LandingFooterComponent } from '../../landing/landing-footer/landing-foo
 import { RouterLink, Router } from '@angular/router';
 import { MessageComponent } from '../../../shared/message/message.component';
 import { NgIf } from '@angular/common';
-import ValidatorUtils from '../../../utils/validator.utils';
+import { isValidEmail, isValidFields } from '../../../utils/validator.utils';
 import ErrorType from '../../../utils/error-type.utils';
 
 @Component({
@@ -53,12 +53,12 @@ export class LoginComponent {
   async loginWithLocal() {
     try {
       // Validate all fields
-      if (!ValidatorUtils.isValidFields(this.email, this.password)) {
+      if (!isValidFields(this.email, this.password)) {
         throw new Error('Missing fields.');
       }
 
       // Validate email
-      if (!ValidatorUtils.isValidEmail(this.email)) {
+      if (!isValidEmail(this.email)) {
         throw new Error('Enter valid email address.');
       }
 
@@ -77,7 +77,7 @@ export class LoginComponent {
   }
 
   handleErrorChange(error?: unknown) {
-    this.error = ErrorType.returnErrorMessage(error);
+    this.error = ErrorType(error);
 
     setTimeout(() => {
       this.error = undefined;

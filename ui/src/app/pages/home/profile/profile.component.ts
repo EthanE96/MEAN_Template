@@ -6,7 +6,7 @@ import { AuthService } from '../../../services/auth.service';
 import { Router } from '@angular/router';
 import { MessageComponent } from '../../../shared/message/message.component';
 import ErrorType from '../../../utils/error-type.utils';
-import ValidatorUtils from '../../../utils/validator.utils';
+import { isValidEmail, isValidFields } from '../../../utils/validator.utils';
 
 @Component({
   selector: 'app-profile',
@@ -32,17 +32,13 @@ export class ProfileComponent implements OnInit {
 
       // Validate all fields
       if (
-        !ValidatorUtils.isValidFields(
-          this.user.firstName,
-          this.user.lastName,
-          this.user.email
-        )
+        !isValidFields(this.user.firstName, this.user.lastName, this.user.email)
       ) {
         throw new Error('Missing fields.');
       }
 
       // Validate email
-      if (!ValidatorUtils.isValidEmail(this.user.email)) {
+      if (!isValidEmail(this.user.email)) {
         throw new Error('Enter valid email address.');
       }
 
@@ -60,7 +56,7 @@ export class ProfileComponent implements OnInit {
   }
 
   handleErrorChange(error: unknown) {
-    this.errorMessage = ErrorType.returnErrorMessage(error);
+    this.errorMessage = ErrorType(error);
 
     setTimeout(() => {
       this.errorMessage = '';

@@ -12,7 +12,7 @@ import { userData } from "./data/users.data";
 const globalSettingsService = new BaseService(GlobalSettings);
 const userService = new BaseService(User);
 const userSettingsService = new BaseService(UserSettings);
-const noteService = new BaseService(Note); // <-- add this line
+const noteService = new BaseService(Note);
 
 // Function to seed notes, users, and global settings
 export const seed = async () => {
