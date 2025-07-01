@@ -1,7 +1,7 @@
 import { inject, Injectable } from '@angular/core';
 import { environment } from '../../envs/envs';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
-import { BehaviorSubject, firstValueFrom, Observable } from 'rxjs';
+import { BehaviorSubject, firstValueFrom } from 'rxjs';
 import { IUser } from '../models/user.model';
 import { IApiResponse } from '../models/api-response.model';
 
@@ -9,8 +9,10 @@ import { IApiResponse } from '../models/api-response.model';
 export class AuthService {
   private http = inject(HttpClient);
   private baseURL = `${environment.apiUrl}`;
+
   currentUserSubject = new BehaviorSubject<Partial<IUser> | null>(null);
   currentUser$ = this.currentUserSubject.asObservable();
+
   constructor() {}
 
   //^ Auth Methods

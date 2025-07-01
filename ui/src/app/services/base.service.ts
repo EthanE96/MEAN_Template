@@ -1,74 +1,141 @@
-import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
-import { Observable, BehaviorSubject } from 'rxjs';
-import { tap } from 'rxjs/operators';
+import { inject, Injectable } from '@angular/core';
+import { HttpClient, HttpErrorResponse } from '@angular/common/http';
+import { BehaviorSubject, firstValueFrom } from 'rxjs';
 import { environment } from '../../envs/envs';
+import { IApiResponse } from '../models/api-response.model';
 
 @Injectable({
   providedIn: 'root',
 })
 export class BaseService<T = any> {
-  protected baseURL = environment.apiUrl;
+  private http = inject(HttpClient);
+  protected baseURL = `${environment.apiUrl}`;
   protected endpoint = ''; // Override this in derived classes
 
   // BehaviorSubject to hold the current list of items
-  protected itemsSubject = new BehaviorSubject<T[] | T | null>(null);
+  itemsSubject = new BehaviorSubject<T[] | T | null>(null);
   items$ = this.itemsSubject.asObservable();
 
-  constructor(protected http: HttpClient) {}
+  constructor() {}
 
+  //^ CRUD Methods
   // GET all items for user (userId from session)
-  getAll(): Observable<T[]> {
-    return this.http.get<T[]>(`${this.baseURL}${this.endpoint}`, {
-      withCredentials: true,
-    });
+  async getAll(): Promise<void> {
+    try {
+      const res = await firstValueFrom(
+        this.http.get<IApiResponse<T[] | T | null>>(
+          `${this.baseURL}${this.endpoint}`,
+          { withCredentials: true }
+        )
+      );
+      if (res.success && res.data) {
+        this.updateSubjectWithItem(res.data);
+      }
+    } catch (error) {
+      this.handleError(error);
+    }
   }
 
   // GET item by ID for user (userId from session)
-  getById(id: string): Observable<T> {
-    return this.http.get<T>(`${this.baseURL}${this.endpoint}/${id}`, {
-      withCredentials: true,
-    });
+  async getById(id: string): Promise<void> {
+    try {
+      const res = await firstValueFrom(
+        this.http.get<IApiResponse<T>>(
+          `${this.baseURL}${this.endpoint}/${id}`,
+          { withCredentials: true }
+        )
+      );
+      if (res.success && res.data) {
+        this.updateSubjectWithItem(res.data);
+      }
+    } catch (error) {
+      this.handleError(error);
+    }
   }
 
   // POST - Create new item for user (userId from session)
-  create(item: Partial<T>): Observable<T> {
-    return this.http
-      .post<T>(`${this.baseURL}${this.endpoint}`, item, {
-        withCredentials: true,
-      })
-      .pipe(tap((created) => this.updateSubjectWithItem(created)));
+  async create(item: Partial<T>): Promise<void> {
+    try {
+      const res = await firstValueFrom(
+        this.http.post<IApiResponse<T>>(
+          `${this.baseURL}${this.endpoint}`,
+          item,
+          { withCredentials: true }
+        )
+      );
+      if (res.success && res.data) {
+        this.updateSubjectWithItem(res.data);
+      }
+    } catch (error) {
+      this.handleError(error);
+    }
   }
 
   // PUT - Update item for user (userId from session)
-  update(id: string, item: Partial<T>): Observable<T> {
-    return this.http
-      .put<T>(`${this.baseURL}${this.endpoint}/${id}`, item, {
-        withCredentials: true,
-      })
-      .pipe(tap((updated) => this.updateSubjectWithItem(updated)));
+  async update(id: string, item: Partial<T>): Promise<void> {
+    try {
+      const res = await firstValueFrom(
+        this.http.put<IApiResponse<T>>(
+          `${this.baseURL}${this.endpoint}/${id}`,
+          item,
+          { withCredentials: true }
+        )
+      );
+      if (res.success && res.data) {
+        this.updateSubjectWithItem(res.data);
+      }
+    } catch (error) {
+      this.handleError(error);
+    }
   }
 
   // DELETE - Remove item for user (userId from session)
-  delete(id: string): Observable<void> {
-    return this.http
-      .delete<void>(`${this.baseURL}${this.endpoint}/${id}`, {
-        withCredentials: true,
-      })
-      .pipe(tap(() => this.removeItemFromSubject(id)));
+  async delete(id: string): Promise<void> {
+    try {
+      const res = await firstValueFrom(
+        this.http.delete<IApiResponse<null>>(
+          `${this.baseURL}${this.endpoint}/${id}`,
+          { withCredentials: true }
+        )
+      );
+      if (res.success) {
+        this.removeItemFromSubject(id);
+      }
+    } catch (error) {
+      this.handleError(error);
+    }
   }
 
   // PATCH - Partial update for user (userId from session)
-  patch(id: string, item: Partial<T>): Observable<T> {
-    return this.http.patch<T>(`${this.baseURL}${this.endpoint}/${id}`, item, {
-      withCredentials: true,
-    });
+  async patch(id: string, item: Partial<T>): Promise<void> {
+    try {
+      const res = await firstValueFrom(
+        this.http.patch<IApiResponse<T>>(
+          `${this.baseURL}${this.endpoint}/${id}`,
+          item,
+          { withCredentials: true }
+        )
+      );
+      if (res.success && res.data) {
+        this.updateSubjectWithItem(res.data);
+      }
+    } catch (error) {
+      this.handleError(error);
+    }
   }
 
-  // Helper to update the subject with a new/updated item
-  protected updateSubjectWithItem(item: T) {
+  //^ Helper Methods
+  // Helper to update the subject with a new/updated item or items
+  protected updateSubjectWithItem(item: T | T[] | null) {
+    if (item === null) {
+      this.itemsSubject.next(null);
+      return;
+    }
     const current = this.itemsSubject.value;
-    if (Array.isArray(current)) {
+    if (Array.isArray(item)) {
+      // If item is an array, replace the subject value
+      this.itemsSubject.next(item);
+    } else if (Array.isArray(current)) {
       // Replace or add the item in the array
       const idx = current.findIndex((i: any) => i._id === (item as any)._id);
       if (idx !== -1) {
@@ -90,6 +157,24 @@ export class BaseService<T = any> {
       this.itemsSubject.next(current.filter((i: any) => i._id !== id));
     } else if (current && (current as any)._id === id) {
       this.itemsSubject.next(null);
+    }
+  }
+
+  //^ Error handling
+  private handleError(error: unknown): void {
+    this.itemsSubject.next(null);
+
+    // Log the error for debugging
+    if (error instanceof HttpErrorResponse) {
+      console.warn(
+        'HTTP Error:',
+        error.status,
+        error.name,
+        error.message,
+        error.error as IApiResponse<null>
+      );
+
+      throw error as HttpErrorResponse;
     }
   }
 }
