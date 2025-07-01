@@ -113,10 +113,22 @@ export class AuthService {
   }
 
   //^ User Methods
-  updateUser(user: Partial<IUser>): Observable<Partial<IUser>> {
-    return this.http.put<Partial<IUser>>(`${this.baseURL}/user`, user, {
-      withCredentials: true,
-    });
+  async updateUser(user: Partial<IUser>) {
+    try {
+      const res = await firstValueFrom(
+        this.http.put<IApiResponse<Partial<IUser> | null>>(
+          `${this.baseURL}/user`,
+          user,
+          { withCredentials: true }
+        )
+      );
+
+      if (res.success && res.data) {
+        this.currentUserSubject.next(res.data);
+      }
+    } catch (error) {
+      this.handleUnauthenticated(error);
+    }
   }
 
   //^ Error Handling

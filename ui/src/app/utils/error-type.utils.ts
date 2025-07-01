@@ -16,6 +16,10 @@ export default class ErrorType {
       return error.message;
     }
 
+    if (typeof error === 'string') {
+      return error;
+    }
+
     return 'An unknown error occurred.';
   }
 }

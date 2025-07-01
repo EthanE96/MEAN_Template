@@ -1,7 +1,11 @@
 // Validators for Angular applications
 // A function will return true if the field is valid, otherwise false
 export default class ValidatorUtils {
-  static isValidEmail(email: string): Boolean {
+  static isValidEmail(email: string | undefined): Boolean {
+    if (!email) {
+      return false;
+    }
+
     const emailPattern = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
     return emailPattern.test(email);
   }

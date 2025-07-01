@@ -1,49 +1,84 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, OnDestroy } from '@angular/core';
 import { NgIf } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Observable } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { IUser } from '../../../models/user.model';
 import { AuthService } from '../../../services/auth.service';
 import { Router } from '@angular/router';
 import { MessageComponent } from '../../../shared/message/message.component';
+import ErrorType from '../../../utils/error-type.utils';
+import ValidatorUtils from '../../../utils/validator.utils';
 
 @Component({
   selector: 'app-profile',
   imports: [NgIf, FormsModule, MessageComponent],
   templateUrl: './profile.component.html',
 })
-export class ProfileComponent {
+export class ProfileComponent implements OnInit, OnDestroy {
   currentUser$ = new Observable<Partial<IUser> | null>();
   user: Partial<IUser> | null = null;
+  originalUser: Partial<IUser> | null = null;
+
   errorMessage: string | null = null;
   successMessage: string | null = null;
 
-  constructor(private authService: AuthService, private router: Router) {
+  private userSub?: Subscription;
+
+  // TODO: The update profile logic is not complete. Data only updates on refresh.
+
+  constructor(private authService: AuthService, private router: Router) {}
+
+  ngOnInit() {
     this.currentUser$ = this.authService.currentUser$;
-    this.currentUser$.subscribe((user) => {
-      this.user = user ? { ...user } : null;
+
+    this.userSub = this.currentUser$.subscribe((user) => {
+      // Deep copy to avoid reference issues
+      this.originalUser = user ? JSON.parse(JSON.stringify(user)) : null;
+      this.user = user ? JSON.parse(JSON.stringify(user)) : null;
     });
   }
 
-  updateProfile() {
-    if (!this.user) {
-      this.handleErrorChange('No user data available to update.');
-      return;
-    }
+  ngOnDestroy() {
+    this.userSub?.unsubscribe();
+  }
 
-    this.authService.updateUser(this.user).subscribe({
-      next: (res) => {
-        console.log(res);
-        if (res && res._id) {
-          this.authService.currentUserSubject.next(res);
-          this.handleSuccessChange('Profile updated successfully.');
-        }
-      },
-      error: (error) => {
-        this.handleErrorChange(error.error);
-        this.user = this.authService.currentUserSubject.value || null;
-      },
-    });
+  async updateProfile() {
+    try {
+      if (!this.user || !this.originalUser) {
+        throw new Error('No user data available to update.');
+      }
+
+      // Validate all fields
+      if (
+        !ValidatorUtils.isValidFields(
+          this.user.firstName,
+          this.user.lastName,
+          this.user.email
+        )
+      ) {
+        throw new Error('Missing fields.');
+      }
+
+      // Validate email
+      if (!ValidatorUtils.isValidEmail(this.user.email)) {
+        throw new Error('Enter valid email address.');
+      }
+
+      // If no changes, return early
+      if (
+        this.user.firstName == this.originalUser.firstName &&
+        this.user.lastName == this.originalUser.lastName &&
+        this.user.email == this.originalUser.email
+      ) {
+        throw new Error('No changes to update.');
+      }
+
+      await this.authService.updateUser(this.user);
+
+      this.handleSuccessChange('Profile updated successfully.');
+    } catch (error) {
+      this.handleErrorChange(error);
+    }
   }
 
   onLogout() {
@@ -51,8 +86,8 @@ export class ProfileComponent {
     this.authService.logout();
   }
 
-  handleErrorChange(mssg: string) {
-    this.errorMessage = mssg;
+  handleErrorChange(error: unknown) {
+    this.errorMessage = ErrorType.returnErrorMessage(error);
 
     setTimeout(() => {
       this.errorMessage = '';
