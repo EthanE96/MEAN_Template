@@ -7,7 +7,7 @@ import { IApiResponse } from '../models/api-response.model';
 @Injectable({
   providedIn: 'root',
 })
-export class BaseService<T = any> {
+export class BaseService<T> {
   private http = inject(HttpClient);
   protected baseURL = `${environment.apiUrl}`;
   protected endpoint = ''; // Override this in derived classes
@@ -137,6 +137,7 @@ export class BaseService<T = any> {
       this.itemsSubject.next(item);
     } else if (Array.isArray(current)) {
       // Replace or add the item in the array
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       const idx = current.findIndex((i: any) => i._id === (item as any)._id);
       if (idx !== -1) {
         const updated = [...current];
@@ -154,7 +155,9 @@ export class BaseService<T = any> {
   protected removeItemFromSubject(id: string) {
     const current = this.itemsSubject.value;
     if (Array.isArray(current)) {
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       this.itemsSubject.next(current.filter((i: any) => i._id !== id));
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } else if (current && (current as any)._id === id) {
       this.itemsSubject.next(null);
     }

@@ -1,12 +1,11 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, inject, Input, Output } from '@angular/core';
 import { Router } from '@angular/router';
 import {
   LucideAngularModule,
-  PanelLeftOpen,
-  Settings,
   LogIn,
   Sun,
   Moon,
+  LucideIconData,
 } from 'lucide-angular';
 import { ThemeComponent } from '../../../shared/theme/theme.component';
 import { NgIf } from '@angular/common';
@@ -17,6 +16,9 @@ import { NgIf } from '@angular/common';
   templateUrl: './landing-header.component.html',
 })
 export class LandingHeaderComponent {
+  private router = inject(Router);
+  private themeComponent = inject(ThemeComponent);
+
   readonly LogIn = LogIn;
   readonly Sun = Sun;
   readonly Moon = Moon;
@@ -26,10 +28,10 @@ export class LandingHeaderComponent {
   @Output() currentThemeChange = new EventEmitter();
 
   currentTheme: string;
-  imgTheme: any;
+  imgTheme: LucideIconData;
   logo: string;
 
-  constructor(private router: Router, private themeComponent: ThemeComponent) {
+  constructor() {
     this.currentTheme = this.themeComponent.currentTheme;
     this.imgTheme = this.currentTheme === 'dark' ? Sun : Moon;
     this.logo = this.themeComponent.logo;

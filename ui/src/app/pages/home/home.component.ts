@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { NgIf } from '@angular/common';
 import { HeaderComponent } from '../../shared/header/header.component';
@@ -18,10 +18,12 @@ import { DrawerComponent } from '../../shared/drawer/drawer.component';
   templateUrl: './home.component.html',
 })
 export class HomeComponent {
+  private theme = inject(ThemeComponent);
+
   currentTheme: string;
   isDrawerOpen: boolean = false;
 
-  constructor(private theme: ThemeComponent) {
+  constructor() {
     this.currentTheme = this.theme.currentTheme;
   }
 }

@@ -1,5 +1,5 @@
 import { NgClass, NgIf } from '@angular/common';
-import { Component, Output, EventEmitter } from '@angular/core';
+import { Component, Output, EventEmitter, inject } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../../../../services/auth.service';
@@ -17,6 +17,9 @@ import ErrorType from '../../../../utils/error-type.utils';
   templateUrl: './signup-form.component.html',
 })
 export class SignupFormComponent {
+  private authService = inject(AuthService);
+  private router = inject(Router);
+
   step: number = 1;
   email: string = '';
   password: string = '';
@@ -26,8 +29,6 @@ export class SignupFormComponent {
 
   @Output() stepChange = new EventEmitter<number>();
   @Output() errorChange = new EventEmitter<string>();
-
-  constructor(private authService: AuthService, private router: Router) {}
 
   async onSubmit() {
     if (this.step === 1) {

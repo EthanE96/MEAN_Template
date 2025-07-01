@@ -4,10 +4,17 @@
     class="navbar flex w-3/4 pt-4 pb-2 mx-auto justify-between bg-transparent"
   >
     <!-- Logo / Company -->
-    <div class="flex gap-3 items-center btn btn-ghost" (click)="onHome()">
+    <button
+      class="flex gap-3 items-center btn btn-ghost"
+      (click)="onHome()"
+      (keyup.enter)="onHome()"
+      (keyup.space)="onHome()"
+      type="button"
+      aria-label="Go to home"
+    >
       <!-- <img class="w-8 h-8" [src]="logo" alt="Logo" /> -->
-      <h1 (click)="onHome()" class="text-2xl font-bold">Mean Template</h1>
-    </div>
+      <span class="text-2xl font-bold">Mean Template</span>
+    </button>
 
     <div class="flex gap-3">
       <!-- Theme Toggle -->

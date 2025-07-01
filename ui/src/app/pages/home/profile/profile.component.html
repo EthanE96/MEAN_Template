@@ -41,7 +41,7 @@
           </div>
           <div class="flex-1 space-y-4">
             <div class="form-control">
-              <label class="label">
+              <label class="label" for="firstName">
                 <span class="label-text font-semibold pb-1">First Name</span>
               </label>
               <input
@@ -49,12 +49,13 @@
                 type="text"
                 [(ngModel)]="user.firstName"
                 name="firstName"
+                id="firstName"
                 required
                 placeholder="First Name"
               />
             </div>
             <div class="form-control">
-              <label class="label">
+              <label class="label" for="lastName">
                 <span class="label-text font-semibold pb-1">Last Name</span>
               </label>
               <input
@@ -62,12 +63,13 @@
                 type="text"
                 [(ngModel)]="user.lastName"
                 name="lastName"
+                id="lastName"
                 required
                 placeholder="Last Name"
               />
             </div>
             <div class="form-control">
-              <label class="label">
+              <label class="label" for="email">
                 <span class="label-text font-semibold pb-1">Email</span>
               </label>
               <input
@@ -75,6 +77,7 @@
                 type="email"
                 [(ngModel)]="user.email"
                 name="email"
+                id="email"
                 required
                 placeholder="Email"
               />

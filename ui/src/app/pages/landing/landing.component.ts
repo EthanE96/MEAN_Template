@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { Router } from '@angular/router';
 import { NgClass } from '@angular/common';
 import { ArrowRight, LucideAngularModule } from 'lucide-angular';
@@ -17,10 +17,13 @@ import { LandingHeaderComponent } from './landing-header/landing-header.componen
   templateUrl: './landing.component.html',
 })
 export class LandingComponent {
+  private router = inject(Router);
+  private theme = inject(ThemeComponent);
+
   readonly ArrowRight = ArrowRight;
   currentTheme: string;
 
-  constructor(private router: Router, private theme: ThemeComponent) {
+  constructor() {
     this.currentTheme = this.theme.currentTheme;
   }
 

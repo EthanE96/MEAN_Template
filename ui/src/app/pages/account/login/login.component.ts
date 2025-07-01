@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { AuthService } from '../../../services/auth.service';
 import { ThemeComponent } from '../../../shared/theme/theme.component';
@@ -23,18 +23,18 @@ import ErrorType from '../../../utils/error-type.utils';
   ],
   templateUrl: './login.component.html',
 })
-export class LoginComponent {
+export class LoginComponent implements OnInit {
+  private theme = inject(ThemeComponent);
+  private router = inject(Router);
+  private authService = inject(AuthService);
+
   logo: string;
   email: string = '';
   password: string = '';
   rememberMe: boolean = false;
   error?: string;
 
-  constructor(
-    private theme: ThemeComponent,
-    private router: Router,
-    private authService: AuthService
-  ) {
+  constructor() {
     this.logo = this.theme.logo;
   }
 

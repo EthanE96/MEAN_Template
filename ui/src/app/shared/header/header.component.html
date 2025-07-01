@@ -13,9 +13,14 @@
       </ng-container>
 
       <!-- App Title -->
-      <div class="btn btn-ghost px-2" (click)="onApp()">
+      <button
+        type="button"
+        class="btn btn-ghost px-2"
+        (click)="onApp()"
+        (keyup.enter)="onApp()"
+      >
         <h1 class="text-2xl font-bold normal-case">Mean Template</h1>
-      </div>
+      </button>
     </div>
 
     <!-- Profile moved to far right -->

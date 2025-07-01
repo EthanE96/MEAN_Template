@@ -1,5 +1,5 @@
 import { AsyncPipe, NgIf } from '@angular/common';
-import { Component, EventEmitter, Input, Output } from '@angular/core';
+import { Component, EventEmitter, inject, Input, Output } from '@angular/core';
 import { Router } from '@angular/router';
 import { Observable } from 'rxjs';
 import { ThemeComponent } from '../theme/theme.component';
@@ -13,6 +13,10 @@ import { AuthService } from '../../services/auth.service';
   templateUrl: './header.component.html',
 })
 export class HeaderComponent {
+  private router = inject(Router);
+  private themeComponent = inject(ThemeComponent);
+  private authService = inject(AuthService);
+
   readonly PanelLeftOpen = PanelLeftOpen;
   readonly Settings = Settings;
 
@@ -23,11 +27,7 @@ export class HeaderComponent {
   currentUser$ = new Observable<Partial<IUser> | null>();
   currentTheme: string;
 
-  constructor(
-    private router: Router,
-    private themeComponent: ThemeComponent,
-    private authService: AuthService
-  ) {
+  constructor() {
     this.currentTheme = this.themeComponent.currentTheme;
     this.currentUser$ = this.authService.currentUser$;
   }

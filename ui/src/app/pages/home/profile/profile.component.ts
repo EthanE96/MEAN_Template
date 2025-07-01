@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { NgIf } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { IUser } from '../../../models/user.model';
@@ -14,11 +14,12 @@ import { isValidEmail, isValidFields } from '../../../utils/validator.utils';
   templateUrl: './profile.component.html',
 })
 export class ProfileComponent implements OnInit {
+  private authService = inject(AuthService);
+  private router = inject(Router);
+
   user: Partial<IUser> | null = null;
   errorMessage: string | null = null;
   successMessage: string | null = null;
-
-  constructor(private authService: AuthService, private router: Router) {}
 
   ngOnInit() {
     this.user = this.authService.currentUserSubject.value;

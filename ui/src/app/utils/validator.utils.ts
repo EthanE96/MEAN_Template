@@ -1,7 +1,7 @@
 // Validators function for email, password, and required fields
 // A function will return true if the field is valid, otherwise false
 
-export function isValidEmail(email: string | undefined): Boolean {
+export function isValidEmail(email: string | undefined): boolean {
   if (!email) {
     return false;
   }
@@ -10,7 +10,7 @@ export function isValidEmail(email: string | undefined): Boolean {
   return emailPattern.test(email);
 }
 
-export function isValidPassword(password: string): Boolean {
+export function isValidPassword(password: string): boolean {
   return (
     password.length > 8 &&
     /[A-Z]/.test(password) &&
@@ -21,7 +21,7 @@ export function isValidPassword(password: string): Boolean {
 
 export function isValidFields(
   ...fields: (string | null | undefined)[]
-): Boolean {
+): boolean {
   for (const field of fields) {
     if (
       field === null ||

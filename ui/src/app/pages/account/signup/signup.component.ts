@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { NgIf } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router, RouterLink } from '@angular/router';
@@ -22,16 +22,16 @@ import { MessageComponent } from '../../../shared/message/message.component';
   ],
   templateUrl: './signup.component.html',
 })
-export class SignupComponent {
+export class SignupComponent implements OnInit {
+  private authService = inject(AuthService);
+  private theme = inject(ThemeComponent);
+  private router = inject(Router);
+
   logo: string;
   currentStep: number = 1;
   error?: string;
 
-  constructor(
-    private authService: AuthService,
-    private theme: ThemeComponent,
-    private router: Router
-  ) {
+  constructor() {
     this.logo = this.theme.logo;
   }
 
