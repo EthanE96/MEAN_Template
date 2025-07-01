@@ -3,7 +3,7 @@ import { Component, Output, EventEmitter } from '@angular/core';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../../../../services/auth.service';
-import { ValidatorService } from '../../../../services/validator.service';
+import ValidatorUtils from '../../../../utils/validator.utils';
 
 @Component({
   selector: 'app-signup-form',
@@ -22,11 +22,7 @@ export class SignupFormComponent {
   @Output() stepChange = new EventEmitter<number>();
   @Output() errorChange = new EventEmitter<string>();
 
-  constructor(
-    private authService: AuthService,
-    private validatorService: ValidatorService,
-    private router: Router
-  ) {}
+  constructor(private authService: AuthService, private router: Router) {}
 
   async onSubmit() {
     if (this.step === 1) {
@@ -36,7 +32,7 @@ export class SignupFormComponent {
       try {
         // Validate all fields
         if (
-          !this.validatorService.validateFields(
+          !ValidatorUtils.isValidFields(
             this.email,
             this.password,
             this.firstName,
@@ -48,8 +44,8 @@ export class SignupFormComponent {
 
         // Validate email and password
         if (
-          !this.validatorService.validateEmail(this.email) ||
-          !this.validatorService.validatePassword(this.password)
+          !ValidatorUtils.isValidEmail(this.email) ||
+          !ValidatorUtils.isValidPassword(this.password)
         ) {
           throw new Error('Invalid email or password format.');
         }

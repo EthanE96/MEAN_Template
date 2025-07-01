@@ -7,8 +7,8 @@ import { LandingFooterComponent } from '../../landing/landing-footer/landing-foo
 import { RouterLink, Router } from '@angular/router';
 import { MessageComponent } from '../../../shared/message/message.component';
 import { NgIf } from '@angular/common';
-import { ValidatorService } from '../../../services/validator.service';
-import { HttpErrorResponse } from '@angular/common/http';
+import ValidatorUtils from '../../../utils/validator.utils';
+import ErrorType from '../../../utils/error-type.utils';
 
 @Component({
   selector: 'app-login',
@@ -32,9 +32,8 @@ export class LoginComponent {
 
   constructor(
     private theme: ThemeComponent,
-    private authService: AuthService,
-    private validatorService: ValidatorService,
-    private router: Router
+    private router: Router,
+    private authService: AuthService
   ) {
     this.logo = this.theme.logo;
   }
@@ -54,12 +53,12 @@ export class LoginComponent {
   async loginWithLocal() {
     try {
       // Validate all fields
-      if (!this.validatorService.validateFields(this.email, this.password)) {
+      if (!ValidatorUtils.isValidFields(this.email, this.password)) {
         throw new Error('Missing fields.');
       }
 
       // Validate email
-      if (!this.validatorService.validateEmail(this.email)) {
+      if (!ValidatorUtils.isValidEmail(this.email)) {
         throw new Error('Enter valid email address.');
       }
 
@@ -78,9 +77,7 @@ export class LoginComponent {
   }
 
   handleErrorChange(error?: unknown) {
-    if (error && typeof error === 'object' && 'message' in error) {
-      this.error = error.message as string;
-    }
+    this.error = ErrorType.returnErrorMessage(error);
 
     setTimeout(() => {
       this.error = undefined;

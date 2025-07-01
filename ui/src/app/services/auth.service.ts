@@ -134,7 +134,7 @@ export class AuthService {
         error.error as IApiResponse<null>
       );
 
-      throw error.error as IApiResponse<null>;
+      throw error as HttpErrorResponse;
     }
   }
 }
