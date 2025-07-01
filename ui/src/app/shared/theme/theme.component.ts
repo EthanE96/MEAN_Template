@@ -6,8 +6,8 @@ import { Component, OnInit } from '@angular/core';
   templateUrl: './theme.component.html',
 })
 export class ThemeComponent implements OnInit {
-  defaultTheme: string = 'dark'; //* change default daisyui theme
-  alternateTheme: string = 'night'; //* change alternate daisyui theme
+  defaultTheme: string = 'dark'; // change default daisyui theme
+  alternateTheme: string = 'night'; // change alternate daisyui theme
 
   currentTheme: string = this.defaultTheme;
   logo: string = this.currentLogo();
