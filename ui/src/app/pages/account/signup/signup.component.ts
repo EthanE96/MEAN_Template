@@ -36,9 +36,7 @@ export class SignupComponent {
   }
 
   async ngOnInit() {
-    if (await this.authService.isAuthenticated()) {
-      this.router.navigate(['/app']);
-    }
+    this.router.navigate(['/app']);
   }
 
   signupWithGoogle() {

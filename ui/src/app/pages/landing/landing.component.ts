@@ -24,7 +24,7 @@ export class LandingComponent {
     this.currentTheme = this.theme.currentTheme;
   }
 
-  onGetStarted() {
+  onApp() {
     this.router.navigate(['/login']);
   }
 

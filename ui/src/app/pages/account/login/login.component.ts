@@ -8,6 +8,7 @@ import { RouterLink, Router } from '@angular/router';
 import { MessageComponent } from '../../../shared/message/message.component';
 import { NgIf } from '@angular/common';
 import { ValidatorService } from '../../../services/validator.service';
+import { HttpErrorResponse } from '@angular/common/http';
 
 @Component({
   selector: 'app-login',
@@ -39,9 +40,7 @@ export class LoginComponent {
   }
 
   async ngOnInit() {
-    // Check if user is already authenticated
-    if (await this.authService.isAuthenticated())
-      this.router.navigate(['/app']);
+    this.router.navigate(['/app']);
   }
 
   async loginWithGoogle() {
@@ -61,7 +60,7 @@ export class LoginComponent {
 
       // Validate email
       if (!this.validatorService.validateEmail(this.email)) {
-        throw new Error('Invalid email format.');
+        throw new Error('Enter valid email address.');
       }
 
       // Login
@@ -73,18 +72,18 @@ export class LoginComponent {
 
       // Redirect to the app
       this.router.navigate(['/app']);
-    } catch (error: any) {
-      this.handleErrorChange(
-        error.error.message || 'An error occurred during login.'
-      );
+    } catch (error) {
+      this.handleErrorChange(error);
     }
   }
 
-  handleErrorChange(error?: string) {
-    this.error = error;
+  handleErrorChange(error?: unknown) {
+    if (error && typeof error === 'object' && 'message' in error) {
+      this.error = error.message as string;
+    }
 
     setTimeout(() => {
       this.error = undefined;
-    }, 7000);
+    }, 5500);
   }
 }
