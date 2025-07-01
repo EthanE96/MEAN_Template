@@ -4,6 +4,7 @@ applyTo: "api/**"
 
 ## General
 
+- My API application is located at /api
 - Follow best practices, lean towards agile methodologies
 - Prioritize modularity, DRY, performance, and security
 - First break tasks into distinct prioritized steps, then follow the steps
