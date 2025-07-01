@@ -56,6 +56,6 @@ export class SignupComponent {
 
     setTimeout(() => {
       this.error = undefined;
-    }, 7000);
+    }, 5500);
   }
 }

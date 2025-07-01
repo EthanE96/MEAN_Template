@@ -4,6 +4,7 @@ import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
 import { AuthService } from '../../../../services/auth.service';
 import ValidatorUtils from '../../../../utils/validator.utils';
+import ErrorType from '../../../../utils/error-type.utils';
 
 @Component({
   selector: 'app-signup-form',
@@ -59,8 +60,8 @@ export class SignupFormComponent {
 
         // Redirect to the app
         this.router.navigate(['/app']);
-      } catch (error: any) {
-        this.error = error.error.message || 'An error occurred during signup.';
+      } catch (error: unknown) {
+        this.error = ErrorType.returnErrorMessage(error);
         this.errorChange.emit(this.error);
         this.error = undefined; // Clear error after emitting
       }
