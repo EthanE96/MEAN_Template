@@ -1,7 +1,6 @@
-import { AsyncPipe, NgIf } from '@angular/common';
+import { NgIf } from '@angular/common';
 import { Component, EventEmitter, inject, Input, Output } from '@angular/core';
 import { Router } from '@angular/router';
-import { Observable } from 'rxjs';
 import { ThemeComponent } from '../theme/theme.component';
 import { LucideAngularModule, PanelLeftOpen, Settings } from 'lucide-angular';
 import { IUser } from '../../models/user.model';
@@ -9,7 +8,7 @@ import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-header',
-  imports: [LucideAngularModule, NgIf, AsyncPipe],
+  imports: [LucideAngularModule, NgIf],
   templateUrl: './header.component.html',
 })
 export class HeaderComponent {
@@ -24,12 +23,12 @@ export class HeaderComponent {
   @Output() isDrawerOpenChange = new EventEmitter();
   @Output() currentThemeChange = new EventEmitter();
 
-  currentUser$ = new Observable<Partial<IUser> | null>();
+  currentUser: Partial<IUser> | null = null;
   currentTheme: string;
 
   constructor() {
     this.currentTheme = this.themeComponent.currentTheme;
-    this.currentUser$ = this.authService.currentUser$;
+    this.currentUser = this.authService.currentUserSubject.value;
   }
 
   onDrawerChange() {
