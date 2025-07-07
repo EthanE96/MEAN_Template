@@ -15,7 +15,7 @@ FROM node:20-alpine
 WORKDIR /api
 
 COPY package.json package-lock.json* ./
-RUN npm install
+RUN npm ci --only=production
 
 COPY --from=builder /api/dist ./dist
 
