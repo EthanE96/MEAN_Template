@@ -17,7 +17,7 @@ import { IApiResponse } from "./models/api-response.model";
 
 const app = express();
 
-// TEST
+// TEST 2
 
 /**
  * Configures and initializes the Express application.
