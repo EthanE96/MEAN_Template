@@ -11,5 +11,5 @@ const URL = process.env.API_URL || `http://localhost:${PORT}`;
  * Starts the Express server.
  */
 app.listen(PORT, () => {
-  console.log(`Server is running at ${URL}/api`);
+  console.log(`Server is running at ${URL}`);
 });
