@@ -43,7 +43,6 @@ jobs:
           tags: |
             type=raw,value=latest
             type=raw,value=${{ env.VERSION }}
-            type=sha,format=short
           labels: |
             org.opencontainers.image.version=${{ env.VERSION }}
 
