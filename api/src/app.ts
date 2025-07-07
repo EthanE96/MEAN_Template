@@ -17,6 +17,8 @@ import { IApiResponse } from "./models/api-response.model";
 
 const app = express();
 
+// Test
+
 /**
  * Configures and initializes the Express application.
  * Loads global settings from the database and applies them to middleware.
