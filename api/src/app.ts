@@ -124,8 +124,10 @@ async function configureApp() {
    * Middleware: Logging
    * Logs HTTP requests and request bodies.
    */
-  morgan.token("body", (req: Request) => JSON.stringify(req.body));
-  app.use(morgan(":method :url :status - :response-time ms req:body"));
+  if (process.env.NODE_ENV == "development") {
+    morgan.token("body", (req: Request) => JSON.stringify(req.body));
+    app.use(morgan(":method :url :status - :response-time ms req:body"));
+  }
 
   // Register API routes
   app.use("/api", routes);
