@@ -16,6 +16,7 @@
   "license": "ISC",
   "description": "",
   "dependencies": {
+    "@azure/identity": "^4.10.2",
     "@langchain/core": "^0.3.42",
     "@langchain/groq": "^0.2.0",
     "bcryptjs": "^3.0.2",
@@ -44,7 +45,7 @@
     "@types/express-session": "^1.18.1",
     "@types/mongoose": "^5.11.96",
     "@types/morgan": "^1.9.9",
-    "@types/node": "^22.14.1",
+    "@types/node": "^22.16.0",
     "@types/passport": "^1.0.17",
     "@types/passport-github2": "^1.2.9",
     "@types/passport-google-oauth20": "^2.0.16",

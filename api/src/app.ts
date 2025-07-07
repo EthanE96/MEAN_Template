@@ -7,7 +7,7 @@ import session from "express-session";
 import MongoStore from "connect-mongo";
 import passport from "passport";
 
-import { connectDB } from "./config/db.config";
+import { connectDB, getConnectionString } from "./config/db.config";
 import { seed } from "./config/seed/seed";
 import { passportConfig } from "./config/passport.config";
 import routes from "./routes/routes";
@@ -23,8 +23,7 @@ const app = express();
  */
 async function configureApp() {
   // Connect to MongoDB
-  const mongoURI = process.env.MONGODB_URI;
-  await connectDB(mongoURI);
+  await connectDB();
 
   // Seed initial data if needed, creates users and notes
   await seed();
@@ -99,7 +98,11 @@ async function configureApp() {
   app.use(
     session({
       secret: process.env.SESSION_SECRET,
-      store: MongoStore.create({ mongoUrl: mongoURI }),
+      store: MongoStore.create({
+        mongoUrl: await getConnectionString(true),
+        touchAfter: 24 * 3600, // lazy session update - only update session every 24 hours
+      }),
+
       resave: false,
       saveUninitialized: false,
       cookie: {
