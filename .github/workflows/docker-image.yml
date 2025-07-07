@@ -1,11 +1,11 @@
 name: Publish Docker Image to GHCR
 
-on:
-  push:
-    paths:
-      - "api/**"
-    branches:
-      - main
+# on:
+#   push:
+#     paths:
+#       - "api/**"
+#     branches:
+#       - main
 
 env:
   REGISTRY: ghcr.io
