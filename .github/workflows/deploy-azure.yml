@@ -91,7 +91,7 @@ jobs:
         with:
           containerAppName: ${{ env.AZURE_CONTAINER_APP_NAME_STAGE }}
           resourceGroup: ${{ env.AZURE_RESOURCE_GROUP }}
-          imageToDeploy: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ needs.build-and-push-docker-image.outputs.image_tag }}
+          imageToDeploy: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:latest
           appSourcePath: "./api"
 
   # Deploy Production to Azure Container Apps
