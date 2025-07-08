@@ -79,11 +79,11 @@ jobs:
     name: Deploy Stage
     runs-on: ubuntu-latest
     needs: build-and-push-docker-image
-    environment:
-      name: Staging
     permissions:
       id-token: write
       contents: read
+    environment:
+      name: Staging
 
     steps:
       - name: Checkout code
@@ -109,11 +109,11 @@ jobs:
     name: Deploy Production
     runs-on: ubuntu-latest
     needs: deploy-stage
-    environment:
-      name: Production
     permissions:
       id-token: write
       contents: read
+    environment:
+      name: Production
 
     if: success()
 
