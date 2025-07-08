@@ -12,7 +12,7 @@ on:
 
 env:
   REGISTRY: ghcr.io
-  REPO: ${{ github.repository }}
+  IMAGE_NAME: mean-api
   AZURE_CONTAINER_APP_NAME_STAGE: mean-api-stage
   AZURE_CONTAINER_APP_NAME_PROD: mean-api-prod
   AZURE_RESOURCE_GROUP: Mean_Template
@@ -36,10 +36,6 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Downcase Repo
-        run: |
-          echo "REPO=${GITHUB_REPOSITORY,,}" >>${GITHUB_ENV}
-
       - name: Read version from version file
         id: get_version
         run: echo "VERSION=$(cat api/version)" >> "$GITHUB_OUTPUT"
@@ -55,7 +51,7 @@ jobs:
         id: meta
         uses: docker/metadata-action@v5
         with:
-          images: ${{ env.REGISTRY }}/${{ env.REPO }}
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
           tags: |
             type=raw,value=latest
             type=raw,value=${{ steps.get_version.outputs.VERSION }}
@@ -74,7 +70,7 @@ jobs:
       - name: Generate artifact attestation
         uses: actions/attest-build-provenance@v2
         with:
-          subject-name: ${{ env.REGISTRY }}/${{ env.REPO }}
+          subject-name: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
           subject-digest: ${{ steps.push.outputs.digest }}
           push-to-registry: true
 
@@ -107,7 +103,7 @@ jobs:
         with:
           containerAppName: ${{ env.AZURE_CONTAINER_APP_NAME_STAGE }}
           resourceGroup: ${{ env.AZURE_RESOURCE_GROUP }}
-          imageToDeploy: ${{ env.REGISTRY }}/${{ env.REPO }}:${{ needs.build-and-push-docker-image.outputs.image_tag }}
+          imageToDeploy: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ needs.build-and-push-docker-image.outputs.image_tag }}
           appSourcePath: "./api"
 
   # Deploy Production to Azure Container Apps
@@ -141,5 +137,5 @@ jobs:
         with:
           containerAppName: ${{ env.AZURE_CONTAINER_APP_NAME_PROD }}
           resourceGroup: ${{ env.AZURE_RESOURCE_GROUP }}
-          imageToDeploy: ${{ env.REGISTRY }}/${{ env.REPO }}:${{ needs['build-and-push-docker-image'].outputs.image_tag }}
+          imageToDeploy: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}:${{ needs['build-and-push-docker-image'].outputs.image_tag }}
           appSourcePath: "./api"
