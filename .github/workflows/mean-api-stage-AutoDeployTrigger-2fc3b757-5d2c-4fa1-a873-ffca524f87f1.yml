@@ -1,14 +1,14 @@
 name: Trigger auto deployment for mean-api-stage
 
 # When this action will be executed
-on:
-  # Automatically trigger it when detected changes in repo
-  push:
-    branches: 
-      [ main ]
-    paths:
-    - '**'
-    - '.github/workflows/mean-api-stage-AutoDeployTrigger-2fc3b757-5d2c-4fa1-a873-ffca524f87f1.yml'
+# on:
+#   # Automatically trigger it when detected changes in repo
+#   push:
+#     branches: 
+#       [ main ]
+#     paths:
+#     - '**'
+#     - '.github/workflows/mean-api-stage-AutoDeployTrigger-2fc3b757-5d2c-4fa1-a873-ffca524f87f1.yml'
 
   # Allow manual trigger 
   workflow_dispatch:      
