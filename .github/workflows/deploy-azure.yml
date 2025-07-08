@@ -12,7 +12,7 @@ on:
 
 env:
   REGISTRY: ghcr.io
-  IMAGE_NAME: ${{ github.repository_owner }}/mean-api
+  IMAGE_NAME: ${{ toLower(github.repository_owner) }}/mean-api
   AZURE_CONTAINER_APP_NAME_STAGE: mean-api-stage
   AZURE_CONTAINER_APP_NAME_PROD: mean-api-prod
   AZURE_RESOURCE_GROUP: Mean_Template
