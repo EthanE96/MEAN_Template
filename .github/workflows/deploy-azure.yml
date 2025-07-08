@@ -81,6 +81,9 @@ jobs:
     needs: build-and-push-docker-image
     environment:
       name: Staging
+    permissions:
+      id-token: write
+      contents: read
 
     steps:
       - name: Checkout code
@@ -108,6 +111,9 @@ jobs:
     needs: deploy-stage
     environment:
       name: Production
+    permissions:
+      id-token: write
+      contents: read
 
     if: success()
 
