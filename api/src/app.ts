@@ -15,8 +15,6 @@ import { getGlobalSettings } from "./utils/global-settings-cache.utils";
 import { AppError } from "./models/errors.model";
 import { IApiResponse } from "./models/api-response.model";
 
-// test 1
-
 const app = express();
 
 /**
