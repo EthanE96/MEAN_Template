@@ -11,7 +11,7 @@ on:
   workflow_dispatch:
     inputs:
       image_tag:
-        description: "Image tag to deploy to staging"
+        description: "Tag to deploy to staging (latest or specific version vx.x.x)"
         required: true
         default: "latest"
 
