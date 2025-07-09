@@ -1,7 +1,6 @@
 import express, { NextFunction, Request, Response } from "express";
 import rateLimit from "express-rate-limit";
 import cors from "cors";
-import morgan from "morgan";
 import cookieParser from "cookie-parser";
 import session from "express-session";
 import MongoStore from "connect-mongo";
@@ -16,8 +15,6 @@ import { AppError } from "./models/errors.model";
 import { IApiResponse } from "./models/api-response.model";
 
 const app = express();
-
-//test12
 
 /**
  * Configures and initializes the Express application.
@@ -127,8 +124,17 @@ async function configureApp() {
    * Logs HTTP requests and request bodies.
    */
   if (process.env.NODE_ENV == "development") {
-    morgan.token("body", (req: Request) => JSON.stringify(req.body));
-    app.use(morgan(":method :url :status - :response-time ms req:body"));
+    (async () => {
+      try {
+        const morganModule = await import("morgan");
+        const morgan = morganModule.default || morganModule;
+
+        morgan.token("body", (req: Request) => JSON.stringify(req.body));
+        app.use(morgan(":method :url :status - :response-time ms req:body"));
+      } catch (error) {
+        console.warn("Morgan is not installed. Skipping HTTP request logging.", error);
+      }
+    })();
   }
 
   // Register API routes
