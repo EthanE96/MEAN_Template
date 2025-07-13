@@ -10,8 +10,8 @@ on:
 jobs:
   build_and_deploy_stage:
     runs-on: ubuntu-latest
-    name: Build and Deploy To Stage Environment
-    environment: Production
+    name: Build and Deploy to Stage
+    environment: Staging
     permissions:
       id-token: write
       contents: read
@@ -50,8 +50,8 @@ jobs:
 
   build_and_deploy_prod:
     runs-on: ubuntu-latest
-    name: Build and Deploy To Production Environment
-    environment: Staging
+    name: Build and Deploy to Production
+    environment: Production
     permissions:
       id-token: write
       contents: read
