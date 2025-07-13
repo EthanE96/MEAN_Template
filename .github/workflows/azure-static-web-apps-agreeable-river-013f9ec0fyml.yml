@@ -8,9 +8,10 @@ on:
     #   - "ui/**"
 
 jobs:
-  build_and_deploy:
+  build_and_deploy_stage:
     runs-on: ubuntu-latest
     name: Build and Deploy to Stage
+    environment: Staging
     permissions:
       id-token: write
       contents: read
@@ -34,6 +35,10 @@ jobs:
             return await coredemo.getIDToken()
           result-encoding: string
 
+      # REMOVE
+      - name: List available environment variables
+        run: printenv | sort
+
       - name: Build And Deploy to Stage
         id: builddeploy
         uses: Azure/static-web-apps-deploy@v1
@@ -47,3 +52,41 @@ jobs:
           github_id_token: ${{ steps.idtoken.outputs.result }}
           deployment_environment: "stage" # Environment name for deployment
 
+  build_and_deploy_prod:
+    runs-on: ubuntu-latest
+    name: Build and Deploy to Production
+    environment: Production
+    permissions:
+      id-token: write
+      contents: read
+    needs: build_and_deploy_stage
+
+    steps:
+      - name: Checkout Repository
+        uses: actions/checkout@v3
+        with:
+          submodules: true
+          lfs: false
+
+      - name: Install OIDC Client from Core Package
+        run: npm install @actions/core@1.6.0 @actions/http-client
+
+      - name: Get Id Token
+        uses: actions/github-script@v6
+        id: idtoken
+        with:
+          script: |
+            const coredemo = require('@actions/core')
+            return await coredemo.getIDToken()
+          result-encoding: string
+
+      - name: Build And Deploy to Production
+        id: builddeployprod
+        uses: Azure/static-web-apps-deploy@v1
+        with:
+          azure_static_web_apps_api_token: ${{ secrets.AZURE_SWA_TOKEN }}
+          action: "upload"
+          app_location: "./ui"
+          api_location: ""
+          output_location: "dist/ui/browser"
+          github_id_token: ${{ steps.idtoken.outputs.result }}
