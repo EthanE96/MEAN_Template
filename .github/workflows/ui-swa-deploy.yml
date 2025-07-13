@@ -35,6 +35,10 @@ jobs:
             return await coredemo.getIDToken()
           result-encoding: string
 
+      # REMOVE
+      - name: List available environment variables
+        run: printenv | sort
+
       - name: Build And Deploy to Stage
         id: builddeploy
         uses: Azure/static-web-apps-deploy@v1
