@@ -35,7 +35,7 @@ jobs:
             return await coredemo.getIDToken()
           result-encoding: string
 
-      - name: Build And Deploy to Stage Environment
+      - name: Build And Deploy to Stage
         id: builddeploy
         uses: Azure/static-web-apps-deploy@v1
         with:
@@ -76,7 +76,7 @@ jobs:
             return await coredemo.getIDToken()
           result-encoding: string
 
-      - name: Build And Deploy to Prod Environment
+      - name: Build And Deploy to Production
         id: builddeployprod
         uses: Azure/static-web-apps-deploy@v1
         with:
