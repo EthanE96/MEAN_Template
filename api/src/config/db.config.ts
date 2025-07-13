@@ -13,12 +13,7 @@ interface ConnectionConfig {
 let isConnected = false;
 
 // This function connects to the MongoDB database using Mongoose
-/**
- * Connects to the MongoDB database using Mongoose.
- * @param mongoURI Optional MongoDB connection string to override environment/config.
- * @returns {Promise<void>}
- */
-export const connectDB = async (mongoURI?: string) => {
+export const connectDB = async (): Promise<void> => {
   if (isConnected) {
     console.log("MongoDB already connected.");
     return;
@@ -26,7 +21,7 @@ export const connectDB = async (mongoURI?: string) => {
 
   try {
     // Use provided URI or get from environment
-    const connectionString = mongoURI || (await getConnectionString());
+    const connectionString = await getConnectionString();
 
     // Mongoose connection options optimized for Cosmos DB
     const mongooseOptions = {
@@ -93,13 +88,6 @@ async function getCosmosAccessToken(clientId: string): Promise<string> {
 }
 
 // Function to build Cosmos DB connection string
-/**
- * Builds a Cosmos DB connection string using the provided account, database, and token.
- * @param accountName The Cosmos DB account name.
- * @param database The Cosmos DB database name.
- * @param token The Azure access token.
- * @returns {string} The constructed MongoDB connection string for Cosmos DB.
- */
 function buildCosmosConnectionString(
   accountName: string,
   database: string,
@@ -113,8 +101,6 @@ function buildCosmosConnectionString(
 /**
  * Gets the MongoDB connection string based on environment variables and context.
  * @param suppressLog If true, suppresses connection log output.
- * @returns {Promise<string>} The MongoDB connection string.
- * @throws If no valid connection configuration is found.
  */
 export async function getConnectionString(suppressLog = false): Promise<string> {
   const config: ConnectionConfig = {
