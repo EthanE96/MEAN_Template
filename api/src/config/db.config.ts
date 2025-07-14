@@ -108,14 +108,6 @@ async function setConnectionString(): Promise<string> {
     // Use Managed Identity for Azure Cosmos DB
     console.log("Connecting to Azure Cosmos DB with Managed Identity...");
 
-    console.log("Config:", {
-      azureClientId: config.azureClientId,
-      azureSubscriptionId: config.azureSubscriptionId,
-      azureResourceGroup: config.azureResourceGroup,
-      cosmosAccountName: config.cosmosAccountName,
-      cosmosDatabase: config.cosmosDatabase,
-    }); //! REMOVE
-
     const key = await getCosmosAccountKey(
       config.azureClientId,
       config.azureSubscriptionId,
@@ -123,17 +115,7 @@ async function setConnectionString(): Promise<string> {
       config.cosmosAccountName
     );
 
-    console.log("KEY:", key); //! REMOVE
-
-    const string = buildCosmosConnectionString(
-      config.cosmosAccountName,
-      config.cosmosDatabase,
-      key
-    );
-
-    console.log("Cosmos DB connection string:", string); //! REMOVE
-
-    return string;
+    return `mongodb://${config.cosmosAccountName}:${key}@${config.cosmosAccountName}.mongo.cosmos.azure.com:10255/${config.cosmosDatabase}?ssl=true&replicaSet=globaldb&retrywrites=false&maxIdleTimeMS=120000&appName=@${config.cosmosAccountName}@`;
   } else if (config.mongoURI) {
     // Connection String Connection
     console.log("Connecting to local MongoDB...");
@@ -187,18 +169,6 @@ async function getCosmosAccountKey(
     console.error("Error retrieving Cosmos DB account key:", error);
     throw error;
   }
-}
-
-// Build Cosmos Connection String
-function buildCosmosConnectionString(
-  cosmosAccountName: string,
-  cosmosDatabase: string,
-  key: string
-): string {
-  // Standard MongoDB connection string using the retrieved key as the password
-  return `mongodb://${cosmosAccountName}:${encodeURIComponent(
-    key
-  )}@${cosmosAccountName}.mongo.cosmos.azure.com:10255/${cosmosDatabase}?ssl=true&replicaSet=globaldb&retrywrites=false&maxIdleTimeMS=120000&appName=@${cosmosAccountName}@`;
 }
 
 //^ Utility Functions
