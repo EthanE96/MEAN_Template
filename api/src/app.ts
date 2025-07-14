@@ -98,7 +98,7 @@ async function configureApp() {
     session({
       secret: process.env.SESSION_SECRET,
       store: MongoStore.create({
-        mongoUrl: await getConnectionString(true),
+        mongoUrl: await getConnectionString(),
         touchAfter: 24 * 3600, // lazy session update - only update session every 24 hours
       }),
 
