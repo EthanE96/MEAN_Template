@@ -69,7 +69,7 @@
               "fileReplacements": [
                 {
                   "replace": "src/envs/envs.ts",
-                  "with": "src/envs/envs.stage.ts"
+                  "with": "src/envs/envs.staging.ts"
                 }
               ]
             },
@@ -93,7 +93,7 @@
             "production": {
               "buildTarget": "ui:build:production"
             },
-            "stage": {
+            "staging": {
               "buildTarget": "ui:build:staging"
             },
             "local": {
