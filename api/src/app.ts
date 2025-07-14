@@ -169,7 +169,7 @@ async function configureApp() {
   });
 }
 
-// Initialize the application
+// Initialize the application.
 configureApp();
 
 export default app;

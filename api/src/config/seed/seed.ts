@@ -28,6 +28,7 @@ export const seed = async () => {
       await seedUsers();
       await seedUserSettings();
       await seedNotes();
+      console.log("Seeding completed successfully.");
     }
   } catch (error) {
     console.error(error);
