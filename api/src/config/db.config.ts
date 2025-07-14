@@ -108,6 +108,14 @@ async function setConnectionString(): Promise<string> {
     // Use Managed Identity for Azure Cosmos DB
     console.log("Connecting to Azure Cosmos DB with Managed Identity...");
 
+    console.log("Config:", {
+      azureClientId: config.azureClientId,
+      azureSubscriptionId: config.azureSubscriptionId,
+      azureResourceGroup: config.azureResourceGroup,
+      cosmosAccountName: config.cosmosAccountName,
+      cosmosDatabase: config.cosmosDatabase,
+    }); //! REMOVE
+
     const key = await getCosmosAccountKey(
       config.azureClientId,
       config.azureSubscriptionId,
@@ -115,11 +123,17 @@ async function setConnectionString(): Promise<string> {
       config.cosmosAccountName
     );
 
-    return buildCosmosConnectionString(
+    console.log("KEY:", key); //! REMOVE
+
+    const string = buildCosmosConnectionString(
       config.cosmosAccountName,
       config.cosmosDatabase,
       key
     );
+
+    console.log("Cosmos DB connection string:", string); //! REMOVE
+
+    return string;
   } else if (config.mongoURI) {
     // Connection String Connection
     console.log("Connecting to local MongoDB...");
