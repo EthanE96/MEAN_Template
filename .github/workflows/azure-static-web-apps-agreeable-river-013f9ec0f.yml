@@ -44,6 +44,7 @@ jobs:
           # For more information regarding Static Web App workflow configurations, please visit: https://aka.ms/swaworkflowconfig
           app_location: "./ui" # App source code path
           api_location: "" # Api source code path - optional
+          app_build_command: npm run build:stage
           output_location: "dist/ui/browser" # Built app content directory
           github_id_token: ${{ steps.idtoken.outputs.result }}
           deployment_environment: "staging" # Environment name for deployment
@@ -84,5 +85,6 @@ jobs:
           action: "upload"
           app_location: "./ui"
           api_location: ""
+          app_build_command: npm run build:prod
           output_location: "dist/ui/browser"
           github_id_token: ${{ steps.idtoken.outputs.result }}
