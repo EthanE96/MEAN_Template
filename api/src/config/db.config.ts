@@ -92,13 +92,14 @@ async function setConnectionString(): Promise<string> {
     cosmosAccountName: process.env.COSMOS_ACCOUNT_NAME,
     cosmosDatabase: process.env.COSMOS_DATABASE,
     // Azure specific configurations
-    azureClientId: process.env.AZURE_CLIENT_ID || undefined,
+    azureClientId: process.env.AZURE_CLIENT_ID,
     azureSubscriptionId: process.env.AZURE_SUBSCRIPTION_ID,
     azureResourceGroup: process.env.AZURE_RESOURCE_GROUP,
   };
 
   // If running in Azure with managed identity
   if (
+    config.azureClientId &&
     config.azureSubscriptionId &&
     config.azureResourceGroup &&
     config.cosmosAccountName &&
@@ -133,16 +134,14 @@ async function setConnectionString(): Promise<string> {
 
 // Get Cosmos DB Account Key using Managed Identity
 async function getCosmosAccountKey(
-  azureClientId: string | undefined,
+  azureClientId: string,
   azureSubscriptionId: string,
   azureResourceGroup: string,
   cosmosAccountName: string
 ) {
   try {
-    // Allow System Managed Identity or User Assigned Managed Identity
-    const credential = new ManagedIdentityCredential(
-      azureClientId ? { clientId: azureClientId } : {}
-    );
+    // Allow User Assigned Managed Identity
+    const credential = new ManagedIdentityCredential({ clientId: azureClientId });
     const client = new CosmosDBManagementClient(credential, azureSubscriptionId);
 
     // This call requires the "Cosmos DB Account Reader Role" assigned to the MI
