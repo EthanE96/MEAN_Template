@@ -58,6 +58,7 @@ jobs:
     name: Build and Publish Production
     runs-on: ubuntu-latest
     environment: Production
+    needs: build-and-push-stage
     permissions:
       contents: read
       packages: write
