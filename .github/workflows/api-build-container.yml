@@ -1,4 +1,4 @@
-name: Publish Docker Image to GHCR
+name: API Docker Image to GHCR
 
 on:
   push:
