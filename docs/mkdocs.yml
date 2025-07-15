@@ -1,8 +1,0 @@
-# https://squidfunk.github.io/mkdocs-material/getting-started/
-
-site_name: Mean Documentation
-nav:
-  - Home: index.md
-  - About: about.md
-theme:
-  name: material
