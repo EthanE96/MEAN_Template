@@ -1,3 +1,5 @@
+# Documentation
+
 ## Commands
 
 - `mkdocs new [dir-name]` - Create a new project.
