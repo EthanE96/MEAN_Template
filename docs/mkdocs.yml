@@ -1,0 +1,6 @@
+# https://squidfunk.github.io/mkdocs-material/getting-started/
+site_name: Mean Template Documentation
+nav:
+  - Home: index.md
+
+theme: material

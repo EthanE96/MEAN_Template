@@ -1,4 +1,4 @@
-name: Azure Static Web Apps CI/CD
+name: Mean UI CI/CD
 
 on:
   push:
