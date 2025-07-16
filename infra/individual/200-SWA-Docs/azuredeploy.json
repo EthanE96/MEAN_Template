@@ -1,0 +1,46 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "name": { "type": "string" },
+    "location": { "type": "string" },
+    "sku": { "type": "string" },
+    "skuCode": { "type": "string" },
+    "repositoryUrl": { "type": "string" },
+    "branch": { "type": "string" },
+    "repositoryToken": { "type": "securestring" },
+    "appLocation": { "type": "string" },
+    "apiLocation": { "type": "string" },
+    "appArtifactLocation": { "type": "string" },
+    "resourceTags": { "type": "object" },
+    "appSettings": { "type": "object" }
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2021-04-01",
+      "name": "nestedSwaDeployment2",
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "https://mgmt1storage.blob.core.windows.net/arm-templates/swa-nested.json",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "name": { "value": "[parameters('name')]" },
+          "location": { "value": "[parameters('location')]" },
+          "sku": { "value": "[parameters('sku')]" },
+          "skuCode": { "value": "[parameters('skuCode')]" },
+          "repositoryUrl": { "value": "[parameters('repositoryUrl')]" },
+          "branch": { "value": "[parameters('branch')]" },
+          "repositoryToken": { "value": "[parameters('repositoryToken')]" },
+          "appLocation": { "value": "[parameters('appLocation')]" },
+          "apiLocation": { "value": "[parameters('apiLocation')]" },
+          "appArtifactLocation": { "value": "[parameters('appArtifactLocation')]" },
+          "resourceTags": { "value": "[parameters('resourceTags')]" },
+          "appSettings": { "value": "[parameters('appSettings')]" }
+        }
+      }
+    }
+  ]
+}

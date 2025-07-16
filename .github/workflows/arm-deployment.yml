@@ -1,0 +1,53 @@
+name: Azure ARM Deployment
+
+on:
+  workflow_dispatch:
+    inputs:
+      AZURE_RG:
+        description: "Azure Resource Group"
+        required: true
+        default: "Mean_Template"
+      template:
+        description: "ARM template file path"
+        required: true
+        default: "./azuredeploy.json"
+      parameters:
+        description: "ARM parameters ENV (stage/prod)"
+        required: true
+        default: "stage"
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+    env:
+      AZURE_RG: ${{ github.event.inputs.AZURE_RG }}
+      TEMPLATE: ${{ github.event.inputs.template }}
+      PARAMETERS: ${{ github.event.inputs.parameters }}
+      MGMT_STORAGE_ACCOUNT: mgmt1storage
+      MGMT_STORAGE_CONTAINER: arm-templates
+    steps:
+      # Checkout code
+      - uses: actions/checkout@main
+
+      # Upload nested ARM template to blob storage
+      - name: Upload nested ARM template
+        run: |
+          azcopy copy "infra/nestedTemplates/swa-nested.json" "https://${{ env.MGMT_STORAGE_ACCOUNT }}.blob.core.windows.net/${{ env.MGMT_STORAGE_CONTAINER }}/swa-nested.json?${{ secrets.MGMT_STORAGE_SAS }}" --overwrite=true
+        shell: bash
+
+      # Log into Azure
+      - uses: azure/login@v1
+        with:
+          client-id: ${{ secrets.AZURE_CLIENT_ID }}
+          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+
+      # Deploy ARM template
+      - name: Run ARM deploy
+        uses: azure/arm-deploy@v1
+        with:
+          scope: resourceGroup #or subscription
+          subscriptionId: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+          resourceGroupName: ${{ env.AZURE_RG }}
+          template: ${{ env.TEMPLATE }}
+          parameters: ${{ format('{0}.parameters.json', env.PARAMETERS) }}

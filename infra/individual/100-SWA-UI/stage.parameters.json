@@ -1,0 +1,42 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "name": {
+      "value": "mean-ui"
+    },
+    "location": {
+      "value": "westus"
+    },
+    "sku": {
+      "value": "Free"
+    },
+    "skuCode": {
+      "value": "Free"
+    },
+    "repositoryUrl": {
+      "value": "https://github.com/EthanE96/MEAN_Template"
+    },
+    "branch": {
+      "value": "main"
+    },
+    "repositoryToken": {
+      "value": ""
+    },
+    "appLocation": {
+      "value": "./ui"
+    },
+    "apiLocation": {
+      "value": ""
+    },
+    "appArtifactLocation": {
+      "value": "dist/ui/browser"
+    },
+    "resourceTags": {
+      "value": {}
+    },
+    "appSettings": {
+      "value": {}
+    }
+  }
+}
