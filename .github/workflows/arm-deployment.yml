@@ -7,10 +7,10 @@ on:
         description: "Azure Resource Group"
         required: true
         default: "Mean_Template"
-      template:
-        description: "ARM template file path"
+      folder:
+        description: "ARM deployment folder path (e.g. infra/individual/100-SWA-UI)"
         required: true
-        default: "./azuredeploy.json"
+        default: "infra/individual/100-SWA-UI"
       parameters:
         description: "ARM parameters ENV (stage/prod)"
         required: true
@@ -21,8 +21,10 @@ jobs:
     runs-on: ubuntu-latest
     env:
       AZURE_RG: ${{ github.event.inputs.AZURE_RG }}
-      TEMPLATE: ${{ github.event.inputs.template }}
+      FOLDER: ${{ github.event.inputs.folder }}
       PARAMETERS: ${{ github.event.inputs.parameters }}
+      TEMPLATE: ${{ format('{0}/azuredeploy.json', github.event.inputs.folder) }}
+      PARAMETERS_FILE: ${{ format('{0}/{1}.parameters.json', github.event.inputs.folder, github.event.inputs.parameters) }}
       MGMT_STORAGE_ACCOUNT: mgmt1storage
       MGMT_STORAGE_CONTAINER: arm-templates
     steps:
@@ -50,4 +52,4 @@ jobs:
           subscriptionId: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
           resourceGroupName: ${{ env.AZURE_RG }}
           template: ${{ env.TEMPLATE }}
-          parameters: ${{ format('{0}.parameters.json', env.PARAMETERS) }}
+          parameters: ${{ env.PARAMETERS_FILE }}
