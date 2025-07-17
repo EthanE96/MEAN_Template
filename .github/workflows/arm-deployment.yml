@@ -55,7 +55,7 @@ jobs:
           type: deployment
           operation: create
           name: ${{ env.AZURE_RG }}-deployment
-          scope: resourcegroup
+          scope: resourceGroup
           template-file: ${{ env.TEMPLATE }}
           parameters-file: ${{ env.PARAMETERS_FILE }}
 
