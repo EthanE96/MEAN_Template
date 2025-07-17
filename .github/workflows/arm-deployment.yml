@@ -54,6 +54,7 @@ jobs:
         with:
           type: deployment
           operation: create
+          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
           name: ${{ env.AZURE_RG }}-deployment
           scope: resourceGroup
           template-file: ${{ env.TEMPLATE }}
