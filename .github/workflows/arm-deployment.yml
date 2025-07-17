@@ -12,7 +12,7 @@ on:
         required: true
         default: "infra/individual/100-SWA-UI"
       parameters:
-        description: "ARM parameters ENV (stage/prod)"
+        description: "ARM parameters ENV (e.g. stage or prod)"
         required: true
         default: "stage"
 
