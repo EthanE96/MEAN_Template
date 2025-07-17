@@ -25,12 +25,11 @@ jobs:
     runs-on: ubuntu-latest
     env:
       AZURE_RG: ${{ github.event.inputs.AZURE_RG }}
-      FOLDER: ${{ github.event.inputs.folder }}
-      PARAMETERS: ${{ github.event.inputs.parameters }}
       TEMPLATE: ${{ format('{0}/azuredeploy.json', github.event.inputs.folder) }}
       PARAMETERS_FILE: ${{ format('{0}/{1}.parameters.json', github.event.inputs.folder, github.event.inputs.parameters) }}
       MGMT_STORAGE_ACCOUNT: mgmt1storage
       MGMT_STORAGE_CONTAINER: arm-templates
+      AZURE_SUBSCRIPTION_ID: ${{ fromJson(secrets.AZURE_MGMT_MI).subscriptionId }}
     steps:
       # Checkout code
       - uses: actions/checkout@main
@@ -42,11 +41,9 @@ jobs:
         shell: bash
 
       # Log into Azure
-      - uses: azure/login@v1
+      - uses: azure/login@v2
         with:
-          client-id: ${{ secrets.AZURE_CLIENT_ID }}
-          tenant-id: ${{ secrets.AZURE_TENANT_ID }}
-          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+          creds: ${{ secrets.AZURE_MGMT_MI }}
 
       # Deploy ARM template
       - name: Run ARM deploy
@@ -56,7 +53,7 @@ jobs:
           operation: create
           name: ${{ env.AZURE_RG }}-deployment
           scope: resourceGroup
-          subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
+          subscription-id: ${{ env.AZURE_SUBSCRIPTION_ID }}
           resource-group-name: ${{ env.AZURE_RG }}
           template-file: ${{ env.TEMPLATE }}
           parameters-file: ${{ env.PARAMETERS_FILE }}
