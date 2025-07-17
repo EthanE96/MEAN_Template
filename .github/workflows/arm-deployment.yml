@@ -50,8 +50,16 @@ jobs:
 
       # Deploy ARM template
       - name: Run ARM deploy
-        uses: azure/arm-deploy@v1
+        uses: azure/bicep-deploy@v2
         with:
-          resourceGroupName: Test
-          template: ${{ env.TEMPLATE }}
-          parameters: ${{ env.PARAMETERS_FILE }}
+          type: deployment
+          operation: createOrUpdate
+          name: ${{ env.AZURE_RG }}-deployment
+          scope: resourcegroup
+          template-file: ${{ env.TEMPLATE }}
+          parameters-file: ${{ env.PARAMETERS_FILE }}
+
+      - name: Print Deployment Outputs
+        run: |
+          echo "intOutput: ${{ steps.deployment.outputs.intOutput }}"
+          echo "stringOutput: ${{ steps.deployment.outputs.stringOutput }}"
