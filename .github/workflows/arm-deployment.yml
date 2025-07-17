@@ -37,13 +37,21 @@ jobs:
       # Upload nested ARM template to blob storage
       - name: Upload Nested ARM template
         run: |
-          azcopy copy "infra/nestedTemplates/swa-nested.json" "https://${{ env.MGMT_STORAGE_ACCOUNT }}.blob.core.windows.net/${{ env.MGMT_STORAGE_CONTAINER }}/swa-nested.json?${{ secrets.MGMT_STORAGE_SAS }}" --overwrite=true
+          az storage blob upload \
+            --account-name ${{ env.MGMT_STORAGE_ACCOUNT }} \
+            --container-name ${{ env.MGMT_STORAGE_CONTAINER }} \
+            --file infra/nestedTemplates/swa-nested.json \
+            --name swa-nested.json \
+            --overwrite \
+            --auth-mode login
         shell: bash
 
-      # Log into Azure
+      # Log into Azure using Managed Identity
       - uses: azure/login@v2
         with:
-          creds: ${{ secrets.AZURE_MGMT_MI }}
+          client-id: ${{ fromJson(secrets.AZURE_MGMT_MI).clientId }}
+          tenant-id: ${{ fromJson(secrets.AZURE_MGMT_MI).tenantId }}
+          subscription-id: ${{ fromJson(secrets.AZURE_MGMT_MI).subscriptionId }}
 
       # Deploy ARM template
       - name: Run ARM deploy
