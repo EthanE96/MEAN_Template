@@ -34,7 +34,7 @@ jobs:
       # Checkout code
       - uses: actions/checkout@main
 
-      # Log into Azure using Managed Identity
+      # Log into Azure using Managed Identity (federated credentials)
       - uses: azure/login@v2
         with:
           client-id: ${{ fromJson(secrets.AZURE_MGMT_MI).clientId }}
