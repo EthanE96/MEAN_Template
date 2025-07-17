@@ -36,7 +36,7 @@ jobs:
       - uses: actions/checkout@main
 
       # Upload nested ARM template to blob storage
-      - name: Upload nested ARM template
+      - name: Upload Nested ARM template
         run: |
           azcopy copy "infra/nestedTemplates/swa-nested.json" "https://${{ env.MGMT_STORAGE_ACCOUNT }}.blob.core.windows.net/${{ env.MGMT_STORAGE_CONTAINER }}/swa-nested.json?${{ secrets.MGMT_STORAGE_SAS }}" --overwrite=true
         shell: bash
