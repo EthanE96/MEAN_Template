@@ -48,10 +48,9 @@ jobs:
           tenant-id: ${{ secrets.AZURE_TENANT_ID }}
           subscription-id: ${{ secrets.AZURE_SUBSCRIPTION_ID }}
 
-      # Ensure resource group exists
-      - name: Ensure Resource Group exists
-        run: |
-          az group create --name "${{ env.AZURE_RG }}" --location "eastus"
+      # List resource groups for debugging
+      - name: List Resource Groups
+        run: az group list -o table
         shell: bash
 
       # Deploy ARM template
