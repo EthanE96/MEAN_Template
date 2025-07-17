@@ -52,6 +52,6 @@ jobs:
       - name: Run ARM deploy
         uses: azure/arm-deploy@v1
         with:
-          resourceGroupName: ${{ env.AZURE_RG }}
+          resourceGroupName: Test
           template: ${{ env.TEMPLATE }}
           parameters: ${{ env.PARAMETERS_FILE }}
