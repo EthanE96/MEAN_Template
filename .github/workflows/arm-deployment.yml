@@ -34,6 +34,13 @@ jobs:
       # Checkout code
       - uses: actions/checkout@main
 
+      # Log into Azure using Managed Identity
+      - uses: azure/login@v2
+        with:
+          client-id: ${{ fromJson(secrets.AZURE_MGMT_MI).clientId }}
+          tenant-id: ${{ fromJson(secrets.AZURE_MGMT_MI).tenantId }}
+          subscription-id: ${{ fromJson(secrets.AZURE_MGMT_MI).subscriptionId }}
+
       # Upload nested ARM template to blob storage
       - name: Upload Nested ARM template
         run: |
@@ -45,13 +52,6 @@ jobs:
             --overwrite \
             --auth-mode login
         shell: bash
-
-      # Log into Azure using Managed Identity
-      - uses: azure/login@v2
-        with:
-          client-id: ${{ fromJson(secrets.AZURE_MGMT_MI).clientId }}
-          tenant-id: ${{ fromJson(secrets.AZURE_MGMT_MI).tenantId }}
-          subscription-id: ${{ fromJson(secrets.AZURE_MGMT_MI).subscriptionId }}
 
       # Deploy ARM template
       - name: Run ARM deploy
