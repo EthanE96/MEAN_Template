@@ -10,7 +10,7 @@ on:
       folder:
         description: "ARM deployment folder path (e.g. infra/individual/100-SWA-UI)"
         required: true
-        default: "infra/individual/400-Cosmos"
+        default: "infra/individual/500-Web-App"
 
 permissions:
   id-token: write
