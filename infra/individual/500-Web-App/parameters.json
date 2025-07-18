@@ -3,16 +3,19 @@
   "contentVersion": "1.0.0.0",
   "parameters": {
     "webAppName": {
-      "value": "mean-webapp"
+      "value": "mean-app"
     },
     "location": {
       "value": "westus2"
     },
-    "sku": {
-      "value": "F1"
+    "appServicePlanName": {
+      "value": "app-plan"
     },
-    "resourceTags": {
-      "value": {}
+    "appServicePlanResourceGroup": {
+      "value": "Management"
+    },
+    "miName": {
+      "value": "mean-id"
     }
   }
 }
