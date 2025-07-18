@@ -40,13 +40,16 @@ jobs:
       # Upload nested ARM template to blob storage
       - name: Upload Nested ARM template
         run: |
-          az storage blob upload \
-            --account-name ${{ env.MGMT_STORAGE_ACCOUNT }} \
-            --container-name ${{ env.MGMT_STORAGE_CONTAINER }} \
-            --file infra/nestedTemplates/swa-nested.json \
-            --name swa-nested.json \
-            --overwrite \
-            --auth-mode login
+          for f in infra/nestedTemplates/*.json; do
+            fname=$(basename "$f")
+            az storage blob upload \
+              --account-name ${{ env.MGMT_STORAGE_ACCOUNT }} \
+              --container-name ${{ env.MGMT_STORAGE_CONTAINER }} \
+              --file "$f" \
+              --name "$fname" \
+              --overwrite \
+              --auth-mode login
+          done
         shell: bash
 
       # Deploy ARM template
