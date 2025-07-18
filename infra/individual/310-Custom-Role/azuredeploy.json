@@ -13,7 +13,7 @@
         "roleName": "Cosmos DB Connection String Reader",
         "description": "Can list connection strings for Cosmos DB accounts.",
         "assignableScopes": [
-          "[subscription().id]"
+          "[resourceGroup().id]"
         ],
         "permissions": [
           {
@@ -48,7 +48,7 @@
             "value": "[reference(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('managedIdentityName')), '2023-01-31').principalId]"
           },
           "scope": {
-            "value": "[subscription().id]"
+            "value": "[resourceGroup().id]"
           }
         }
       },
