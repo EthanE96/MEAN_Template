@@ -6,7 +6,7 @@
       "value": "mean-id"
     },
     "location": {
-      "value": "[resourceGroup().location]"
+      "value": ""
     },
     "tags": {
       "value": {}

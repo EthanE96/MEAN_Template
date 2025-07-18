@@ -6,7 +6,7 @@
       "value": "mean-ui"
     },
     "location": {
-      "value": "[resourceGroup().location]"
+      "value": ""
     },
     "sku": {
       "value": "Free"
