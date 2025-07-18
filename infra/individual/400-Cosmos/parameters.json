@@ -3,13 +3,13 @@
   "contentVersion": "1.0.0.0",
   "parameters": {
     "cosmosDbAccountName": {
-      "value": "mean-cosmos"
+      "value": "mean-cosmosdb"
     },
     "location": {
       "value": "westus2"
     },
-    "resourceTags": {
-      "value": {}
+    "miName": {
+      "value": "mean-id"
     }
   }
 }
