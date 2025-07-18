@@ -1,0 +1,43 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "roleAssignmentName": {
+      "type": "string",
+      "metadata": {
+        "description": "A unique GUID for the role assignment."
+      }
+    },
+    "roleDefinitionId": {
+      "type": "string",
+      "metadata": {
+        "description": "The role definition ID (built-in or custom role)."
+      }
+    },
+    "principalId": {
+      "type": "string",
+      "metadata": {
+        "description": "The object ID of the principal (user, group, or service principal)."
+      }
+    },
+    "scope": {
+      "type": "string",
+      "defaultValue": "[subscription().id]",
+      "metadata": {
+        "description": "Scope for the role assignment (e.g., resource group, resource, or subscription)."
+      }
+    }
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Authorization/roleAssignments",
+      "apiVersion": "2022-04-01",
+      "name": "[parameters('roleAssignmentName')]",
+      "scope": "[parameters('scope')]",
+      "properties": {
+        "roleDefinitionId": "[parameters('roleDefinitionId')]",
+        "principalId": "[parameters('principalId')]"
+      }
+    }
+  ]
+}

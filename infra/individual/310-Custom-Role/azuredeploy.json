@@ -1,0 +1,54 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "managedIdentityName": { "type": "string" },
+    "location": { "type": "string" }
+  },
+  "resources": [
+    // Create the managed identity (if not already created elsewhere)
+    {
+      "type": "Microsoft.ManagedIdentity/userAssignedIdentities",
+      "apiVersion": "2023-01-31",
+      "name": "[parameters('managedIdentityName')]",
+      "location": "[parameters('location')]"
+    },
+    // Create the custom role definition
+    {
+      "type": "Microsoft.Authorization/roleDefinitions",
+      "apiVersion": "2022-04-01",
+      "name": "55c440a6-9c7b-4897-a4e7-1d8b76698018",
+      "properties": {
+        "roleName": "Cosmos DB Connection String Reader",
+        "description": "Can list connection strings for Cosmos DB accounts.",
+        "assignableScopes": [
+          "[subscription().id]"
+        ],
+        "permissions": [
+          {
+            "actions": [
+              "Microsoft.DocumentDB/databaseAccounts/listConnectionStrings/action"
+            ],
+            "notActions": [],
+            "dataActions": [],
+            "notDataActions": []
+          }
+        ]
+      }
+    },
+    // Assign the custom role to the managed identity
+    {
+      "type": "Microsoft.Authorization/roleAssignments",
+      "apiVersion": "2022-04-01",
+      "name": "[guid(resourceGroup().id, parameters('managedIdentityName'), '55c440a6-9c7b-4897-a4e7-1d8b76698018')]",
+      "properties": {
+        "roleDefinitionId": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '55c440a6-9c7b-4897-a4e7-1d8b76698018')]",
+        "principalId": "[reference(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('managedIdentityName')), '2023-01-31').principalId]"
+      },
+      "dependsOn": [
+        "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('managedIdentityName'))]",
+        "[resourceId('Microsoft.Authorization/roleDefinitions', '55c440a6-9c7b-4897-a4e7-1d8b76698018')]"
+      ]
+    }
+  ]
+}

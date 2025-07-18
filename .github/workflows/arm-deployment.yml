@@ -11,10 +11,6 @@ on:
         description: "ARM deployment folder path (e.g. infra/individual/100-SWA-UI)"
         required: true
         default: "infra/individual/100-SWA-UI"
-      parameters:
-        description: "ARM parameters ENV (e.g. stage or prod)"
-        required: true
-        default: "stage"
 
 permissions:
   id-token: write
@@ -26,7 +22,7 @@ jobs:
     env:
       AZURE_RG: ${{ github.event.inputs.AZURE_RG }}
       TEMPLATE: ${{ format('{0}/azuredeploy.json', github.event.inputs.folder) }}
-      PARAMETERS_FILE: ${{ format('{0}/{1}.parameters.json', github.event.inputs.folder, github.event.inputs.parameters) }}
+      PARAMETERS_FILE: ${{ format('{0}/parameters.json', github.event.inputs.folder) }}
       MGMT_STORAGE_ACCOUNT: mgmt1storage
       MGMT_STORAGE_CONTAINER: arm-templates
       AZURE_SUBSCRIPTION_ID: ${{ fromJson(secrets.AZURE_MGMT_MI).subscriptionId }}
