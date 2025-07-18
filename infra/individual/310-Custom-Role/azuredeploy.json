@@ -8,7 +8,7 @@
     {
       "type": "Microsoft.Authorization/roleDefinitions",
       "apiVersion": "2022-04-01",
-      "name": "Cosmos DB Connection String Reader",
+      "name": "55c440a6-9c7b-4897-a4e7-1d8b76698018",
       "properties": {
         "roleName": "Cosmos DB Connection String Reader",
         "description": "Can list connection strings for Cosmos DB accounts.",
@@ -42,7 +42,7 @@
             "value": "[guid(resourceGroup().id, parameters('managedIdentityName'), 'CosmosDBConnectionStringReader')]"
           },
           "roleDefinitionId": {
-            "value": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', 'Cosmos DB Connection String Reader')]"
+            "value": "[subscriptionResourceId('Microsoft.Authorization/roleDefinitions', '55c440a6-9c7b-4897-a4e7-1d8b76698018')]"
           },
           "principalId": {
             "value": "[reference(resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('managedIdentityName')), '2023-01-31').principalId]"
@@ -53,7 +53,7 @@
         }
       },
       "dependsOn": [
-        "Cosmos DB Connection String Reader"
+        "55c440a6-9c7b-4897-a4e7-1d8b76698018"
       ]
     }
   ]
