@@ -5,7 +5,6 @@
     "managedIdentityName": { "type": "string" }
   },
   "resources": [
-    // Create the custom role definition
     {
       "type": "Microsoft.Authorization/roleDefinitions",
       "apiVersion": "2022-04-01",
@@ -28,7 +27,6 @@
         ]
       }
     },
-    // Assign the custom role to the managed identity using nested template
     {
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2021-04-01",
