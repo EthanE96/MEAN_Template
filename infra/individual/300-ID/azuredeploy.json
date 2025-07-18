@@ -32,7 +32,7 @@
       "properties": {
         "mode": "Incremental",
         "templateLink": {
-          "uri": "[uri(deployment().properties.templateLink.uri, '../../nestedTemplates/id-nested.json')]",
+          "uri": "https://mgmt1storage.blob.core.windows.net/arm-templates/id-nested.json",
           "contentVersion": "1.0.0.0"
         },
         "parameters": {
