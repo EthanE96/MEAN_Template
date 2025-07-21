@@ -10,9 +10,9 @@
       }
     },
     "appSettings": {
-      "type": "array",
+      "type": "object",
       "metadata": {
-        "description": "App settings for the web app (array of name/value/slotSetting objects)."
+        "description": "App settings for the web app (object of name value pairs)."
       }
     }
   },
