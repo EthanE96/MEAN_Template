@@ -6,7 +6,7 @@
       "value": "mean-app"
     },
     "location": {
-      "value": "westus2"
+      "value": "westus"
     },
     "appServicePlanName": {
       "value": "app-plan"
