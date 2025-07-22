@@ -51,7 +51,8 @@
       "kind": "web",
       "properties": {
         "Application_Type": "web",
-        "WorkspaceResourceId": "[variables('workspaceResourceId')]"
+        "WorkspaceResourceId": "[variables('workspaceResourceId')]",
+        "RetentionInDays": 30
       },
       "dependsOn": [
         "[resourceId('Microsoft.OperationalInsights/workspaces', parameters('logAnalyticsWorkspaceName'))]"
