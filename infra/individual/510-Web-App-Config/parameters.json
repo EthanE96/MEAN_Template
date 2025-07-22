@@ -5,7 +5,7 @@
     "webAppName": {
       "value": "mean-app-test"
     },
-    "appSettingsEnv": {
+    "appSettings": {
       "value": {
         "API_URL": "https://mean-app-axdqhsa0cbbme9cc.westus-01.azurewebsites.net/api",
         "AZURE_CLIENT_ID": "xyz",
