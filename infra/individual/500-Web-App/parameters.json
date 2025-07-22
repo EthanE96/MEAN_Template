@@ -16,9 +16,6 @@
     },
     "miName": {
       "value": "mean-id"
-    },
-    "appInsightsName": {
-      "value": "mean-insights"
     }
   }
 }
