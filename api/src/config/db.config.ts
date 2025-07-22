@@ -156,6 +156,7 @@ async function getCosmosAccountKey(
         "First connection string is missing the connectionString property."
       );
     }
+
     // Parse AccountKey from the connection string (format: AccountEndpoint=...;AccountKey=...;)
     const match = connectionStringObj.connectionString.match(/AccountKey=([^;]+);/);
     if (!match || !match[1]) {
