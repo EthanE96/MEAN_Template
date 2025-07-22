@@ -35,7 +35,7 @@
         "sku": {
           "name": "PerGB2018"
         },
-        "retentionInDays": 7
+        "retentionInDays": 30
       }
     },
     {
