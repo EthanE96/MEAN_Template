@@ -49,5 +49,5 @@ This repository uses a GitHub Actions workflow to build and deploy the Angular U
    - Builds the Angular UI using `npm run build:prod`.
    - Deploys the built app from `dist/ui/browser` to the Azure Static Web App production environment using the provided API token.
 
-4. **Environments:** 
+4. **Environments:**
    - The workflow uses GitHub Environments for `Staging` and `Production` to provide stage gates, audit, and control over deployments.
