@@ -156,6 +156,9 @@ async function getCosmosAccountKey(
         "First connection string is missing the connectionString property."
       );
     }
+    console.log("connectionStringObj.connectionString"); //! REMOVE
+    console.log(connectionStringObj.connectionString); //! REMOVE
+
     const url = new URL(connectionStringObj.connectionString);
     const password = url.password; // This extracts the key part from the URL
 
