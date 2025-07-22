@@ -32,11 +32,18 @@
       "metadata": {
         "description": "Name of the user-assigned managed identity."
       }
+    },
+    "appInsightsName": {
+      "type": "string",
+      "metadata": {
+        "description": "Name of the Application Insights resource."
+      }
     }
   },
   "variables": {
     "serverFarmResourceId": "[resourceId(parameters('appServicePlanResourceGroup'), 'Microsoft.Web/serverfarms', parameters('appServicePlanName'))]",
-    "miResourceId": "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('miName'))]"
+    "miResourceId": "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('miName'))]",
+    "appInsightsResourceId": "[resourceId('Microsoft.Insights/components', parameters('appInsightsName'))]"
   },
   "resources": [
     {
@@ -60,7 +67,17 @@
           "http20Enabled": false,
           "functionAppScaleLimit": 0,
           "minimumElasticInstanceCount": 0,
-          "clusteringEnabled": false
+          "clusteringEnabled": false,
+          "appSettings": [
+            {
+              "name": "APPINSIGHTS_INSTRUMENTATIONKEY",
+              "value": "[reference(variables('appInsightsResourceId'), '2020-02-02').InstrumentationKey]"
+            },
+            {
+              "name": "APPLICATIONINSIGHTS_CONNECTION_STRING",
+              "value": "[reference(variables('appInsightsResourceId'), '2020-02-02').ConnectionString]"
+            }
+          ]
         },
         "httpsOnly": true,
         "clientAffinityEnabled": false,
