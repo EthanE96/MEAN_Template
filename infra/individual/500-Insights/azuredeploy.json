@@ -28,14 +28,14 @@
   "resources": [
     {
       "type": "Microsoft.OperationalInsights/workspaces",
-      "apiVersion": "2015-11-01-preview",
+      "apiVersion": "2025-02-01",
       "name": "[parameters('logAnalyticsWorkspaceName')]",
       "location": "[parameters('location')]",
       "properties": {
         "sku": {
-          "name": "Free"
+          "name": "PerGB2018"
         },
-        "retentionInDays": 15
+        "retentionInDays": 7
       }
     },
     {
