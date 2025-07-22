@@ -65,6 +65,131 @@
             {
               "name": "TESTING",
               "value": "Test"
+            },
+            {
+              "name": "API_URL",
+              "value": "api_url",
+              "slotSetting": false
+            },
+            {
+              "name": "AZURE_CLIENT_ID",
+              "value": "client_id",
+              "slotSetting": false
+            },
+            {
+              "name": "AZURE_RESOURCE_GROUP",
+              "value": "MEAN_Template",
+              "slotSetting": false
+            },
+            {
+              "name": "AZURE_SUBSCRIPTION_ID",
+              "value": "subscription_id",
+              "slotSetting": false
+            },
+            {
+              "name": "COSMOS_ACCOUNT_NAME",
+              "value": "mean-database",
+              "slotSetting": false
+            },
+            {
+              "name": "COSMOS_DATABASE",
+              "value": "mean-prod",
+              "slotSetting": false
+            },
+            {
+              "name": "DOCKER_ENABLE_CI",
+              "value": "true",
+              "slotSetting": false
+            },
+            {
+              "name": "ENV",
+              "value": "production",
+              "slotSetting": false
+            },
+            {
+              "name": "GITHUB_CALLBACK_ENDPOINT",
+              "value": "/api/auth/callback/github",
+              "slotSetting": false
+            },
+            {
+              "name": "GITHUB_CLIENT_ID",
+              "value": "client_id",
+              "slotSetting": false
+            },
+            {
+              "name": "GITHUB_CLIENT_SECRET",
+              "value": "client_secret",
+              "slotSetting": false
+            },
+            {
+              "name": "GOOGLE_CALLBACK_ENDPOINT",
+              "value": "/api/auth/callback/google",
+              "slotSetting": false
+            },
+            {
+              "name": "GOOGLE_CLIENT_ID",
+              "value": "client_id",
+              "slotSetting": false
+            },
+            {
+              "name": "GOOGLE_CLIENT_SECRET",
+              "value": "client_secret",
+              "slotSetting": false
+            },
+            {
+              "name": "GROQ_API_KEY",
+              "value": "groq_api_key",
+              "slotSetting": false
+            },
+            {
+              "name": "PORT",
+              "value": "3000",
+              "slotSetting": false
+            },
+            {
+              "name": "SECURE_SESSION_COOKIE",
+              "value": "false",
+              "slotSetting": false
+            },
+            {
+              "name": "SEED",
+              "value": "true",
+              "slotSetting": false
+            },
+            {
+              "name": "SESSION_COOKIE_NAME",
+              "value": "session",
+              "slotSetting": false
+            },
+            {
+              "name": "SESSION_SECRET",
+              "value": "session_secret",
+              "slotSetting": false
+            },
+            {
+              "name": "SESSION_TIMEOUT_MINUTES",
+              "value": "60",
+              "slotSetting": false
+            },
+            {
+              "name": "UI_FAILURE_URL",
+              "value": "https://url/login",
+              "slotSetting": false
+            },
+            {
+              "name": "UI_SUCCESS_URL",
+              "value": "https://url/app",
+              "slotSetting": false
+            },
+            {
+              "name": "UI_URL",
+              "value": "https://url",
+              "slotSetting": false
+            },
+            {
+              "name": "WEBSITE_USE_PLACEHOLDER",
+              "value": "0",
+              "slotSetting": false
             }
           ]
         },
