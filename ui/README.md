@@ -1,6 +1,6 @@
 # MEAN UI
 
-Angular UI 
+Angular UI
 
 ## Commands
 
