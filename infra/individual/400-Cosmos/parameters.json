@@ -8,8 +8,8 @@
     "location": {
       "value": "westus2"
     },
-    "miName": {
-      "value": "mean-id"
+    "containerName": {
+      "value": "mean-prod"
     }
   }
 }
