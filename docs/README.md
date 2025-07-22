@@ -42,7 +42,7 @@ This repository uses a GitHub Actions workflow to build and deploy the documenta
 - `AZURE_STATIC_WEB_APPS_API_TOKEN_HAPPY_BUSH_0CAC3720F` secret set in the repository for deployment authentication.
 - Documentation source and built site located in the `docs/` directory.
 
-### Flow of the Workflow
+### Flow of the Workflow 
 
 1. **Trigger:**
 
