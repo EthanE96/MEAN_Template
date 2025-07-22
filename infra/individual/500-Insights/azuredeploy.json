@@ -35,7 +35,12 @@
         "sku": {
           "name": "PerGB2018"
         },
-        "retentionInDays": 30
+        "retentionInDays": 30,
+        "workspaceCapping": {
+          "dailyQuotaGb": 0.025,
+          "quotaNextResetTime": "2025-07-22T22:00:00Z",
+          "dataIngestionStatus": "RespectQuota"
+        }
       }
     },
     {
