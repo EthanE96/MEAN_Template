@@ -12,9 +12,6 @@ jobs:
     runs-on: ubuntu-latest
     name: Build and Deploy to Staging
     environment: Staging
-    permissions:
-      id-token: write
-      contents: read
 
     steps:
       - name: Checkout Repository
@@ -22,18 +19,6 @@ jobs:
         with:
           submodules: true
           lfs: false
-
-      - name: Install OIDC Client from Core Package
-        run: npm install @actions/core@1.6.0 @actions/http-client
-
-      - name: Get Id Token
-        uses: actions/github-script@v6
-        id: idtoken
-        with:
-          script: |
-            const coredemo = require('@actions/core')
-            return await coredemo.getIDToken()
-          result-encoding: string
 
       - name: Build And Deploy to Staging
         id: builddeploy
@@ -46,16 +31,12 @@ jobs:
           api_location: "" # Api source code path - optional
           app_build_command: npm run build:stage
           output_location: "dist/ui/browser" # Built app content directory
-          github_id_token: ${{ steps.idtoken.outputs.result }}
           deployment_environment: "staging" # Environment name for deployment
 
   build_and_deploy_prod:
     runs-on: ubuntu-latest
     name: Build and Deploy to Production
     environment: Production
-    permissions:
-      id-token: write
-      contents: read
     needs: build_and_deploy_stage
 
     steps:
@@ -64,18 +45,6 @@ jobs:
         with:
           submodules: true
           lfs: false
-
-      - name: Install OIDC Client from Core Package
-        run: npm install @actions/core@1.6.0 @actions/http-client
-
-      - name: Get Id Token
-        uses: actions/github-script@v6
-        id: idtoken
-        with:
-          script: |
-            const coredemo = require('@actions/core')
-            return await coredemo.getIDToken()
-          result-encoding: string
 
       - name: Build And Deploy to Production
         id: builddeployprod
@@ -87,4 +56,3 @@ jobs:
           api_location: ""
           app_build_command: npm run build:prod
           output_location: "dist/ui/browser"
-          github_id_token: ${{ steps.idtoken.outputs.result }}
