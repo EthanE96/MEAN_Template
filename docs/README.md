@@ -9,20 +9,6 @@ This directory contains the documentation site for the project, built with [MkDo
 - `mkdocs build` - Build the documentation site
 - `mkdocs -h` - Print help message and exit
 
----
-
-# Mean Docs CI/CD
-
-## Overview
-
-This repository uses a GitHub Actions workflow to build and deploy the documentation site to Azure Static Web Apps on every push to the `main` branch that affects the `docs/` directory. The workflow ensures that documentation changes are automatically published and available.
-
-## Prerequisites
-
-- Azure Static Web Apps resource created and configured.
-- `AZURE_STATIC_WEB_APPS_API_TOKEN_HAPPY_BUSH_0CAC3720F` secret set in the repository for deployment authentication.
-- Documentation source and built site located in the `docs/` directory.
-
 ## Repository Layout
 
 ```text
@@ -40,7 +26,23 @@ docs/
 - Edit content in `docs/docs/` and configuration in `docs/mkdocs.yml`.
 - The `site/` folder is auto-generated and should not be edited directly.
 
-## Flow of the Workflow
+---
+
+# Mean Docs CI/CD
+
+## Azure Static Web Apps Deployment
+
+### Overview
+
+This repository uses a GitHub Actions workflow to build and deploy the documentation site to Azure Static Web Apps on every push to the `main` branch that affects the `docs/` directory. The workflow ensures that documentation changes are automatically published and available.
+
+### Prerequisites
+
+- Azure Static Web Apps resource created and configured.
+- `AZURE_STATIC_WEB_APPS_API_TOKEN_HAPPY_BUSH_0CAC3720F` secret set in the repository for deployment authentication.
+- Documentation source and built site located in the `docs/` directory.
+
+### Flow of the Workflow
 
 1. **Trigger:**
 

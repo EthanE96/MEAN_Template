@@ -1,59 +1,53 @@
-# Ui
+# MEAN UI
 
-This project was generated using [Angular CLI](https://github.com/angular/angular-cli) version 19.2.3.
+Angular UI
 
-## Development server
+## Commands
 
-To start a local development server, run:
+- `npm run start` - Start the Angular dev server (ng serve)
+- `npm run build` - Build the app for production (ng build)
+- `npm run build:stage` - Build the app for staging environment
+- `npm run build:prod` - Build the app for production environment
+- `npm run watch` - Start the dev server with local configuration
+- `npm run test` - Run unit tests
+- `npm run lint` - Run ESLint on the project
 
-```bash
-ng serve
-```
+---
 
-Once the server is running, open your browser and navigate to `http://localhost:4200/`. The application will automatically reload whenever you modify any of the source files.
+# Mean UI CI/CD
 
-## Code scaffolding
+## Azure Static Web Apps Deployment
 
-Angular CLI includes powerful code scaffolding tools. To generate a new component, run:
+This repository uses a GitHub Actions workflow to build and deploy the Angular UI to Azure Static Web Apps on every push to the `main` branch that affects the `ui/` directory. The workflow supports both staging and production deployments, with production gated on successful staging.
 
-```bash
-ng generate component component-name
-```
+### Prerequisites
 
-For a complete list of available schematics (such as `components`, `directives`, or `pipes`), run:
+- Azure Static Web Apps resource created and configured.
+- `AZURE_STATIC_WEB_APPS_API_TOKEN_AGREEABLE_RIVER_013F9EC0F` secret set in the repository for deployment authentication.
+- UI source code located in the `ui/` directory.
 
-```bash
-ng generate --help
-```
+### Flow of the Workflow
 
-## Building
+1. **Trigger:**
 
-To build the project run:
+   - On push to `main` affecting `ui/**`.
 
-```bash
-ng build
-```
+2. **Staging Deployment:**
 
-This will compile your project and store the build artifacts in the `dist/` directory. By default, the production build optimizes your application for performance and speed.
+   - Checks out the repository code (including submodules if any).
+   - Installs OIDC client dependencies for authentication.
+   - Retrieves a GitHub OIDC ID token for secure Azure authentication.
+   - Builds the Angular UI using `npm run build:stage`.
+   - Deploys the built app from `dist/ui/browser` to the Azure Static Web App staging environment using the provided API token.
 
-## Running unit tests
+3. **Production Deployment:**
 
-To execute unit tests with the [Karma](https://karma-runner.github.io) test runner, use the following command:
+   - Runs only after successful staging deployment.
+   - Checks out the repository code again.
+   - Installs OIDC client dependencies for authentication.
+   - Retrieves a GitHub OIDC ID token for secure Azure authentication.
+   - Builds the Angular UI using `npm run build:prod`.
+   - Deploys the built app from `dist/ui/browser` to the Azure Static Web App production environment using the provided API token.
 
-```bash
-ng test
-```
-
-## Running end-to-end tests
-
-For end-to-end (e2e) testing, run:
-
-```bash
-ng e2e
-```
-
-Angular CLI does not come with an end-to-end testing framework by default. You can choose one that suits your needs.
-
-## Additional Resources
-
-For more information on using the Angular CLI, including detailed command references, visit the [Angular CLI Overview and Command Reference](https://angular.dev/tools/cli) page.
+4. **Environments:**
+   - The workflow uses GitHub Environments for `Staging` and `Production` to provide stage gates, audit, and control over deployments.
