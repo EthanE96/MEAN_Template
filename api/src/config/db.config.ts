@@ -108,14 +108,19 @@ async function setConnectionString(): Promise<string> {
     // Use Managed Identity for Azure Cosmos DB
     console.log("Connecting to Azure Cosmos DB with Managed Identity...");
 
-    const key = await getCosmosAccountKey(
+    // Get both key and endpoint
+    const { key, endpoint } = await getCosmosAccountKey(
       config.azureClientId,
       config.azureSubscriptionId,
       config.azureResourceGroup,
       config.cosmosAccountName
     );
 
-    return `mongodb://${config.cosmosAccountName}:${key}@${config.cosmosAccountName}.mongo.cosmos.azure.com:10255/${config.cosmosDatabase}?ssl=true&replicaSet=globaldb&retrywrites=false&maxIdleTimeMS=120000&appName=@${config.cosmosAccountName}@`;
+    // Extract hostname from endpoint (e.g. https://mean-database.mongo.cosmos.azure.com:10255/)
+    const endpointUrl = new URL(endpoint);
+    const host = endpointUrl.host; // includes port if present
+
+    return `mongodb://${config.cosmosAccountName}:${key}@${host}/${config.cosmosDatabase}?ssl=true&replicaSet=globaldb&retrywrites=false&maxIdleTimeMS=120000&appName=@${config.cosmosAccountName}@`;
   } else if (config.mongoURI) {
     // Connection String Connection
     console.log("Connecting to local MongoDB...");
@@ -128,13 +133,13 @@ async function setConnectionString(): Promise<string> {
   }
 }
 
-// Get Cosmos DB Account Key using Managed Identity
+// Get Cosmos DB Account Key and Endpoint using Managed Identity
 async function getCosmosAccountKey(
   azureClientId: string,
   azureSubscriptionId: string,
   azureResourceGroup: string,
   cosmosAccountName: string
-) {
+): Promise<{ key: string; endpoint: string }> {
   try {
     // Allow User Assigned Managed Identity
     const credential = new ManagedIdentityCredential({ clientId: azureClientId });
@@ -157,14 +162,22 @@ async function getCosmosAccountKey(
       );
     }
 
-    // Parse AccountKey from the connection string (format: AccountEndpoint=...;AccountKey=...;)
-    const match = connectionStringObj.connectionString.match(/AccountKey=([^;]+);/);
-    if (!match || !match[1]) {
+    // Parse AccountKey and AccountEndpoint from the connection string
+    const keyMatch = connectionStringObj.connectionString.match(/AccountKey=([^;]+);/);
+    const endpointMatch = connectionStringObj.connectionString.match(
+      /AccountEndpoint=([^;]+);/
+    );
+
+    if (!keyMatch || !keyMatch[1]) {
       throw new Error("Could not extract AccountKey from Cosmos DB connection string.");
     }
-    const password = match[1];
+    if (!endpointMatch || !endpointMatch[1]) {
+      throw new Error(
+        "Could not extract AccountEndpoint from Cosmos DB connection string."
+      );
+    }
 
-    return password; // Return Cosmos DB account key
+    return { key: keyMatch[1], endpoint: endpointMatch[1] };
   } catch (error) {
     console.error("Error retrieving Cosmos DB account key:", error);
     throw error;
