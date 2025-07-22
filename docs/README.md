@@ -17,8 +17,6 @@ This directory contains the documentation site for the project, built with [MkDo
 
 This repository uses a GitHub Actions workflow to build and deploy the documentation site to Azure Static Web Apps on every push to the `main` branch that affects the `docs/` directory. The workflow ensures that documentation changes are automatically published and available.
 
----
-
 ## Prerequisites
 
 - Azure Static Web Apps resource created and configured.
