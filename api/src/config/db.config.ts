@@ -156,17 +156,15 @@ async function getCosmosAccountKey(
         "First connection string is missing the connectionString property."
       );
     }
-    console.log("connectionStringObj.connectionString"); //! REMOVE
-    console.log(connectionStringObj.connectionString); //! REMOVE
-
-    const url = new URL(connectionStringObj.connectionString);
-    const password = url.password; // This extracts the key part from the URL
-
-    if (!password) {
+    // Parse AccountKey from the connection string (format: AccountEndpoint=...;AccountKey=...;)
+    const match = connectionStringObj.connectionString.match(/AccountKey=([^;]+);/);
+    if (!match || !match[1]) {
       throw new Error(
-        "Could not extract password (key) from Cosmos DB connection string."
+        "Could not extract AccountKey from Cosmos DB connection string."
       );
     }
+    const password = match[1];
+
     return password; // Return Cosmos DB account key
   } catch (error) {
     console.error("Error retrieving Cosmos DB account key:", error);
@@ -214,5 +212,7 @@ export const getConnectionString = async (): Promise<string> => {
     throw new Error("Connection string is not available.");
   }
 
+  return url;
+};
   return url;
 };
