@@ -22,7 +22,7 @@ This repository uses a GitHub Actions workflow to build and publish the API Dock
 
 ### Runtime Usage Instructions
 
-1. **Trigger:**
+1. **Trigger:** 
 
    - Push to `main` branch with changes in `api/**` will trigger the workflow.
 
