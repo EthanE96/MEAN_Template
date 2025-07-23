@@ -36,13 +36,15 @@
   },
   "variables": {
     "serverFarmResourceId": "[resourceId(parameters('appServicePlanResourceGroup'), 'Microsoft.Web/serverfarms', parameters('appServicePlanName'))]",
-    "miResourceId": "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('miName'))]"
+    "miResourceId": "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('miName'))]",
+    "webAppUniqueSuffix": "[substring(uniqueString(resourceGroup().id, parameters('webAppName')), 0, 6)]",
+    "webAppUniqueName": "[concat(parameters('webAppName'), '-', variables('webAppUniqueSuffix'))]"
   },
   "resources": [
     {
       "type": "Microsoft.Web/sites",
       "apiVersion": "2022-03-01",
-      "name": "[parameters('webAppName')]",
+      "name": "[variables('webAppUniqueName')]",
       "location": "[parameters('location')]",
       "kind": "app,linux",
       "identity": {
@@ -197,21 +199,18 @@
         "clientAffinityEnabled": false,
         "clientCertEnabled": false,
         "clientCertMode": "Required",
-        "publicNetworkAccess": "Enabled",
-        "uniqueHostname": {
-          "prefix": "[parameters('webAppName')]"
-        }
+        "publicNetworkAccess": "Enabled"
       }
     }
   ],
   "outputs": {
     "webAppName": {
       "type": "string",
-      "value": "[parameters('webAppName')]"
+      "value": "[variables('webAppUniqueName')]"
     },
     "uniqueHostname": {
       "type": "string",
-      "value": "[reference(resourceId('Microsoft.Web/sites', parameters('webAppName'))).defaultHostName]"
+      "value": "[reference(resourceId('Microsoft.Web/sites', variables('webAppUniqueName'))).defaultHostName]"
     }
   }
 }

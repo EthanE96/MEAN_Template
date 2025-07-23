@@ -3,7 +3,7 @@
   "contentVersion": "1.0.0.0",
   "parameters": {
     "webAppName": {
-      "value": "mean-app-fds9ds"
+      "value": "mean-app"
     },
     "location": {
       "value": "westus2"
