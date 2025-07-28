@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { ThemeComponent } from './shared/theme/theme.component';
 
@@ -7,4 +7,8 @@ import { ThemeComponent } from './shared/theme/theme.component';
   imports: [RouterOutlet, ThemeComponent],
   templateUrl: './app.component.html',
 })
-export class AppComponent {}
+export class AppComponent implements OnInit {
+  ngOnInit() {
+    Clarity.init(projectId);
+  }
+}

@@ -1,5 +1,10 @@
 # See https://docs.github.com/get-started/getting-started-with-git/ignoring-files for more about ignoring files.
 
+# Envs
+/src/envs/envs.local.ts
+/src/envs/envs.staging.ts
+/src/envs/envs.ts
+
 # Compiled output
 /dist
 /tmp
