@@ -20,15 +20,6 @@ jobs:
           submodules: true
           lfs: false
 
-      - name: Generate Angular environment file for staging
-        run: |
-          echo "export const environment = {" > ./ui/src/envs/envs.staging.ts
-          echo "  production: true," >> ./ui/src/envs/envs.staging.ts
-          echo "  clarityProjectId: ''," >> ./ui/src/envs/envs.staging.ts
-          echo "  apiUrl: 'https://mean-app-axdqhsa0cbbme9cc.westus-01.azurewebsites.net/api'," >> ./ui/src/envs/envs.staging.ts
-          echo "  documentationUrl: 'https://icy-field-05d86561e.1.azurestaticapps.net'," >> ./ui/src/envs/envs.staging.ts
-          echo "};" >> ./ui/src/envs/envs.staging.ts
-
       - name: Build And Deploy to Staging
         id: builddeploy
         uses: Azure/static-web-apps-deploy@v1
@@ -55,14 +46,9 @@ jobs:
           submodules: true
           lfs: false
 
-      - name: Generate Angular environment file for production
+      - name: Inject Secret into Environment File
         run: |
-          echo "export const environment = {" > ./ui/src/envs/envs.ts
-          echo "  production: true," >> ./ui/src/envs/envs.ts
-          echo "  clarityProjectId: '${{ secrets.CLARITY_PROJECT_ID }}'," >> ./ui/src/envs/envs.ts
-          echo "  apiUrl: 'https://mean-app-axdqhsa0cbbme9cc.westus-01.azurewebsites.net/api'," >> ./ui/src/envs/envs.ts
-          echo "  documentationUrl: 'https://icy-field-05d86561e.1.azurestaticapps.net'," >> ./ui/src/envs/envs.ts
-          echo "};" >> ./ui/src/envs/envs.ts
+          sed -i "/documentationUrl:/a\  clarityProjectId: '${{ secrets.CLARITY_PROJECT_ID }}'," ./ui/src/envs/envs.ts
 
       - name: Build And Deploy to Production
         id: builddeployprod
