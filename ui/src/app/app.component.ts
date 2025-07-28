@@ -10,6 +10,7 @@ import { environment } from '../envs/envs';
   templateUrl: './app.component.html',
 })
 export class AppComponent implements OnInit {
+  // @ts-expect-error: Clarity project ID is not defined in the environment
   private projectId = `${environment.clarityProjectId}`;
 
   ngOnInit() {
