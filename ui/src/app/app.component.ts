@@ -9,6 +9,7 @@ import { ThemeComponent } from './shared/theme/theme.component';
 })
 export class AppComponent implements OnInit {
   ngOnInit() {
-    Clarity.init(projectId);
+    // Clarity.init(projectId);
+    console.log('AppComponent initialized');
   }
 }
