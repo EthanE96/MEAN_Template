@@ -9,7 +9,6 @@ import { IApiResponse } from '../models/api-response.model';
 export class AuthService {
   private http = inject(HttpClient);
   private baseURL = `${environment.apiUrl}`;
-
   currentUserSubject = new BehaviorSubject<Partial<IUser> | null>(null);
   currentUser$ = this.currentUserSubject.asObservable();
 
