@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { RouterOutlet } from '@angular/router';
 import { ThemeComponent } from './shared/theme/theme.component';
+import Clarity from '@microsoft/clarity';
+import { environment } from '../envs/envs';
 
 @Component({
   selector: 'app-root',
@@ -8,8 +10,16 @@ import { ThemeComponent } from './shared/theme/theme.component';
   templateUrl: './app.component.html',
 })
 export class AppComponent implements OnInit {
+  private projectId = `${environment.clarityProjectId}`;
+
   ngOnInit() {
-    // Clarity.init(projectId);
-    console.log('AppComponent initialized');
+    if (!environment.production || !this.projectId || this.projectId === '') {
+      console.log(
+        'Clarity not initialized in non-production environment or missing project ID.'
+      );
+      return;
+    }
+
+    Clarity.init(this.projectId);
   }
 }
