@@ -3,4 +3,5 @@ export const environment = {
   production: true,
   apiUrl: '',
   documentationUrl: 'https://icy-field-05d86561e.1.azurestaticapps.net',
+  clarityProjectId: '', // Will be injected by CI/CD
 };
