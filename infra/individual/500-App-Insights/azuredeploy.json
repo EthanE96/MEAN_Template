@@ -40,7 +40,8 @@
       "kind": "web",
       "properties": {
         "Application_Type": "web",
-        "WorkspaceResourceId": "[variables('logAnalyticsWorkspaceResourceId')]"
+        "WorkspaceResourceId": "[variables('logAnalyticsWorkspaceResourceId')]",
+        "RetentionInDays": 30
       }
     }
   ]
