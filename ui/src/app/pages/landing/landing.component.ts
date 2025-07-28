@@ -5,7 +5,6 @@ import { ArrowRight, LucideAngularModule } from 'lucide-angular';
 import { ThemeComponent } from '../../shared/theme/theme.component';
 import { LandingFooterComponent } from './landing-footer/landing-footer.component';
 import { LandingHeaderComponent } from './landing-header/landing-header.component';
-import { environment } from '../../../envs/envs';
 
 @Component({
   selector: 'app-landing',
@@ -20,7 +19,6 @@ import { environment } from '../../../envs/envs';
 export class LandingComponent {
   private router = inject(Router);
   private theme = inject(ThemeComponent);
-  private docsUrl = `${environment.documentationUrl}`;
 
   readonly ArrowRight = ArrowRight;
   currentTheme: string;
@@ -35,9 +33,5 @@ export class LandingComponent {
 
   onGetSourceCode() {
     window.open('https://github.com/EthanE96/MEAN_Template', '_blank');
-  }
-
-  onGetDocs() {
-    window.open(this.docsUrl, '_blank');
   }
 }
