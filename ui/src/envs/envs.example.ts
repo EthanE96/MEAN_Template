@@ -3,5 +3,4 @@ export const environment = {
   production: false,
   apiUrl: '',
   documentationUrl: '',
-  clarityProjectId: '', // This should be injected at build time
 };
