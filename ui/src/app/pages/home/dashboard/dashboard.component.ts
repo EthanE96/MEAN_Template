@@ -8,12 +8,17 @@ import { environment } from '../../../../envs/envs';
 })
 export class DashboardComponent {
   private apiURL = environment.apiUrl;
+  private documentationUrl = `${environment.documentationUrl}`;
 
   onGetSourceCode() {
     window.open('https://github.com/EthanE96/MEAN_Template', '_blank');
   }
 
-  onGetDocumentation() {
+  onGetAPIDocs() {
     window.open(`${this.apiURL}/api-docs/#/`, '_blank');
+  }
+
+  onGetDesignDocs() {
+    window.open(this.documentationUrl, '_blank');
   }
 }

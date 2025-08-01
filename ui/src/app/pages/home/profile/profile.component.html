@@ -85,11 +85,30 @@
           </div>
         </div>
         <!-- Buttons -->
-        <div class="card-actions flex justify-end gap-5">
-          <button class="btn btn-primary" type="submit">Update Profile</button>
-          <button class="btn btn-error" type="button" (click)="onLogout()">
-            Logout
+        <div
+          class="card-actions flex flex-col md:flex-row justify-between gap-5"
+        >
+          <!-- Update Profile Button (left, aligned with inputs) -->
+          <button
+            class="btn btn-primary self-start md:self-start"
+            type="submit"
+          >
+            Update Profile
           </button>
+          <div class="flex gap-5">
+            <!-- Logout Button -->
+            <button class="btn btn-error" type="button" (click)="onLogout()">
+              Logout
+            </button>
+            <!-- Delete Profile Button -->
+            <button
+              class="btn btn-outline btn-error"
+              type="button"
+              (click)="onDeleteProfile()"
+            >
+              Delete Profile
+            </button>
+          </div>
         </div>
       </form>
     </div>

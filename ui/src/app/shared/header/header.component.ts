@@ -25,10 +25,12 @@ export class HeaderComponent {
 
   currentUser: Partial<IUser> | null = null;
   currentTheme: string;
+  logo: string;
 
   constructor() {
     this.currentTheme = this.themeComponent.currentTheme;
     this.currentUser = this.authService.currentUserSubject.value;
+    this.logo = this.themeComponent.logo;
   }
 
   onDrawerChange() {
@@ -38,6 +40,7 @@ export class HeaderComponent {
   // Might move to settings component
   onThemeToggle() {
     this.currentTheme = this.themeComponent.toggleTheme();
+    this.logo = this.themeComponent.logo;
     this.currentThemeChange.emit(this.currentTheme);
   }
 

@@ -56,6 +56,12 @@ export class ProfileComponent implements OnInit {
     this.authService.logout();
   }
 
+  onDeleteProfile() {
+    console.log('Delete profile clicked');
+    // Confirm deletion
+    // Then delete all data associated with the user
+  }
+
   handleErrorChange(error: unknown) {
     this.errorMessage = ErrorType(error);
 

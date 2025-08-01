@@ -6,8 +6,8 @@ import { Component, OnInit } from '@angular/core';
   templateUrl: './theme.component.html',
 })
 export class ThemeComponent implements OnInit {
-  defaultTheme: string = 'dark'; // change default daisyui theme
-  alternateTheme: string = 'night'; // change alternate daisyui theme
+  defaultTheme: string = 'night'; // change default daisyui theme
+  alternateTheme: string = 'dark'; // change alternate daisyui theme
 
   currentTheme: string = this.defaultTheme;
   logo: string = this.currentLogo();
@@ -40,6 +40,6 @@ export class ThemeComponent implements OnInit {
 
   // Update to accommodate multiple logo themes
   currentLogo() {
-    return `/logo/logo.png`;
+    return `favicon-${this.currentTheme}.ico`;
   }
 }

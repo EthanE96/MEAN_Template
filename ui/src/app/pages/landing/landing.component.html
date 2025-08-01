@@ -6,11 +6,9 @@
       /landing-page/space_2000.webp 2000w,
       /landing-page/space_4000.webp 4000w
     "
-    ngSrc="/landing-page/space_2000.webp"
+    src="/landing-page/space_2000.webp"
     alt="Space Background"
     class="absolute w-full h-full object-cover z-0"
-    fill
-    priority
   />
 
   <div class="absolute inset-0 z-10 flex flex-col w-full">
@@ -34,12 +32,7 @@
               Source Code
             </button>
           </div>
-          <!-- Documentation Button -->
-          <div class="py-2">
-            <button class="btn btn-primary text" (click)="onGetDocumentation()">
-              Documentation
-            </button>
-          </div>
+
           <!-- App Button -->
           <div class="py-2">
             <button class="btn btn-primary text" (click)="onApp()">

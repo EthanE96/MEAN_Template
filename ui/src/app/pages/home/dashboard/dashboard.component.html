@@ -2,22 +2,32 @@
   <div class="hero-content text-center mb-52">
     <div class="max-w-xl">
       <h1 class="text-6xl font-bold">Welcome, friend! 👋</h1>
-      <p class="py-6 text-lg">
+      <p class="pt-6 pb-3 text-lg">
         We're excited to have you here! Feel free to explore the source code and
         API documentation to get started.
       </p>
 
+      <!-- Source Code Button -->
       <div class="flex justify-center gap-5">
         <div class="py-2">
           <button class="btn btn-primary text" (click)="onGetSourceCode()">
             Source Code
           </button>
         </div>
+
+        <!-- API Docs Button -->
         <div class="py-2">
-          <button class="btn btn-primary text" (click)="onGetDocumentation()">
-            API Documentation
+          <button class="btn btn-primary text" (click)="onGetAPIDocs()">
+            API Docs
           </button>
         </div>
+      </div>
+
+      <!-- Design Docs Button -->
+      <div class="flex justify-center mt-2">
+        <button class="btn btn-secondary text" (click)="onGetDesignDocs()">
+          Design Docs
+        </button>
       </div>
     </div>
   </div>
