@@ -22,6 +22,7 @@ const baseRouter = new BaseRouter<IUser>(baseController, {
   create: false,
   update: false,
   delete: false,
+  deleteAll: false,
 }).router;
 
 // Base Routes
@@ -54,14 +55,27 @@ router.put("/", async (req, res, next) => {
   }
 });
 
-// // Override the delete method to handle user profile deletion with req.user (session)
-// router.delete("/", async (_req, res) => {
-//   res.status(501).json({
-//     success: false,
-//     message: "Delete operation is not implemented.",
-//     data: null,
-//   } as IApiResponse<null>);
-// });
+// Override the delete method to handle user profile deletion with req.user (session)
+router.delete("/", async (req, res, next) => {
+  try {
+    const userId = await userExists((req.user as IUser)._id);
+
+    const deletedUser = await User.findByIdAndDelete(userId);
+    if (!deletedUser) {
+      throw new NotFoundError("User not found for deletion.");
+    }
+
+    res.status(200).json({
+      success: true,
+      message: "User profile deleted successfully.",
+    } as IApiResponse<null>);
+  } catch (error) {
+    if (error instanceof ValidationError || error instanceof NotFoundError)
+      return next(error);
+
+    next(new InternalServerError(`Failed to create document`, error));
+  }
+});
 
 //^ Helper functions
 // Checks if the user exists by ID
