@@ -20,24 +20,17 @@ const baseRouter = new BaseRouter<IUser>(baseController, {
   getAll: false,
   getById: false,
   create: false,
-  update: true,
+  update: false,
   delete: false,
 }).router;
 
 // Base Routes
 router.use("/", baseRouter);
 
-// Override the update method to handle user profile updates
+// Override the update method to handle user profile updates with req.user (session)
 router.put("/", async (req, res, next) => {
   try {
-    if (!req || Object.keys(req).length === 0) {
-      throw new ValidationError("User update data cannot be empty");
-    }
-
-    const userId = (req.user as IUser).id;
-    if (!userId) {
-      throw new NotFoundError("User not found for the authenticated user.");
-    }
+    const userId = await userExists((req.user as IUser)._id);
 
     const updatedUser = await User.findByIdAndUpdate(userId, req.body);
     if (!updatedUser) {
@@ -46,15 +39,12 @@ router.put("/", async (req, res, next) => {
 
     res.status(200).json({
       success: true,
-      data: updatedUser,
+      data: updatedUser.getPublicProfile(),
       message: "User profile updated successfully.",
     } as IApiResponse<IUser>);
   } catch (error) {
-    if (error instanceof ValidationError) next(error);
-
-    if (error instanceof Error && error.name === "ValidationError") {
-      next(new ValidationError(`Validation failed: ${error.message}`));
-    }
+    if (error instanceof ValidationError || error instanceof NotFoundError)
+      return next(error);
 
     if (error && typeof error === "object" && "code" in error && error.code === 11000) {
       next(new ConflictError("Document with this data already exists"));
@@ -63,5 +53,23 @@ router.put("/", async (req, res, next) => {
     next(new InternalServerError(`Failed to create document`, error));
   }
 });
+
+// // Override the delete method to handle user profile deletion with req.user (session)
+// router.delete("/", async (_req, res) => {
+//   res.status(501).json({
+//     success: false,
+//     message: "Delete operation is not implemented.",
+//     data: null,
+//   } as IApiResponse<null>);
+// });
+
+//^ Helper functions
+// Checks if the user exists by ID
+async function userExists(userId: string): Promise<string> {
+  if (!userId) {
+    throw new ValidationError("User ID was not provided.");
+  }
+  return userId;
+}
 
 export default router;

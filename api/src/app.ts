@@ -5,6 +5,7 @@ import cookieParser from "cookie-parser";
 import session from "express-session";
 import MongoStore from "connect-mongo";
 import passport from "passport";
+import morgan from "morgan";
 
 import { connectDB, getConnectionString } from "./config/db.config";
 import { seed } from "./config/seed/seed";
@@ -123,18 +124,13 @@ async function configureApp() {
    * Middleware: Logging
    * Logs HTTP requests and request bodies.
    */
-  if (process.env.NODE_ENV == "development") {
-    (async () => {
-      try {
-        const morganModule = await import("morgan");
-        const morgan = morganModule.default || morganModule;
-
-        morgan.token("body", (req: Request) => JSON.stringify(req.body));
-        app.use(morgan(":method :url :status - :response-time ms req:body"));
-      } catch (error) {
-        console.warn("Morgan is not installed. Skipping HTTP request logging.", error);
-      }
-    })();
+  if (process.env.ENV === "development") {
+    try {
+      morgan.token("body", (req: Request) => JSON.stringify(req.body));
+      app.use(morgan(":method :url :status - :response-time ms req:body"));
+    } catch (error) {
+      console.warn("Morgan is not installed. Skipping HTTP request logging.", error);
+    }
   }
 
   // Register API routes

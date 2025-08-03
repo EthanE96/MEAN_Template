@@ -114,6 +114,7 @@ export class AuthService {
   }
 
   //^ User Methods
+  // Methods using req.user from the auth middleware
   async updateUser(user: Partial<IUser>) {
     try {
       const res = await firstValueFrom(
@@ -126,6 +127,22 @@ export class AuthService {
 
       if (res.success && res.data) {
         this.currentUserSubject.next(res.data);
+      }
+    } catch (error) {
+      this.handleUnauthenticated(error);
+    }
+  }
+
+  async deleteUser() {
+    try {
+      const res = await firstValueFrom(
+        this.http.delete<IApiResponse<null>>(`${this.baseURL}/user`, {
+          withCredentials: true,
+        })
+      );
+
+      if (res.success) {
+        this.currentUserSubject.next(null);
       }
     } catch (error) {
       this.handleUnauthenticated(error);
