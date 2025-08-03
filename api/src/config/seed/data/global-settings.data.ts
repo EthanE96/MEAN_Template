@@ -5,7 +5,7 @@ export const globalSettingsData: Partial<IGlobalSettings> = {
   name: "development",
   featureFlags: {},
   maxRateLimit: {
-    windowMinutes: 15,
-    maxRequests: 100,
+    windowMinutes: 1,
+    maxRequests: 10,
   },
 };

@@ -39,10 +39,12 @@ async function configureApp() {
    * Uses settings from the database for window and max requests.
    */
   const limiter = rateLimit({
-    windowMs: (globalSettings.maxRateLimit.windowMinutes || 15) * 60 * 1000,
-    max: globalSettings.maxRateLimit.maxRequests || 100,
+    windowMs: (globalSettings.maxRateLimit.windowMinutes || 1) * 60 * 1000,
+    // limit each IP to a certain number of requests per window
+    limit: globalSettings.maxRateLimit.maxRequests || 10,
     standardHeaders: true,
-    legacyHeaders: false,
+    message: "Too many requests, please try again later.",
+    statusCode: 429,
   });
   app.use(limiter);
 
