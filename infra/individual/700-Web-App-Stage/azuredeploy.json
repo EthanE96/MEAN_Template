@@ -1,0 +1,216 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentTemplate.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "webAppName": {
+      "type": "string",
+      "metadata": {
+        "description": "Name of the Web App."
+      }
+    },
+    "location": {
+      "type": "string",
+      "defaultValue": "[resourceGroup().location]",
+      "metadata": {
+        "description": "Location for the Web App."
+      }
+    },
+    "appServicePlanName": {
+      "type": "string",
+      "metadata": {
+        "description": "Name of the App Service Plan."
+      }
+    },
+    "appServicePlanResourceGroup": {
+      "type": "string",
+      "metadata": {
+        "description": "Resource group of the App Service Plan."
+      }
+    },
+    "miName": {
+      "type": "string",
+      "metadata": {
+        "description": "Name of the user-assigned managed identity."
+      }
+    }
+  },
+  "variables": {
+    "serverFarmResourceId": "[resourceId(parameters('appServicePlanResourceGroup'), 'Microsoft.Web/serverfarms', parameters('appServicePlanName'))]",
+    "miResourceId": "[resourceId('Microsoft.ManagedIdentity/userAssignedIdentities', parameters('miName'))]",
+    "webAppUniqueSuffix": "[substring(uniqueString(resourceGroup().id, parameters('webAppName')), 0, 6)]",
+    "webAppUniqueName": "[concat(parameters('webAppName'), '-', variables('webAppUniqueSuffix'))]"
+  },
+  "resources": [
+    {
+      "type": "Microsoft.Web/sites",
+      "apiVersion": "2022-03-01",
+      "name": "[variables('webAppUniqueName')]",
+      "location": "[parameters('location')]",
+      "kind": "app,linux",
+      "identity": {
+        "type": "UserAssigned",
+        "userAssignedIdentities": {
+          "[variables('miResourceId')]": {}
+        }
+      },
+      "properties": {
+        "serverFarmId": "[variables('serverFarmResourceId')]",
+        "siteConfig": {
+          "linuxFxVersion": "sitecontainers",
+          "numberOfWorkers": 1,
+          "alwaysOn": false,
+          "http20Enabled": false,
+          "functionAppScaleLimit": 0,
+          "minimumElasticInstanceCount": 0,
+          "clusteringEnabled": false,
+          "appSettings": [
+            {
+              "name": "TESTING",
+              "value": "Test"
+            },
+            {
+              "name": "API_URL",
+              "value": "api_url",
+              "slotSetting": false
+            },
+            {
+              "name": "AZURE_CLIENT_ID",
+              "value": "client_id",
+              "slotSetting": false
+            },
+            {
+              "name": "AZURE_RESOURCE_GROUP",
+              "value": "MEAN_Template",
+              "slotSetting": false
+            },
+            {
+              "name": "AZURE_SUBSCRIPTION_ID",
+              "value": "subscription_id",
+              "slotSetting": false
+            },
+            {
+              "name": "COSMOS_ACCOUNT_NAME",
+              "value": "mean-database",
+              "slotSetting": false
+            },
+            {
+              "name": "COSMOS_DATABASE",
+              "value": "mean-prod",
+              "slotSetting": false
+            },
+            {
+              "name": "DOCKER_ENABLE_CI",
+              "value": "true",
+              "slotSetting": false
+            },
+            {
+              "name": "ENV",
+              "value": "production",
+              "slotSetting": false
+            },
+            {
+              "name": "GITHUB_CALLBACK_ENDPOINT",
+              "value": "/api/auth/callback/github",
+              "slotSetting": false
+            },
+            {
+              "name": "GITHUB_CLIENT_ID",
+              "value": "client_id",
+              "slotSetting": false
+            },
+            {
+              "name": "GITHUB_CLIENT_SECRET",
+              "value": "client_secret",
+              "slotSetting": false
+            },
+            {
+              "name": "GOOGLE_CALLBACK_ENDPOINT",
+              "value": "/api/auth/callback/google",
+              "slotSetting": false
+            },
+            {
+              "name": "GOOGLE_CLIENT_ID",
+              "value": "client_id",
+              "slotSetting": false
+            },
+            {
+              "name": "GOOGLE_CLIENT_SECRET",
+              "value": "client_secret",
+              "slotSetting": false
+            },
+            {
+              "name": "GROQ_API_KEY",
+              "value": "groq_api_key",
+              "slotSetting": false
+            },
+            {
+              "name": "PORT",
+              "value": "3000",
+              "slotSetting": false
+            },
+            {
+              "name": "SECURE_SESSION_COOKIE",
+              "value": "false",
+              "slotSetting": false
+            },
+            {
+              "name": "SEED",
+              "value": "true",
+              "slotSetting": false
+            },
+            {
+              "name": "SESSION_COOKIE_NAME",
+              "value": "session",
+              "slotSetting": false
+            },
+            {
+              "name": "SESSION_SECRET",
+              "value": "session_secret",
+              "slotSetting": false
+            },
+            {
+              "name": "SESSION_TIMEOUT_MINUTES",
+              "value": "60",
+              "slotSetting": false
+            },
+            {
+              "name": "UI_FAILURE_URL",
+              "value": "https://url/login",
+              "slotSetting": false
+            },
+            {
+              "name": "UI_SUCCESS_URL",
+              "value": "https://url/app",
+              "slotSetting": false
+            },
+            {
+              "name": "UI_URL",
+              "value": "https://url",
+              "slotSetting": false
+            },
+            {
+              "name": "WEBSITE_USE_PLACEHOLDER",
+              "value": "0",
+              "slotSetting": false
+            }
+          ]
+        },
+        "httpsOnly": true,
+        "clientAffinityEnabled": false,
+        "clientCertEnabled": false,
+        "clientCertMode": "Required",
+        "publicNetworkAccess": "Enabled"
+      }
+    }
+  ],
+  "outputs": {
+    "webAppName": {
+      "type": "string",
+      "value": "[variables('webAppUniqueName')]"
+    },
+    "uniqueHostname": {
+      "type": "string",
+      "value": "[reference(resourceId('Microsoft.Web/sites', variables('webAppUniqueName'))).defaultHostName]"
+    }
+  }
+}

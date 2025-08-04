@@ -1,0 +1,21 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2019-04-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "webAppName": {
+      "value": "mean-app-stage-jtufw3"
+    },
+    "location": {
+      "value": "westus2"
+    },
+    "appServicePlanName": {
+      "value": "app-plan-stage"
+    },
+    "appServicePlanResourceGroup": {
+      "value": "Management"
+    },
+    "miName": {
+      "value": "mean-id"
+    }
+  }
+}
