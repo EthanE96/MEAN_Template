@@ -1,1 +1,9 @@
-{}
+{
+  "routes": [
+    {
+      "route": "/app",
+      "rewrite": "/index.html",
+      "statusCode": 302
+    }
+  ]
+}
