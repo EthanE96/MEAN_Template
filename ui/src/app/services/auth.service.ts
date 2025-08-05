@@ -104,15 +104,6 @@ export class AuthService {
     }
   }
 
-  // Checks if the user is authenticated by checking the currentUserSubject
-  isAuthenticated(): boolean {
-    if (this.currentUserSubject.value) {
-      return true;
-    } else {
-      return false;
-    }
-  }
-
   //^ User Methods
   // Methods using req.user from the auth middleware
   async updateUser(user: Partial<IUser>) {
