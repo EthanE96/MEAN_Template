@@ -51,15 +51,22 @@ export class ProfileComponent implements OnInit {
     }
   }
 
+  async onDeleteProfile() {
+    try {
+      if (!this.user || !this.user._id) {
+        throw new Error('No user data available to delete.');
+      }
+
+      await this.authService.deleteUser();
+      this.onLogout();
+    } catch (error) {
+      this.handleErrorChange(error);
+    }
+  }
+
   onLogout() {
     this.router.navigate(['/']);
     this.authService.logout();
-  }
-
-  onDeleteProfile() {
-    console.log('Delete profile clicked');
-    // Confirm deletion
-    // Then delete all data associated with the user
   }
 
   handleErrorChange(error: unknown) {

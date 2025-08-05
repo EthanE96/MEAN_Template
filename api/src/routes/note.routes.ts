@@ -13,6 +13,7 @@ const baseRouter = new BaseRouter<INote>(noteController, {
   create: true,
   update: true,
   delete: true,
+  deleteAll: false,
 }).router;
 
 // Custom Routes

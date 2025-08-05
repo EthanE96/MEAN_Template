@@ -17,7 +17,7 @@
   </div>
 
   <!-- User Info Card -->
-  <ng-container *ngIf="user">
+  <ng-container *ngIf="user; else noUser">
     <div class="card w-full max-w-2xl bg-base-100 shadow-xl shadow-base-300/10">
       <form class="card-body space-y-6" (ngSubmit)="updateProfile()">
         <div class="flex flex-col md:flex-row gap-6">
@@ -84,33 +84,56 @@
             </div>
           </div>
         </div>
+
         <!-- Buttons -->
         <div
           class="card-actions flex flex-col md:flex-row justify-between gap-5"
         >
-          <!-- Update Profile Button (left, aligned with inputs) -->
+          <!-- Update Profile Button, will submit data with type=submit -->
           <button
             class="btn btn-primary self-start md:self-start"
             type="submit"
           >
             Update Profile
           </button>
-          <div class="flex gap-5">
+          <div class="flex gap-3">
             <!-- Logout Button -->
             <button class="btn btn-error" type="button" (click)="onLogout()">
               Logout
             </button>
+
             <!-- Delete Profile Button -->
             <button
               class="btn btn-outline btn-error"
               type="button"
-              (click)="onDeleteProfile()"
+              onclick="delete_profile.showModal()"
             >
               Delete Profile
             </button>
+            <dialog id="delete_profile" class="modal">
+              <div class="modal-box">
+                <h3 class="text-xl font-bold">Delete Profile</h3>
+                <p class="py-4 text-base">
+                  Are you sure you want to delete your profile? This action is
+                  irreversible and will remove all your data.
+                </p>
+                <div class="modal-action">
+                  <form method="dialog" class="flex gap-3">
+                    <!-- if there is a button in form, it will close the modal -->
+                    <button class="btn btn-neutral">Close</button>
+                    <button class="btn btn-error" (click)="onDeleteProfile()">
+                      Delete Profile
+                    </button>
+                  </form>
+                </div>
+              </div>
+            </dialog>
           </div>
         </div>
       </form>
     </div>
   </ng-container>
+  <ng-template #noUser>
+    <h1 class="text-2xl font-bold text-center mt-10">No user data.</h1>
+  </ng-template>
 </div>
