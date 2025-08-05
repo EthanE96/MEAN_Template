@@ -4,6 +4,9 @@
       "navigationFallback": {
         "rewrite": "/index.html"
       }
+    },
+    {
+      "route": "/login"
     }
   ]
 }
