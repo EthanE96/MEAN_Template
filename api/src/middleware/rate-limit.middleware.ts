@@ -30,16 +30,16 @@ export const blockMissingIpMiddleware: RequestHandler = (req, res, next) => {
 // Rate limiting middleware setup for Express using settings from global config
 export function rateLimitMiddleware(globalSettings?: IGlobalSettings): RequestHandler {
   return rateLimit({
-    windowMs: (globalSettings!.maxRateLimit.windowMinutes || 1) * 60 * 1000,
-    max: globalSettings!.maxRateLimit.maxRequests || 10,
+    windowMs: (globalSettings?.maxRateLimit.windowMinutes || 1) * 60 * 1000,
+    // limit each IP to a certain number of requests per window
+    limit: globalSettings?.maxRateLimit.maxRequests || 10,
     standardHeaders: true,
-    legacyHeaders: false,
+    message: "Too many requests, please try again later.",
+    statusCode: 429,
     keyGenerator: (req: Request): string => {
       const ip = req.ip ?? "";
       if (!ip) {
-        console.error(
-          "No request IP, `express-rate-limit` is missing `req.ip` on the request."
-        );
+        console.error("No request IP, rate limit is missing `req.ip` on the request.");
       }
       return ip.replace(/:\d+[^:]*$/, "");
     },
