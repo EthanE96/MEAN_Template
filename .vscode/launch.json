@@ -11,6 +11,15 @@
       "skipFiles": ["<node_internals>/**"],
       "console": "internalConsole",
       "outputCapture": "std"
+    },
+    {
+      "name": "SWA: Run ui",
+      "request": "launch",
+      "type": "chrome",
+      "url": "http://localhost:4280",
+      "preLaunchTask": "swa: start ui",
+      "webRoot": "${workspaceFolder}/ui",
+      "timeout": 30000
     }
   ]
 }
