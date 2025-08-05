@@ -1,16 +1,16 @@
-import { Router, Request, Response, NextFunction } from "express";
+import { Router } from "express";
 import { isAuthenticated } from "../middleware/auth.middleware";
 import authRoutes from "./auth.routes";
 import noteRoutes from "./note.routes";
 import swaggerRoutes from "./swagger.routes";
 import userRoutes from "./user.routes";
-import { AppError } from "../models/errors.model";
+import { NotFoundError } from "../models/errors.model";
 
 const router = Router();
 
 //^ Public Routes
 // /api/health
-router.get("/health", (_req: Request, res: Response) => {
+router.get("/health", (_req, res) => {
   res.json({
     status: "Healthy",
     version: "1.0.0",
@@ -29,11 +29,12 @@ router.use("/notes", isAuthenticated, noteRoutes);
 router.use("/user", isAuthenticated, userRoutes);
 
 // /api/api-docs
-router.use("/", isAuthenticated, swaggerRoutes);
+router.use("/swagger", isAuthenticated, swaggerRoutes);
 
-// 404 handler for unknown routes
-router.use((req: Request, _res: Response, next: NextFunction) => {
-  next(new AppError(404, true, `Can't find ${req.originalUrl} on this server!`));
+//^ Error handling
+// Wildcard catch-all: forward unknown to main 404 handler as NotFoundError
+router.get("/*", (_req, _res, next) => {
+  next(new NotFoundError("The API endpoint you requested does not exist."));
 });
 
 export default router;

@@ -65,10 +65,6 @@
           "clusteringEnabled": false,
           "appSettings": [
             {
-              "name": "TESTING",
-              "value": "Test"
-            },
-            {
               "name": "API_URL",
               "value": "api_url",
               "slotSetting": false

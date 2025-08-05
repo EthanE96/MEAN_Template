@@ -58,9 +58,10 @@ This repository is a MEAN stack SaaS template with a strong focus on API, infras
 - For Angular/TypeScript specifics, see `.github/instructions/Angular_Typescript.instructions.md`.
 - For Node/ESModule specifics, see `.github/instructions/Node_ESModule.instructions.md`.
 
-## Agent Mode
+## AI / LLM Rule to Follow
 
-When using agent mode verify newer code using context7.
+1. When using agent mode verify newer code using context7.
+2. If necessary, provide the options/solutions should be implemented based on recommendations and best practices.
 
 ---
 

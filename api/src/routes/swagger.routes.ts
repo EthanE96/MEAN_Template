@@ -5,7 +5,7 @@ import swaggerDocument from "../config/swagger/swagger.json";
 const router = Router();
 
 // Serve Swagger UI
-router.use("/api-docs", swaggerUi.serve);
-router.get("/api-docs", swaggerUi.setup(swaggerDocument));
+router.use("/docs", swaggerUi.serve);
+router.get("/docs", swaggerUi.setup(swaggerDocument));
 
 export default router;

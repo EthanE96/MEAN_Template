@@ -33,7 +33,7 @@ export class AppError extends Error implements IAppError {
     this.isOperational = isOperational;
     Error.captureStackTrace(this, this.constructor);
 
-    if (process.env.NODE_ENV === "development") {
+    if (process.env.ENV === "development") {
       if (stack) {
         this.stack = stack;
       }

@@ -15,7 +15,7 @@ export class DashboardComponent {
   }
 
   onGetAPIDocs() {
-    window.open(`${this.apiURL}/api-docs/#/`, '_blank');
+    window.open(`${this.apiURL}/swagger/docs/`, '_blank');
   }
 
   onGetDesignDocs() {
