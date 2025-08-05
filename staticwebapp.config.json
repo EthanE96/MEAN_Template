@@ -2,12 +2,12 @@
   "routes": [
     {
       "navigationFallback": {
-        "rewrite": "/index.html"
+        "rewrite": "/index.html",
+        "exclude": [
+          "/assets/*",
+          "/favicon.ico"
+        ]
       }
-    },
-    {
-      "route": "/login",
-      "rewrite": "/index.html"
     }
   ]
 }
