@@ -2,7 +2,7 @@
 
 Angular UI
 
-## Commands
+## Commands 
 
 - `npm run start` - Start the Angular dev server (ng serve)
 - `npm run build` - Build the app for production (ng build)
