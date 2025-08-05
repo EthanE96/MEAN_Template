@@ -1,5 +1,5 @@
 import express from "express";
-import appInsights from "applicationinsights";
+import * as appInsights from "applicationinsights";
 import cookieParser from "cookie-parser";
 import { createSessionMiddleware } from "./middleware/session.middleware";
 import {
