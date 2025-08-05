@@ -6,7 +6,8 @@
       }
     },
     {
-      "route": "/login"
+      "route": "/login",
+      "rewrite": "/index.html"
     }
   ]
 }
