@@ -32,7 +32,7 @@ export function rateLimitMiddleware(globalSettings?: IGlobalSettings): RequestHa
   return rateLimit({
     windowMs: (globalSettings?.maxRateLimit.windowMinutes || 1) * 60 * 1000,
     // limit each IP to a certain number of requests per window
-    limit: globalSettings?.maxRateLimit.maxRequests || 10,
+    limit: globalSettings?.maxRateLimit.maxRequests || 20,
     standardHeaders: true,
     message: "Too many requests, please try again later.",
     statusCode: 429,
