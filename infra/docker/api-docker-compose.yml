@@ -1,0 +1,27 @@
+volumes:
+  mean-api-data: {}
+
+networks:
+  server-net:
+    name: server-net
+    external: true
+
+services:
+  mean-api:
+    container_name: mean-api
+    restart: unless-stopped
+    # Get the image from GitHub Container Registry (with the specific tag)
+    image: ghcr.io/ethane96/mean_template/mean-api:production
+    ports:
+      - "3000:3000"
+    networks:
+      - server-net
+    environment:
+      # Insert Environment variables here
+    healthcheck:
+      test:
+        ["CMD", "wget", "-q", "--tries=1", "--spider", "http://localhost:3000/api/health"]
+      interval: 5s
+      timeout: 3s
+      retries: 3
+      start_period: 10s

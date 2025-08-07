@@ -1,6 +1,59 @@
 # https://squidfunk.github.io/mkdocs-material/getting-started/
-site_name: Mean Template Documentation
+site_name: Mean Template Design Docs
+site_url: https://icy-field-05d86561e.1.azurestaticapps.net
+repo_url: https://github.com/EthanE96/MEAN_Template
+repo_name: EthanE96/MEAN_Template
+
 nav:
   - Home: index.md
+  - Installation: installation.md
+  - Architecture: architecture.md
+  - Infrastructure: infrastructure.md
+  - Reporting: reporting.md
+  - Roadmap: roadmap.md
 
-theme: material
+theme:
+  name: material
+  favicon: images/favicon-night.ico
+  logo: images/favicon-night.ico
+  icon:
+    repo: material/github
+    edit: material/pencil
+
+  palette:
+    # Dark Mode Toggle
+    - media: "(prefers-color-scheme: dark)"
+      scheme: slate
+      primary: black
+      accent: light blue
+      toggle:
+        icon: material/toggle-switch
+        name: Switch to light mode
+
+    # Light Mode Toggle
+    - media: "(prefers-color-scheme: light)"
+      scheme: default
+      primary: black
+      accent: light blue
+      toggle:
+        icon: material/toggle-switch-off-outline
+        name: Switch to dark mode
+
+  features:
+    - navigation.instant
+    - navigation.tabs
+    - navigation.tabs.sticky
+    - toc.follow
+    - search.suggest
+
+plugins:
+  - search
+
+extra:
+  consent:
+    title: Cookie consent
+    description: >-
+      We use cookies to recognize your repeated visits and preferences, as well
+      as to measure the effectiveness of our documentation and whether users
+      find what they're searching for. With your consent, you're helping us to
+      make our documentation better.
