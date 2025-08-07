@@ -15,7 +15,7 @@ hide:
 
 <p align="center">
    <b>Modern MEAN stack SaaS template for rapid, scalable, and secure web app delivery.</b><br>
-   <i>API, UI, and Infrastructure—modular, cloud-ready, and production-focused.</i>
+   <i> API, UI, and Infrastructure—modular, cloud-ready, and production-focused.</i>
 </p>
 
 ---
@@ -94,56 +94,6 @@ Password: UserPass123!
 
 ---
 
-# Quick Start
-
-## Prerequisites
-
-- Node.js 20+
-- NPM 9+
-- MongoDB (local or Azure CosmosDB)
-- Azure account (for cloud deployment)
-
-## Clone & Install
-
-```bash
-git clone https://github.com/EthanE96/MEAN_Template.git
-cd MEAN_Template
-# Install API dependencies
-cd api && npm i
-# Install UI dependencies
-cd ../ui && npm i
-```
-
-## Run Locally
-
-### API
-
-```bash
-cd api
-npm run watch
-# or: npm run docker:up (for Docker Compose)
-# API: http://localhost:3000/api
-```
-
-### UI
-
-```bash
-cd ui
-npm run watch
-# or: npm run start
-# UI: http://localhost:4200/
-```
-
-### Documentation
-
-```bash
-cd docs
-mkdocs serve
-# Docs: http://127.0.0.1:8000
-```
-
----
-
 ## Monorepo Structure
 
 | Folder   | Description                                             |
@@ -184,24 +134,8 @@ Contributions, issues, and feature requests are welcome! Please open an issue or
 
 MIT License
 
-Copyright 2025 Ethan Edwards
+Copyright (c) 2025 - Ethan Edwards - <EthanAEdwards5@outlook.com>
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the “Software”), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions:
-
-The above copyright notice and this permission notice shall be included in all
-copies or substantial portions of the Software.
-
-THE SOFTWARE IS PROVIDED “AS IS”, WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-SOFTWARE.
+> [License](../../LICENESE)
 
 ---
