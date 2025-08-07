@@ -1,14 +1,9 @@
----
-hide:
-  - navigation
----
-
 <p align="center">
     <h1 style="text-align: center;">MEAN_Template</h1>
 </p>
 
 <p align="center">
-   <img src="images/favicon-night.ico" alt="MEAN Template Logo" width="80"/>
+   <img src="docs/docs/images/favicon-night.ico" alt="MEAN Template Logo" width="80"/>
 </p>
 
 <p align="center">
@@ -36,14 +31,11 @@ Password: UserPass123!
 
 ### Screenshots
 
-<!--
-Add screenshots of the UI, API docs, or dashboards below. Example:
--->
 <div align="center">
 
 **Landing Page**
 
-<img src="docs/docs/images/landing-page.png" alt="Landing Page Screenshot" width="600"/>
+<img src="docs/docs/images/landing-page.png" alt="Landing Page Screenshot" width="800"/>
 
 </div>
 
@@ -51,7 +43,7 @@ Add screenshots of the UI, API docs, or dashboards below. Example:
 
 **App Page**
 
-<img src="docs/docs/images/app-page.png" alt="Dashboard Screenshot" width="600"/>
+<img src="docs/docs/images/app-page.png" alt="Dashboard Screenshot" width="800"/>
 
 </div>
 
@@ -59,11 +51,9 @@ Add screenshots of the UI, API docs, or dashboards below. Example:
 
 **Design Docs Page**
 
-<img src="docs/docs/images/design-docs-page.png" alt="Documentation Page Screenshot" width="600"/>
+<img src="docs/docs/images/design-docs-page.png" alt="Documentation Page Screenshot" width="800"/>
 
 </div>
-
-<!-- Add more screenshots as needed -->
 
 ---
 

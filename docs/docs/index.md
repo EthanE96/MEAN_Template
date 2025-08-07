@@ -38,34 +38,20 @@ Password: UserPass123!
 
 ### Screenshots
 
-<!--
-Add screenshots of the UI, API docs, or dashboards below. Example:
--->
 <div align="center">
-
-**Landing Page**
-
-<img src="images/landing-page.png" alt="Landing Page Screenshot" width="600"/>
-
+   <h4>Landing Page</h4>
+   <img src="images/landing-page.png" alt="Landing Page Screenshot" width="800"/>
 </div>
 
 <div align="center">
-
-**App Page**
-
-<img src="images/app-page.png" alt="Dashboard Screenshot" width="600"/>
-
+   <h4>App Page</h4>
+   <img src="images/app-page.png" alt="Dashboard Screenshot" width="800"/>
 </div>
 
 <div align="center">
-
-**Design Docs Page**
-
-<img src="images/design-docs-page.png" alt="Documentation Page Screenshot" width="600"/>
-
+   <h4>Design Docs Page</h4>
+   <img src="images/design-docs-page.png" alt="Documentation Page Screenshot" width="800"/>
 </div>
-
-<!-- Add more screenshots as needed -->
 
 ---
 
@@ -171,20 +157,20 @@ mkdocs serve
 
 ## CI/CD & GitHub Workflows
 
-- **API:** Docker image built & published to GHCR on push/tag ([api-build-container.yml](.github/workflows/api-build-container.yml))
-- **UI:** Deployed to Azure Static Web Apps on push/PR ([azure-static-web-apps-orange-glacier-050c76b1e.yml](.github/workflows/azure-static-web-apps-orange-glacier-050c76b1e.yml))
-- **Docs:** Auto-deployed to Azure Static Web Apps ([azure-static-web-apps-icy-field-05d86561e.yml](.github/workflows/azure-static-web-apps-icy-field-05d86561e.yml))
-- **Infra:** ARM templates deployed via GitHub Actions ([arm-deployment.yml](.github/workflows/arm-deployment.yml))
+- **API:** Docker image built & published to GHCR on push/tag (.github/workflows/api-build-container.yml)
+- **UI:** Deployed to Azure Static Web Apps on push/PR (.github/workflows/azure-static-web-apps-orange-glacier-050c76b1e.yml)
+- **Docs:** Auto-deployed to Azure Static Web Apps (.github/workflows/azure-static-web-apps-icy-field-05d86561e.yml)
+- **Infra:** ARM templates deployed via GitHub Actions (.github/workflows/arm-deployment.yml)
 
 ---
 
 ## Documentation
 
-- [Architecture](/architecture)
-- [Installation](/installation)
-- [Infrastructure](/infrastructure)
-- [Reporting](/reporting)
-- [Roadmap](/roadmap)
+- [Architecture](architecture.md)
+- [Installation](installation.md)
+- [Infrastructure](infrastructure.md)
+- [Reporting](reporting.md)
+- [Roadmap](roadmap.md)
 
 ---
 
