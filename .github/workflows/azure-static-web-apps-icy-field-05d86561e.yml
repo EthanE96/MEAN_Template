@@ -10,7 +10,7 @@ on:
 jobs:
   build_and_deploy_job:
     runs-on: ubuntu-latest
-    name: Docs Build and Deploy Job
+    name: Design Docs Build and Deploy
     environment: Documentation
 
     steps:
@@ -19,7 +19,22 @@ jobs:
           submodules: true
           lfs: false
 
-      - name: Docs Build And Deploy
+      - name: Install Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.x"
+
+      - name: Install MkDocs and Dependencies
+        run: |
+          python -m pip install --upgrade pip
+          pip install mkdocs mkdocs-material
+        working-directory: ./docs
+
+      - name: Build Design Docs
+        run: mkdocs build --clean --site-dir site
+        working-directory: ./docs
+
+      - name: Deploy Design Docs
         id: builddeploy
         uses: Azure/static-web-apps-deploy@v1
         with:
