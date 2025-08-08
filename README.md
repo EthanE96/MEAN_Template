@@ -38,7 +38,7 @@ Password: UserPass123!
 
 **Landing Page**
 
-<img src="docs/docs/images/landing-page.png" alt="Landing Page Screenshot" width="800"/>
+<img src="docs/docs/images/index/landing-page.png" alt="Landing Page Screenshot" width="800"/>
 
 </div>
 
@@ -46,7 +46,7 @@ Password: UserPass123!
 
 **App Page**
 
-<img src="docs/docs/images/app-page.png" alt="Dashboard Screenshot" width="800"/>
+<img src="docs/docs/images/index/app-page.png" alt="Dashboard Screenshot" width="800"/>
 
 </div>
 
@@ -54,7 +54,7 @@ Password: UserPass123!
 
 **Design Docs Page**
 
-<img src="docs/docs/images/design-docs-page.png" alt="Documentation Page Screenshot" width="800"/>
+<img src="docs/docs/images/index/design-docs-page.png" alt="Documentation Page Screenshot" width="800"/>
 
 </div>
 

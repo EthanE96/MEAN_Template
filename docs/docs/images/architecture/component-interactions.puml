@@ -1,0 +1,24 @@
+@startuml ComponentInteractions
+actor User
+participant "Angular Frontend" as FE
+participant "Express Backend" as BE
+database "Cosmos DB (MongoDB API)" as DB
+
+participant "Sessions/Auth\n(Global/Per-User)" as Sessions
+participant "Notes" as Notes
+participant "Users" as Users
+
+User -> FE : Uses SPA (browser)
+FE -> BE : HTTPS API Request\n(e.g. login, CRUD notes)
+BE -> BE : Middleware (auth, CORS, logging, rate limiting)
+BE -> Sessions : Validate/Create Session or Token
+BE -> Users : Authenticate User\n(lookup/validate credentials)
+Sessions --> BE : Session/Token Valid
+Users --> BE : User info/roles
+BE -> Notes : CRUD operations
+Notes --> BE : Data/response
+BE -> FE : API Response (data, errors, auth tokens)
+FE -> User : Render UI, show data
+
+BE -> DB : Read/Write (global settings, etc.)
+@enduml

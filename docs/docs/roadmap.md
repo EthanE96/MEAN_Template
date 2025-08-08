@@ -9,8 +9,12 @@ https://www.neoteroi.dev/mkdocs-plugins/timeline/#icons-support -->
 
 # Product Roadmap
 
+## Introduction
+
+This document outlines the planned development milestones for the project, detailing the features and improvements targeted for each release phase. The roadmap provides a high-level overview of the Minimum Viable Product (MVP) and future enhancements, helping stakeholders understand the project's direction and priorities.
+
 <div align="center">
-  <h1 style="margin-bottom:0;">MVP</h1>
+  <h1 style="margin-bottom:0; margin-top:1em;">MVP</h1>
   <h2 style="margin-bottom:0.2em; margin-top:0.1em;">April 2025 - August 2025</h2>
 </div>
 

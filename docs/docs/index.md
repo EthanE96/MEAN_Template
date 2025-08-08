@@ -10,7 +10,7 @@ hide:
 </p>
 
 <p align="center">
-   <img src="images/favicon-night.ico" alt="MEAN Template Logo" width="80"/>
+   <img src="/images/favicon-night.ico" alt="MEAN Template Logo" width="80"/>
 </p>
 
 <p align="center">
@@ -40,17 +40,17 @@ Password: UserPass123!
 
 <div align="center">
    <h4>Landing Page</h4>
-   <img src="images/landing-page.png" alt="Landing Page Screenshot" width="800"/>
+   <img src="images/index/landing-page.png" alt="Landing Page Screenshot" width="80%"/>
 </div>
 
 <div align="center">
    <h4>App Page</h4>
-   <img src="images/app-page.png" alt="Dashboard Screenshot" width="800"/>
+   <img src="images/index/app-page.png" alt="Dashboard Screenshot" width="80%"/>
 </div>
 
 <div align="center">
    <h4>Design Docs Page</h4>
-   <img src="images/design-docs-page.png" alt="Documentation Page Screenshot" width="800"/>
+   <img src="images/index/design-docs-page.png" alt="Documentation Page Screenshot" width="80%"/>
 </div>
 
 ---
@@ -59,10 +59,12 @@ Password: UserPass123!
 
 **MEAN_Template** is a monorepo boilerplate for SaaS and web applications, optimized for:
 
-- **API-first development** (Node.js, TypeScript, Express, MongoDB)
-- **Modern Angular UI** (Angular 19, Tailwind, DaisyUI)
-- **Azure-native infrastructure** (ARM templates, CI/CD, Docker)
-- **Separation of concerns**: API, UI, and Infra are independently developed, tested, and deployed
+- **Separation of Concerns**: Clear separation between backend, frontend, and infrastructure
+- **Cloud-Native**: Leverage Azure PaaS services for scalability, security, and maintainability
+- **Extensibility**: Designed for easy addition of new features and services
+- **Security by Default**: Use of managed identities, network security, and best practices
+- **Observability**: Built-in monitoring, alerting, and diagnostics
+- **Cost Efficiency**: Use of shared plans and free tiers where possible
 
 > **Why?**
 >

@@ -5,6 +5,10 @@ hide:
 
 # Installation
 
+## Introduction
+
+This guide provides step-by-step instructions for installing and running the MEAN Template project, both locally and in the cloud. You'll learn how to set up the required tools, install dependencies, and deploy the application using Azure infrastructure. Whether you're developing locally or preparing for production, this documentation will help you get started quickly and securely.
+
 ## Code Install
 
 ### Prerequisites
