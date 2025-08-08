@@ -11,6 +11,7 @@ nav:
   - Infrastructure: infrastructure.md
   - Reporting: reporting.md
   - Roadmap: roadmap.md
+  - License: license.md
 
 theme:
   name: material

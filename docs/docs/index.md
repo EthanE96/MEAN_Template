@@ -136,6 +136,6 @@ MIT License
 
 Copyright (c) 2025 - Ethan Edwards - <EthanAEdwards5@outlook.com>
 
-> [License](../../LICENESE)
+> [License](license.md)
 
 ---
