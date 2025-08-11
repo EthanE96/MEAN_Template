@@ -122,11 +122,11 @@ Password: UserPass123!
 
 ## Documentation
 
-- [Architecture](architecture.md)
+- [Home (Here)](index.md)
 - [Installation](installation.md)
-- [Infrastructure](infrastructure.md)
-- [Reporting](reporting.md)
+- [Architecture](architecture.md)
 - [Roadmap](roadmap.md)
+- [License](license.md)
 
 ---
 
