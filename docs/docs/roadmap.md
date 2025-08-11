@@ -14,7 +14,7 @@ https://www.neoteroi.dev/mkdocs-plugins/timeline/#icons-support -->
 This document outlines the planned development milestones for the project, detailing the features and improvements targeted for each release phase. The roadmap provides a high-level overview of the Minimum Viable Product (MVP) and future enhancements, helping stakeholders understand the project's direction and priorities.
 
 <div align="center">
-  <h1 style="margin-bottom:0; margin-top:1em;">MVP</h1>
+  <h1 style="margin-bottom:0; margin-top:1em;">MVP (1.0.0)</h1>
   <h2 style="margin-bottom:0.2em; margin-top:0.1em;">April 2025 - August 2025</h2>
 </div>
 
@@ -43,13 +43,13 @@ This document outlines the planned development milestones for the project, detai
   icon: ':material-bug:'
 
 - title: Documentation
-  content: "MkDocs site, architecture, setup, and usage guides."
+  content: "MkDocs site, installation, architecture, roadmap, license documents."
   icon: ':material-book-open-page-variant:'
 
 ::/timeline::
 
 <div style="margin-top:3em;" align="center">
-  <h1 style="margin-bottom:0;">Version 2</h1>
+  <h1 style="margin-bottom:0;">Version 2.0.0</h1>
   <h2 style="margin-bottom:0.2em; margin-top:0.1em;">Date: TBD</h2>
 </div>
 
