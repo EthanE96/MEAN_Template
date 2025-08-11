@@ -1,6 +1,3 @@
-![App](https://orange-glacier-050c76b1e.1.azurestaticapps.net/)
-![Design Docs](https://icy-field-05d86561e.1.azurestaticapps.net/)
-
 <p align="center">
     <h1 style="text-align: center;">MEAN_Template</h1>
 </p>
