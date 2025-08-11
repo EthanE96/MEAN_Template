@@ -8,7 +8,6 @@ nav:
   - Home: index.md
   - Installation: installation.md
   - Architecture: architecture.md
-  - Infrastructure: infrastructure.md
   - Reporting: reporting.md
   - Roadmap: roadmap.md
   - License: license.md

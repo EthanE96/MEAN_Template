@@ -43,10 +43,14 @@ Password: UserPass123!
    <img src="images/index/landing-page.png" alt="Landing Page Screenshot" width="80%"/>
 </div>
 
+<br>
+
 <div align="center">
    <h4>App Page</h4>
    <img src="images/index/app-page.png" alt="Dashboard Screenshot" width="80%"/>
 </div>
+
+<br>
 
 <div align="center">
    <h4>Design Docs Page</h4>

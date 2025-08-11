@@ -33,6 +33,40 @@ The solution is deployed across two Azure resource groups:
 - **Observability**: Built-in monitoring, alerting, and diagnostics
 - **Cost Efficiency**: Use of shared plans and free tiers where possible
 
+## Network Architecture
+
+The MEAN_Template project is architected to run securely and efficiently on Azure, utilizing Azure's Platform as a Service (PaaS) offerings for scalability, reliability, and simplified management. The network architecture is designed to isolate resources, control traffic flow, and enforce security boundaries between application components. It incorporates Azure Virtual Networks and subnets to ensure secure communication between services and restrict public exposure.
+
+<div align="center">
+   <img src="/images/architecture/network-architecture.webp" alt="Networking Architecture Diagram" width="80%"/>
+</div>
+
+### Virtual Networks and Subnets
+
+The solution uses Azure Virtual Networks (VNets) to create isolated network environments for the application. Each application should have it's own VNet, which contains subnets for different components.
+
+- **Application Subnet**: Contains the API App Service, which handles business logic and data access.
+- **Database Subnet**: Hosts the Cosmos DB instance, which stores application data. Database access is restricted to the API subnet to prevent direct public access.
+
+### IP Addressing
+
+<div align="center">
+   <img src="/images/architecture/networking-ips.png" alt="Subnetting Table" width="60%"/>
+</div>
+
+The table above illustrates the subnetting for the Azure Virtual Network (VNet) using the 10.0.0.0/8 private address space. Each row shows a possible subnet mask, the corresponding address range, number of usable IPs, and host capacity:
+
+- **/24 subnets** (e.g., 10.0.0.0/24) provide 254 usable IPs, suitable for subnets.
+
+This configuration allows for efficient use of IP addresses while providing enough capacity for future growth. The /24 subnets in the /8 address space allows for up to 256 subnets, each with 254 usable IP addresses, which is sufficient for most application needs.
+
+**Example:**
+
+- `10.0.0.0/24` for the application subnet
+- `10.0.1.0/24` for the database subnet
+- `10.0.2.0/24` for monitoring services
+- `10.0.3.0/24` for functionApp services
+
 ## Component Architecture
 
 ### Backend (API) Architecture
@@ -218,7 +252,7 @@ Backend services perform CRUD operations on Cosmos DB (using the MongoDB API) an
 **Azure Logging & Monitoring Flow**
 
 <div align="center">
-   <img src="/images/architecture/logging-flow.webp" alt="High-Level Component Interaction Diagram" width="80%"/>
+   <img src="/images/architecture/logging-flow.webp" alt="Logging and Metrics Diagram" width="80%"/>
 </div>
 
 ## Appendix
