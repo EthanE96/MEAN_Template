@@ -4,6 +4,18 @@ MEAN_Template API
 
 ---
 
+## Local Containerized Dev
+
+A `docker-compose.yml` at the repo root builds the API image from `api/Dockerfile` and runs it as the `mean-api` container. It expects `api/.env` (copy from `api/.env.template`) and a shared `mongo` container reachable on the external `dev-net` Docker network (same pattern as CheapGPT). Note: `db.config.ts` hardcodes `authSource=admin`, so the Mongo user referenced by `MONGODB_URI` must be created in the `admin` database.
+
+```bash
+docker compose up -d --build
+```
+
+This only containerizes the API for local use — it is not yet wired up for deployment (that will follow the CheapGPT pattern later).
+
+---
+
 # MEAN API CI/CD
 
 ## MEAN API Image to GHCR Workflow

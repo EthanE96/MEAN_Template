@@ -1,0 +1,25 @@
+networks:
+  dev-net:
+    name: dev-net
+    external: true
+  public-net:
+    name: public-net
+    external: true
+
+services:
+  api:
+    build:
+      context: ./api
+      dockerfile: Dockerfile
+    container_name: mean-api
+    env_file: ./api/.env
+    restart: unless-stopped
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:3000/api/health"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
+    networks:
+      - dev-net # reaches mongo by service name (shared Home_Lab dev-net stack, internal-only network)
+      - public-net # reachable from the shared cloudflared tunnel as http://mean-api:3000
